@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/12345/schemas/schema-review-v1.schema.json",
+  "title": "12345 SAG schema review record V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "source_document_id",
+    "schema_version",
+    "reviewer_id",
+    "event_boundary",
+    "entity_coverage",
+    "metadata_correctness",
+    "relationship_sufficiency",
+    "schema_coverage",
+    "issues",
+    "notes",
+    "status"
+  ],
+  "properties": {
+    "task_id": {"type": "string", "pattern": "^task_[A-Za-z0-9_-]+$"},
+    "source_document_id": {"type": "string", "pattern": "^co_[A-Za-z0-9_-]+$"},
+    "schema_version": {"const": "1.0.0"},
+    "reviewer_id": {"type": ["string", "null"]},
+    "event_boundary": {"$ref": "#/$defs/rating"},
+    "entity_coverage": {"$ref": "#/$defs/rating"},
+    "metadata_correctness": {"$ref": "#/$defs/rating"},
+    "relationship_sufficiency": {"$ref": "#/$defs/rating"},
+    "schema_coverage": {"$ref": "#/$defs/rating"},
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "EVENT_KIND_MISSING",
+          "ENTITY_TYPE_MISSING",
+          "RELATION_ROLE_MISSING",
+          "TIME_MODEL_INSUFFICIENT",
+          "MULTI_EVENT_AMBIGUOUS",
+          "ENTITY_NORMALIZATION_AMBIGUOUS",
+          "METADATA_CONFLICT",
+          "PII_RISK",
+          "OTHER"
+        ]
+      },
+      "uniqueItems": true
+    },
+    "notes": {"type": ["string", "null"], "maxLength": 2000},
+    "status": {"type": "string", "enum": ["unreviewed", "reviewed", "adjudicated"]}
+  },
+  "$defs": {
+    "rating": {
+      "type": "string",
+      "enum": ["unreviewed", "pass", "minor_issue", "major_issue", "not_applicable"]
+    }
+  }
+}

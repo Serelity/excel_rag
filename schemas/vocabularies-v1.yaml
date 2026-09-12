@@ -1,0 +1,126 @@
+schema_version: 1.0.0
+language: zh-CN
+
+event_kinds:
+  ISSUE:
+    description: 已发生或持续存在的问题事实
+    weak_supervision_values: [投诉举报, 求助]
+  SERVICE_REQUEST:
+    description: 请求部门办理服务或采取行动
+    weak_supervision_values: [求助]
+  CONSULTATION:
+    description: 询问政策、流程、资格或信息
+    weak_supervision_values: [咨询]
+  SUGGESTION:
+    description: 对政策、设施或服务提出建议
+    weak_supervision_values: [意见建议]
+  REPORT:
+    description: 举报疑似违法违规行为
+    weak_supervision_values: [投诉举报]
+  HANDLING_ACTION:
+    description: 部门或机构采取的处置动作
+    weak_supervision_values: []
+  OUTCOME:
+    description: 处置结果或客观状态变化
+    weak_supervision_values: []
+  FOLLOW_UP:
+    description: 回访、复诉或再次反馈
+    weak_supervision_values: []
+
+entity_types:
+  LOCATION:
+    subtypes:
+      - CITY
+      - DISTRICT
+      - STREET_TOWNSHIP
+      - COMMUNITY
+      - RESIDENTIAL_COMPOUND
+      - ROAD
+      - INTERSECTION
+      - POI
+      - ADDRESS_FRAGMENT
+    allowed_roles: [OCCURS_AT]
+  ORGANIZATION:
+    subtypes: [COMPANY, PROPERTY_COMPANY, SCHOOL, HOSPITAL, MERCHANT, CONTRACTOR, OPERATOR, OTHER]
+    allowed_roles: [INVOLVES_ORGANIZATION, RESPONSIBLE_PARTY, SERVICE_PROVIDER, HANDLED_BY, REQUESTED_HANDLER]
+  GOVERNMENT_DEPARTMENT:
+    subtypes: [GOVERNMENT_AGENCY, STREET_OFFICE, COMMUNITY_OFFICE, SERVICE_CENTER, HANDLING_DEPARTMENT]
+    allowed_roles: [INVOLVES_ORGANIZATION, RESPONSIBLE_PARTY, SERVICE_PROVIDER, HANDLED_BY, REQUESTED_HANDLER]
+  FACILITY:
+    subtypes: [ROAD_FACILITY, MUNICIPAL_FACILITY, PARKING_FACILITY, ELEVATOR, STREETLIGHT, MANHOLE, PIPELINE, COMMUNICATION_FACILITY, OTHER]
+    allowed_roles: [AFFECTS_FACILITY]
+  ISSUE_TYPE:
+    subtypes: []
+    allowed_roles: [HAS_ISSUE]
+  ACTION_BEHAVIOR:
+    subtypes: []
+    allowed_roles: [HAS_BEHAVIOR]
+  PRODUCT_SERVICE:
+    subtypes: []
+    allowed_roles: [CONCERNS_PRODUCT_SERVICE]
+  ANONYMIZED_PERSON_ROLE:
+    subtypes: [CITIZEN, STAFF, WORKER, DRIVER, OWNER, TENANT, OTHER]
+    allowed_roles: [INVOLVES_PERSON_ROLE]
+  TEMPORAL_EXPRESSION:
+    subtypes: [EXACT_TIME, DATE, MONTH, RELATIVE_TIME, RECURRENCE]
+    allowed_roles: [HAS_TEMPORAL_EXPRESSION]
+
+event_entity_roles:
+  - OCCURS_AT
+  - HAS_ISSUE
+  - HAS_BEHAVIOR
+  - INVOLVES_ORGANIZATION
+  - RESPONSIBLE_PARTY
+  - SERVICE_PROVIDER
+  - HANDLED_BY
+  - REQUESTED_HANDLER
+  - AFFECTS_FACILITY
+  - CONCERNS_PRODUCT_SERVICE
+  - INVOLVES_PERSON_ROLE
+  - HAS_TEMPORAL_EXPRESSION
+
+event_event_relations:
+  SAME_AS:
+    symmetric: true
+    transitive: true
+  REPEAT_OF:
+    symmetric: false
+    transitive: false
+  FOLLOW_UP_OF:
+    symmetric: false
+    transitive: false
+  RESPONDS_TO:
+    symmetric: false
+    transitive: false
+  CAUSES:
+    symmetric: false
+    transitive: false
+  PRECEDES:
+    symmetric: false
+    transitive: true
+  CONTRADICTS:
+    symmetric: true
+    transitive: false
+
+polarity: [affirmed, negated, uncertain, alleged]
+temporal_precision: [exact, day, month, relative, recurring, unknown]
+time_source: [source_text, call_time_fallback, unknown]
+review_status: [unreviewed, accepted, corrected, rejected]
+
+query_expansion_policy:
+  default_max_hops: 1
+  hard_max_hops: 2
+  default_max_seed_events: 50
+  default_max_candidate_events: 1000
+  high_frequency_entity_types: [LOCATION, ISSUE_TYPE, ACTION_BEHAVIOR]
+  require_at_least_one_constraint_for_high_frequency_entities:
+    - time_range
+    - area
+    - entity_subtype
+    - relation_role
+
+privacy_policy:
+  forbidden_entity_types: [IDENTIFIABLE_PERSON, PHONE_NUMBER, ID_CARD, EMAIL, BANK_ACCOUNT]
+  restricted_fields: [contact_token, address_detail, lnglat]
+  prompt_forbidden_fields: [contact_token]
+  public_answer_location_max_precision: POI

@@ -1,0 +1,23 @@
+data:
+  input: data/raw/t_order_master.sanitized.v1_9.tsv
+  output: data/processed/problem_chunks.jsonl
+
+
+llm:
+
+  base_url: http://localhost:8000/v1
+
+  model: Qwen2.5-7B-Instruct
+
+  temperature: 0
+
+
+embedding:
+
+  model: BAAI/bge-m3
+
+
+vectorstore:
+
+  host: localhost
+  port: 6333

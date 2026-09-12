@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sag12345.local/schemas/extraction-selection-v1.schema.json",
+  "title": "SAG 12345 Candidate Selection V1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "selected_candidate_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^c[1-9][0-9]*$"
+      },
+      "maxItems": 48,
+      "uniqueItems": true
+    }
+  },
+  "required": ["selected_candidate_ids"]
+}

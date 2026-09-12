@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/sag12345/hybrid-answer-trace-v1.schema.json",
+  "title": "Hybrid Analytics RAG Answer Trace V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trace_version",
+    "question_id",
+    "question",
+    "status",
+    "intent",
+    "statistics",
+    "evidence",
+    "sag_enhancements",
+    "warnings",
+    "goal3_gaps"
+  ],
+  "properties": {
+    "trace_version": {"const": "1.0.0"},
+    "question_id": {"type": "string", "pattern": "^hq[0-9]{3}_[a-z0-9_]+$"},
+    "question": {"type": "string", "minLength": 2},
+    "status": {"type": "string", "enum": ["answered", "partial", "unsupported", "error"]},
+    "intent": {"type": "string", "minLength": 2},
+    "statistics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim", "sql", "filters", "row_count", "result_rows"],
+      "properties": {
+        "claim": {"type": "string"},
+        "sql": {"type": "string"},
+        "filters": {"type": "object"},
+        "row_count": {"type": "integer", "minimum": 0},
+        "result_rows": {
+          "type": "array",
+          "items": {"type": "object"}
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["canonical_order_id", "field", "start", "end", "snippet", "support_type"],
+        "properties": {
+          "canonical_order_id": {"type": "string", "minLength": 1},
+          "field": {
+            "type": "string",
+            "enum": [
+              "case_content",
+              "case_goal",
+              "title",
+              "remark",
+              "return_visit_reason",
+              "appeal_result_opinions"
+            ]
+          },
+          "start": {"type": "integer", "minimum": 0},
+          "end": {"type": "integer", "minimum": 0},
+          "snippet": {"type": "string"},
+          "support_type": {"type": "string", "enum": ["supports", "contradicts", "context"]}
+        }
+      }
+    },
+    "sag_enhancements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["status", "summary"],
+        "properties": {
+          "status": {"type": "string", "enum": ["candidate", "verified"]},
+          "summary": {"type": "string"}
+        }
+      }
+    },
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "goal3_gaps": {"type": "array", "items": {"type": "string"}}
+  }
+}

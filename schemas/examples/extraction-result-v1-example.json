@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0.0",
+  "source_document_id": "co_demo001",
+  "events": [
+    {
+      "local_event_id": "e1",
+      "event_kind": "ISSUE",
+      "summary": "武进区阳光花园每天22时后存在施工噪声，疑似与华建工程公司施工有关",
+      "event_type_name": "建筑施工噪声",
+      "polarity": "alleged",
+      "occurred_start": null,
+      "occurred_end": null,
+      "temporal_precision": "recurring",
+      "temporal_text": "每天22时后",
+      "time_source": "source_text",
+      "requested_action": null,
+      "source_spans": [
+        {
+          "field": "case_content",
+          "start": 0,
+          "end": 35,
+          "text": "市民反映武进区阳光花园每天22时后有施工噪声，疑似由华建工程公司施工。"
+        }
+      ],
+      "confidence": 0.97
+    },
+    {
+      "local_event_id": "e2",
+      "event_kind": "SERVICE_REQUEST",
+      "summary": "请求住建部门核实并处理施工噪声",
+      "event_type_name": "核实处理",
+      "polarity": "affirmed",
+      "occurred_start": "2025-03-15T22:30:00+08:00",
+      "occurred_end": null,
+      "temporal_precision": "exact",
+      "temporal_text": null,
+      "time_source": "call_time_fallback",
+      "requested_action": "核实并处理",
+      "source_spans": [
+        {
+          "field": "case_goal",
+          "start": 0,
+          "end": 12,
+          "text": "希望住建部门核实并处理。"
+        }
+      ],
+      "confidence": 0.99
+    }
+  ],
+  "entity_mentions": [
+    {
+      "local_mention_id": "m1",
+      "surface_form": "武进区",
+      "normalized_mention": "武进区",
+      "entity_type": "LOCATION",
+      "entity_subtype": "DISTRICT",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 4,
+        "end": 7,
+        "text": "武进区"
+      },
+      "confidence": 1.0
+    },
+    {
+      "local_mention_id": "m2",
+      "surface_form": "阳光花园",
+      "normalized_mention": "阳光花园",
+      "entity_type": "LOCATION",
+      "entity_subtype": "RESIDENTIAL_COMPOUND",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 7,
+        "end": 11,
+        "text": "阳光花园"
+      },
+      "confidence": 0.96
+    },
+    {
+      "local_mention_id": "m3",
+      "surface_form": "每天22时后",
+      "normalized_mention": "每天22:00后",
+      "entity_type": "TEMPORAL_EXPRESSION",
+      "entity_subtype": "RECURRENCE",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 11,
+        "end": 17,
+        "text": "每天22时后"
+      },
+      "confidence": 0.99
+    },
+    {
+      "local_mention_id": "m4",
+      "surface_form": "施工噪声",
+      "normalized_mention": "施工噪声",
+      "entity_type": "ISSUE_TYPE",
+      "entity_subtype": "NOISE",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 18,
+        "end": 22,
+        "text": "施工噪声"
+      },
+      "confidence": 0.99
+    },
+    {
+      "local_mention_id": "m5",
+      "surface_form": "施工",
+      "normalized_mention": "施工",
+      "entity_type": "ACTION_BEHAVIOR",
+      "entity_subtype": "CONSTRUCTION",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 18,
+        "end": 20,
+        "text": "施工"
+      },
+      "confidence": 0.97
+    },
+    {
+      "local_mention_id": "m6",
+      "surface_form": "华建工程公司",
+      "normalized_mention": "华建工程公司",
+      "entity_type": "ORGANIZATION",
+      "entity_subtype": "CONTRACTOR",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_content",
+        "start": 26,
+        "end": 32,
+        "text": "华建工程公司"
+      },
+      "confidence": 0.85
+    },
+    {
+      "local_mention_id": "m7",
+      "surface_form": "住建部门",
+      "normalized_mention": "住建部门",
+      "entity_type": "GOVERNMENT_DEPARTMENT",
+      "entity_subtype": "HANDLING_DEPARTMENT",
+      "sensitivity": "public",
+      "source_span": {
+        "field": "case_goal",
+        "start": 2,
+        "end": 6,
+        "text": "住建部门"
+      },
+      "confidence": 0.98
+    }
+  ],
+  "event_entity_relations": [
+    {
+      "local_relation_id": "r1",
+      "local_event_id": "e1",
+      "local_mention_id": "m1",
+      "role": "OCCURS_AT",
+      "source_spans": [{"field": "case_content", "start": 4, "end": 7, "text": "武进区"}],
+      "confidence": 0.9
+    },
+    {
+      "local_relation_id": "r2",
+      "local_event_id": "e1",
+      "local_mention_id": "m2",
+      "role": "OCCURS_AT",
+      "source_spans": [{"field": "case_content", "start": 7, "end": 11, "text": "阳光花园"}],
+      "confidence": 0.99
+    },
+    {
+      "local_relation_id": "r3",
+      "local_event_id": "e1",
+      "local_mention_id": "m3",
+      "role": "HAS_TEMPORAL_EXPRESSION",
+      "source_spans": [{"field": "case_content", "start": 11, "end": 17, "text": "每天22时后"}],
+      "confidence": 0.99
+    },
+    {
+      "local_relation_id": "r4",
+      "local_event_id": "e1",
+      "local_mention_id": "m4",
+      "role": "HAS_ISSUE",
+      "source_spans": [{"field": "case_content", "start": 18, "end": 22, "text": "施工噪声"}],
+      "confidence": 0.99
+    },
+    {
+      "local_relation_id": "r5",
+      "local_event_id": "e1",
+      "local_mention_id": "m5",
+      "role": "HAS_BEHAVIOR",
+      "source_spans": [{"field": "case_content", "start": 18, "end": 20, "text": "施工"}],
+      "confidence": 0.97
+    },
+    {
+      "local_relation_id": "r6",
+      "local_event_id": "e1",
+      "local_mention_id": "m6",
+      "role": "RESPONSIBLE_PARTY",
+      "source_spans": [{"field": "case_content", "start": 23, "end": 34, "text": "疑似由华建工程公司施工"}],
+      "confidence": 0.72
+    },
+    {
+      "local_relation_id": "r7",
+      "local_event_id": "e2",
+      "local_mention_id": "m7",
+      "role": "REQUESTED_HANDLER",
+      "source_spans": [{"field": "case_goal", "start": 2, "end": 6, "text": "住建部门"}],
+      "confidence": 0.99
+    }
+  ],
+  "event_event_relations": [],
+  "warnings": []
+}

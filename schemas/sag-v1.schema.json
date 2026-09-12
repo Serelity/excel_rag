@@ -1,0 +1,519 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/12345/schemas/sag-v1.schema.json",
+  "title": "12345 SAG extraction bundle V1",
+  "description": "A document-centric interchange schema. Relational storage is defined in sql/sag_v1_postgresql.sql.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "document",
+    "occurrences",
+    "events",
+    "entities",
+    "entity_mentions",
+    "event_entity_relations",
+    "event_event_relations"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "document": {"$ref": "#/$defs/document"},
+    "occurrences": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/occurrence"}
+    },
+    "events": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event"}
+    },
+    "entities": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/entity"}
+    },
+    "entity_mentions": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/entity_mention"}
+    },
+    "event_entity_relations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event_entity_relation"}
+    },
+    "event_event_relations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event_event_relation"}
+    }
+  },
+  "$defs": {
+    "nullable_string": {
+      "type": ["string", "null"]
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128
+    },
+    "source_span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "start", "end", "text"],
+      "properties": {
+        "field": {
+          "type": "string",
+          "enum": [
+            "case_content",
+            "case_goal",
+            "title",
+            "return_visit_reason",
+            "remark",
+            "appeal_result_opinions",
+            "address_detail",
+            "knowledge_references",
+            "structured_metadata"
+          ]
+        },
+        "start": {"type": "integer", "minimum": 0},
+        "end": {"type": "integer", "minimum": 0},
+        "text": {"type": "string", "minLength": 1},
+        "source_path": {"type": "string", "minLength": 1},
+        "redacted": {"type": "boolean", "default": true}
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_document_id",
+        "extractor_type",
+        "confidence",
+        "review_status",
+        "source_spans"
+      ],
+      "properties": {
+        "source_document_id": {
+          "type": "string",
+          "pattern": "^co_[A-Za-z0-9_-]+$"
+        },
+        "extractor_type": {
+          "type": "string",
+          "enum": ["import", "rule", "model", "llm", "human", "hybrid"]
+        },
+        "extraction_run_id": {"$ref": "#/$defs/nullable_string"},
+        "model_name": {"$ref": "#/$defs/nullable_string"},
+        "model_version": {"$ref": "#/$defs/nullable_string"},
+        "prompt_version": {"$ref": "#/$defs/nullable_string"},
+        "schema_version": {"const": "1.0.0"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "review_status": {
+          "type": "string",
+          "enum": ["unreviewed", "accepted", "corrected", "rejected"]
+        },
+        "source_spans": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/source_span"}
+        }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level1", "level2", "level3", "level4", "level5", "code"],
+      "properties": {
+        "level1": {"$ref": "#/$defs/nullable_string"},
+        "level2": {"$ref": "#/$defs/nullable_string"},
+        "level3": {"$ref": "#/$defs/nullable_string"},
+        "level4": {"$ref": "#/$defs/nullable_string"},
+        "level5": {"$ref": "#/$defs/nullable_string"},
+        "code": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["city", "area", "street", "area_code"],
+      "properties": {
+        "city": {"$ref": "#/$defs/nullable_string"},
+        "area": {"$ref": "#/$defs/nullable_string"},
+        "street": {"$ref": "#/$defs/nullable_string"},
+        "area_code": {"$ref": "#/$defs/nullable_string"}
+      }
+    },
+    "document_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tenant_id",
+        "source_platform",
+        "service_object_type",
+        "order_type",
+        "order_source",
+        "classification",
+        "region",
+        "order_status",
+        "call_time",
+        "case_complete_time",
+        "order_finish_time",
+        "is_visit",
+        "urgency",
+        "info_protect",
+        "quality_flags"
+      ],
+      "properties": {
+        "tenant_id": {"$ref": "#/$defs/nullable_string"},
+        "source_platform": {"$ref": "#/$defs/nullable_string"},
+        "belong_department_id": {"$ref": "#/$defs/nullable_string"},
+        "department_name": {"$ref": "#/$defs/nullable_string"},
+        "active_department_ids": {"$ref": "#/$defs/nullable_string"},
+        "concluding_department_id": {"$ref": "#/$defs/nullable_string"},
+        "appeal_department_id": {"$ref": "#/$defs/nullable_string"},
+        "service_object_type": {"$ref": "#/$defs/nullable_string"},
+        "order_type": {"$ref": "#/$defs/nullable_string"},
+        "order_source": {"$ref": "#/$defs/nullable_string"},
+        "order_source_detail": {"$ref": "#/$defs/nullable_string"},
+        "case_public": {"$ref": "#/$defs/nullable_string"},
+        "hotspot": {"$ref": "#/$defs/nullable_string"},
+        "case_labels": {"$ref": "#/$defs/nullable_string"},
+        "special_type": {"$ref": "#/$defs/nullable_string"},
+        "form_type": {"$ref": "#/$defs/nullable_string"},
+        "knowledge_references": {"$ref": "#/$defs/nullable_string"},
+        "classification": {"$ref": "#/$defs/classification"},
+        "region": {"$ref": "#/$defs/region"},
+        "address_detail": {"$ref": "#/$defs/nullable_string"},
+        "lnglat": {"$ref": "#/$defs/nullable_string"},
+        "order_status": {"$ref": "#/$defs/nullable_string"},
+        "first_order_status": {"$ref": "#/$defs/nullable_string"},
+        "second_order_status": {"$ref": "#/$defs/nullable_string"},
+        "atomic_order_status": {"$ref": "#/$defs/nullable_string"},
+        "invalid_type": {"$ref": "#/$defs/nullable_string"},
+        "deleted_flag": {"$ref": "#/$defs/nullable_string"},
+        "dispatch_accuracy": {"$ref": "#/$defs/nullable_string"},
+        "is_over_time": {"$ref": "#/$defs/nullable_string"},
+        "is_sign_over_time": {"$ref": "#/$defs/nullable_string"},
+        "back_count": {"$ref": "#/$defs/nullable_string"},
+        "call_time": {"type": ["string", "null"], "format": "date-time"},
+        "plan_finish_time": {"type": ["string", "null"], "format": "date-time"},
+        "case_complete_time": {"type": ["string", "null"], "format": "date-time"},
+        "order_finish_time": {"type": ["string", "null"], "format": "date-time"},
+        "plan_sign_time": {"type": ["string", "null"], "format": "date-time"},
+        "source_create_date": {"type": ["string", "null"], "format": "date-time"},
+        "source_update_date": {"type": ["string", "null"], "format": "date-time"},
+        "is_visit": {"$ref": "#/$defs/nullable_string"},
+        "urgency": {"$ref": "#/$defs/nullable_string"},
+        "info_protect": {"$ref": "#/$defs/nullable_string"},
+        "first_visit_satisfied": {"$ref": "#/$defs/nullable_string"},
+        "result_satisfied": {"$ref": "#/$defs/nullable_string"},
+        "visit_result": {"$ref": "#/$defs/nullable_string"},
+        "return_visit_reason": {"$ref": "#/$defs/nullable_string"},
+        "remark": {"$ref": "#/$defs/nullable_string"},
+        "appeal_status": {"$ref": "#/$defs/nullable_string"},
+        "appeal_feedback_date": {"type": ["string", "null"], "format": "date-time"},
+        "appeal_result_opinions": {"$ref": "#/$defs/nullable_string"},
+        "visit_count": {"$ref": "#/$defs/nullable_string"},
+        "quality_flags": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "document": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "document_id",
+        "representative_standard_order_id",
+        "case_content",
+        "case_goal",
+        "title",
+        "content_fingerprint",
+        "metadata",
+        "schema_version"
+      ],
+      "properties": {
+        "document_id": {
+          "type": "string",
+          "pattern": "^co_[A-Za-z0-9_-]+$"
+        },
+        "representative_standard_order_id": {
+          "type": "string",
+          "pattern": "^so_[A-Za-z0-9_-]+$"
+        },
+        "source_order_id": {"$ref": "#/$defs/nullable_string"},
+        "source_order_no": {"$ref": "#/$defs/nullable_string"},
+        "process_instance_id": {"$ref": "#/$defs/nullable_string"},
+        "case_content": {"$ref": "#/$defs/nullable_string"},
+        "case_goal": {"$ref": "#/$defs/nullable_string"},
+        "title": {"$ref": "#/$defs/nullable_string"},
+        "content_fingerprint": {"$ref": "#/$defs/nullable_string"},
+        "metadata": {"$ref": "#/$defs/document_metadata"},
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "occurrence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "occurrence_id",
+        "document_id",
+        "standard_order_id",
+        "source_id",
+        "complaint_cluster_id",
+        "duplicate_class",
+        "call_time",
+        "schema_version"
+      ],
+      "properties": {
+        "occurrence_id": {"type": "string", "pattern": "^occ_[A-Za-z0-9_-]+$"},
+        "document_id": {"type": "string", "pattern": "^co_[A-Za-z0-9_-]+$"},
+        "standard_order_id": {"type": "string", "pattern": "^so_[A-Za-z0-9_-]+$"},
+        "source_id": {"$ref": "#/$defs/identifier"},
+        "source_order_id": {"$ref": "#/$defs/nullable_string"},
+        "source_order_no": {"$ref": "#/$defs/nullable_string"},
+        "complaint_cluster_id": {"type": "string", "pattern": "^cc_[A-Za-z0-9_-]+$"},
+        "duplicate_class": {
+          "type": "string",
+          "enum": ["unique", "technical_duplicate", "repeat_complaint_candidate"]
+        },
+        "call_time": {"type": ["string", "null"], "format": "date-time"},
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id",
+        "document_id",
+        "event_kind",
+        "summary",
+        "event_type_code",
+        "event_type_name",
+        "polarity",
+        "occurred_start",
+        "occurred_end",
+        "temporal_precision",
+        "time_source",
+        "requested_action",
+        "provenance",
+        "schema_version"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9_-]+$"},
+        "document_id": {"type": "string", "pattern": "^co_[A-Za-z0-9_-]+$"},
+        "event_kind": {
+          "type": "string",
+          "enum": [
+            "ISSUE",
+            "SERVICE_REQUEST",
+            "CONSULTATION",
+            "SUGGESTION",
+            "REPORT",
+            "HANDLING_ACTION",
+            "OUTCOME",
+            "FOLLOW_UP"
+          ]
+        },
+        "summary": {"type": "string", "minLength": 2, "maxLength": 500},
+        "event_type_code": {"$ref": "#/$defs/nullable_string"},
+        "event_type_name": {"$ref": "#/$defs/nullable_string"},
+        "polarity": {
+          "type": "string",
+          "enum": ["affirmed", "negated", "uncertain", "alleged"]
+        },
+        "occurred_start": {"type": ["string", "null"], "format": "date-time"},
+        "occurred_end": {"type": ["string", "null"], "format": "date-time"},
+        "temporal_precision": {
+          "type": "string",
+          "enum": ["exact", "day", "month", "relative", "recurring", "unknown"]
+        },
+        "temporal_text": {"$ref": "#/$defs/nullable_string"},
+        "time_source": {
+          "type": "string",
+          "enum": ["source_text", "call_time_fallback", "unknown"]
+        },
+        "requested_action": {"$ref": "#/$defs/nullable_string"},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "entity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entity_id",
+        "entity_type",
+        "entity_subtype",
+        "canonical_name",
+        "normalized_name",
+        "aliases",
+        "sensitivity",
+        "attributes",
+        "resolution",
+        "schema_version"
+      ],
+      "properties": {
+        "entity_id": {"type": "string", "pattern": "^ent_[A-Za-z0-9_-]+$"},
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "LOCATION",
+            "ORGANIZATION",
+            "GOVERNMENT_DEPARTMENT",
+            "FACILITY",
+            "ISSUE_TYPE",
+            "ACTION_BEHAVIOR",
+            "PRODUCT_SERVICE",
+            "ANONYMIZED_PERSON_ROLE",
+            "TEMPORAL_EXPRESSION"
+          ]
+        },
+        "entity_subtype": {"$ref": "#/$defs/nullable_string"},
+        "canonical_name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "normalized_name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "aliases": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "uniqueItems": true
+        },
+        "administrative_code": {"$ref": "#/$defs/nullable_string"},
+        "parent_entity_id": {
+          "type": ["string", "null"],
+          "pattern": "^ent_[A-Za-z0-9_-]+$"
+        },
+        "sensitivity": {
+          "type": "string",
+          "enum": ["public", "internal", "sensitive", "restricted"]
+        },
+        "attributes": {"type": "object"},
+        "resolution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "confidence", "review_status"],
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": ["new_entity", "exact_alias", "dictionary", "rule", "model", "human"]
+            },
+            "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+            "review_status": {
+              "type": "string",
+              "enum": ["unreviewed", "accepted", "corrected", "rejected"]
+            },
+            "resolver_version": {"$ref": "#/$defs/nullable_string"},
+            "matched_alias": {"$ref": "#/$defs/nullable_string"}
+          }
+        },
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "entity_mention": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mention_id",
+        "document_id",
+        "entity_id",
+        "surface_form",
+        "normalized_mention",
+        "source_span",
+        "confidence",
+        "extraction_run_id",
+        "schema_version"
+      ],
+      "properties": {
+        "mention_id": {"type": "string", "pattern": "^men_[A-Za-z0-9_-]+$"},
+        "document_id": {"type": "string", "pattern": "^co_[A-Za-z0-9_-]+$"},
+        "entity_id": {"type": "string", "pattern": "^ent_[A-Za-z0-9_-]+$"},
+        "surface_form": {"type": "string", "minLength": 1, "maxLength": 300},
+        "normalized_mention": {"type": "string", "minLength": 1, "maxLength": 300},
+        "source_span": {"$ref": "#/$defs/source_span"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "extraction_run_id": {"$ref": "#/$defs/nullable_string"},
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "event_entity_relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation_id",
+        "event_id",
+        "entity_id",
+        "mention_id",
+        "role",
+        "confidence",
+        "source_spans",
+        "schema_version"
+      ],
+      "properties": {
+        "relation_id": {"type": "string", "pattern": "^ee_[A-Za-z0-9_-]+$"},
+        "event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9_-]+$"},
+        "entity_id": {"type": "string", "pattern": "^ent_[A-Za-z0-9_-]+$"},
+        "mention_id": {"type": "string", "pattern": "^men_[A-Za-z0-9_-]+$"},
+        "role": {
+          "type": "string",
+          "enum": [
+            "OCCURS_AT",
+            "HAS_ISSUE",
+            "HAS_BEHAVIOR",
+            "INVOLVES_ORGANIZATION",
+            "RESPONSIBLE_PARTY",
+            "SERVICE_PROVIDER",
+            "HANDLED_BY",
+            "REQUESTED_HANDLER",
+            "AFFECTS_FACILITY",
+            "CONCERNS_PRODUCT_SERVICE",
+            "INVOLVES_PERSON_ROLE",
+            "HAS_TEMPORAL_EXPRESSION"
+          ]
+        },
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "source_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/source_span"}
+        },
+        "schema_version": {"const": "1.0.0"}
+      }
+    },
+    "event_event_relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "relation_id",
+        "source_event_id",
+        "target_event_id",
+        "relation_type",
+        "assertion_method",
+        "confidence",
+        "schema_version"
+      ],
+      "properties": {
+        "relation_id": {"type": "string", "pattern": "^er_[A-Za-z0-9_-]+$"},
+        "source_event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9_-]+$"},
+        "target_event_id": {"type": "string", "pattern": "^evt_[A-Za-z0-9_-]+$"},
+        "relation_type": {
+          "type": "string",
+          "enum": [
+            "SAME_AS",
+            "REPEAT_OF",
+            "FOLLOW_UP_OF",
+            "RESPONDS_TO",
+            "CAUSES",
+            "PRECEDES",
+            "CONTRADICTS"
+          ]
+        },
+        "assertion_method": {
+          "type": "string",
+          "enum": ["explicit_source", "rule", "model", "human"]
+        },
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "evidence": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/source_span"}
+        },
+        "schema_version": {"const": "1.0.0"}
+      }
+    }
+  }
+}
