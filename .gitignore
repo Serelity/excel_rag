@@ -26,6 +26,9 @@ vectorstore/
 __pycache__/
 *.pyc
 *.pyo
+*.egg-info/
+build/
+dist/
 
 
 # ======================
@@ -50,3 +53,7 @@ venv/
 # ======================
 
 *.log
+
+# Runtime records and caches
+run-records/
+.cache/

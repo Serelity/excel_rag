@@ -1,0 +1,13 @@
+name: civic-rag-index
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip>=24,<26
+  - setuptools>=75
+  - wheel>=0.44
+
+# Complete this environment from the repository root with:
+#   bash deploy/create-conda-envs.sh
+# Do not add conda cudatoolkit, pytorch, or pytorch-cuda packages. The pinned
+# PyTorch pip wheel is selected from the CUDA 12.4 wheel index by that script.

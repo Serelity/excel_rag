@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.example/12345/schemas/problem-chunk-v1.schema.json",
+  "title": "12345 candidate problem retrieval chunk V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "type",
+    "text",
+    "source_text_hash",
+    "extraction_run_id",
+    "extraction",
+    "metadata"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "id": {"type": "string", "minLength": 1, "maxLength": 256},
+    "type": {"const": "problem"},
+    "text": {"type": "string", "minLength": 1, "maxLength": 4096},
+    "source_text_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "extraction_run_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "extraction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["model", "prompt_version"],
+      "properties": {
+        "model": {"type": "string", "minLength": 1, "maxLength": 256},
+        "prompt_version": {"type": "string", "minLength": 1, "maxLength": 128}
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "city",
+        "district",
+        "category1",
+        "category2",
+        "category3",
+        "create_time",
+        "problem_type",
+        "verification_status",
+        "template_version"
+      ],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1, "maxLength": 256},
+        "city": {"type": "string", "maxLength": 128},
+        "district": {"type": "string", "maxLength": 128},
+        "category1": {"type": "string", "maxLength": 256},
+        "category2": {"type": "string", "maxLength": 256},
+        "category3": {"type": "string", "maxLength": 256},
+        "create_time": {"type": "string", "maxLength": 64},
+        "problem_type": {"type": "string", "minLength": 1, "maxLength": 40},
+        "verification_status": {"const": "candidate"},
+        "template_version": {"const": "problem-v1"}
+      }
+    }
+  }
+}

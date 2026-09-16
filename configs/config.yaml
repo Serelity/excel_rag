@@ -1,23 +1,57 @@
 data:
   input: data/raw/t_order_master.sanitized.v1_9.tsv
   output: data/processed/problem_chunks.jsonl
+  quarantine: data/processed/problem_chunks.errors.jsonl
 
+pipeline:
+  # Conservative Qwen3-30B-A3B H100 pilot default. Increase only after the
+  # staged 1/20/100-row checks in deploy/H100_RUNBOOK.md.
+  concurrency: 4
+  max_attempts: 2
+  retry_backoff_seconds: 1.0
+  checkpoint_every: 25
+  log_every: 100
 
 llm:
-
-  base_url: http://localhost:8000/v1
-
-  model: Qwen2.5-7B-Instruct
-
+  base_url: http://127.0.0.1:8000/v1
+  # Must match vLLM's --served-model-name, not the local model directory.
+  model: Qwen3-30B-A3B
+  model_revision_env: QWEN_MODEL_REVISION
+  model_source_repo_env: QWEN_MODELSCOPE_REPO_ID
+  api_key_env: VLLM_API_KEY
+  # Qwen3 thinking output is incompatible with the strict extraction JSON response.
+  enable_thinking: false
   temperature: 0
-
+  # The bounded JSON schema can exceed 256 tokens at its legal field limits.
+  max_tokens: 768
+  max_input_chars: 15000
+  timeout_seconds: 120
+  max_retries: 1
+  seed: 42
 
 embedding:
-
+  # For offline runs, pass the absolute local snapshot and its immutable
+  # revision with --model and --model-revision.
   model: BAAI/bge-m3
-
+  revision: null
+  device: cuda:0
+  use_fp16: true
+  normalize_embeddings: true
+  # Starting candidate only; benchmark representative sequence lengths before
+  # increasing it.
+  batch_size: 64
+  max_length: 512
 
 vectorstore:
-
-  host: localhost
+  url: null
+  host: 127.0.0.1
   port: 6333
+  https: false
+  api_key_env: QDRANT_API_KEY
+  timeout_seconds: 60
+  collection: problem_chunks_bge_m3_v1
+  vector_size: 1024
+  distance: cosine
+  upsert_batch_size: 512
+  upsert_max_attempts: 3
+  upsert_retry_backoff_seconds: 1.0

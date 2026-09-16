@@ -1,20 +1,42 @@
-from pydantic import BaseModel
-from typing import List
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+
+CategoryText = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=100),
+]
+ProblemTypeText = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=40),
+]
+DetailText = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=80),
+]
+LocationTypeText = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=32),
+]
+KeywordText = Annotated[
+    str,
+    StringConstraints(strip_whitespace=True, min_length=1, max_length=20),
+]
 
 
-class Problem(BaseModel):
-    """
-    定义了LLM应该输出什么，规定输出的格式
-    """
+class LLMExtractedProblem(BaseModel):
+    """Fields that may be extracted from untrusted ticket text by the LLM."""
 
-    problem_type: str
+    model_config = ConfigDict(extra="forbid")
 
-    category: List[str]
+    problem_type: ProblemTypeText
+    symptom: list[DetailText] = Field(max_length=3)
+    impact: list[DetailText] = Field(max_length=3)
+    location_type: LocationTypeText
+    keywords: list[KeywordText] = Field(max_length=6)
 
-    symptom: List[str]
 
-    impact: List[str]
+class Problem(LLMExtractedProblem):
+    """Validated problem enriched with the source system's category path."""
 
-    location_type: str
-
-    keywords: List[str]
+    category: list[CategoryText] = Field(max_length=5)

@@ -1,0 +1,22 @@
+name: civic-rag-extract
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip>=24,<26
+  - setuptools>=75
+  - wheel>=0.44
+
+variables:
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  HF_HUB_DISABLE_TELEMETRY: "1"
+  HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+  VLLM_NO_USAGE_STATS: "1"
+  DO_NOT_TRACK: "1"
+  TOKENIZERS_PARALLELISM: "false"
+
+# Complete this environment from the repository root with:
+#   bash deploy/create-conda-extract-env.sh
+# Do not add conda cudatoolkit, pytorch, or pytorch-cuda packages. The vLLM pip
+# wheel is paired with the pinned PyTorch CUDA 12.4 wheel by that script.
