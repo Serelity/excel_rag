@@ -54,6 +54,13 @@ venv/
 
 *.log
 
+# The GPU platform creates these in the selected repository working directory
+# before the launch command starts. Root anchoring avoids hiding source-tree
+# fixtures with the same extensions.
+/*.out
+/*.err
+/script_*.sh
+
 # Runtime records and caches
 run-records/
 .cache/

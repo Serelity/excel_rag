@@ -114,6 +114,10 @@ git log -1 --format='commit=%H%nsubject=%s'
 Do not pull or edit tracked files between the 1/20/100/full tasks. The wrapper
 requires a clean worktree, and the manifest rejects resume under a different
 commit. Finish or deliberately abandon the current output before changing code.
+Root-level scheduler-generated `*.out`, `*.err`, and `script_*.sh` files are
+ignored because the platform creates them before the launch command starts.
+Keep personal launch scripts outside the checkout; they remain visible to the
+clean-worktree gate.
 
 The default model location is `<SERVER_REPO>/models/Qwen3-30B-A3B`. Create the
 private configuration in the persistent checkout:
