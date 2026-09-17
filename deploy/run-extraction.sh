@@ -4,8 +4,10 @@ set -euo pipefail
 # Never expose sourced settings or API keys through shell tracing.
 { set +x; } 2>/dev/null
 
-PROJECT_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+PROJECT_ROOT=$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 ENV_FILE=${RAG_ENV_FILE:-$PROJECT_ROOT/deploy/.env}
+readonly LAUNCH_CODE_COMMIT=${RAG_CODE_COMMIT-}
+readonly LAUNCH_CODE_BRANCH=${RAG_CODE_BRANCH-}
 
 if [[ ! -r $ENV_FILE ]]; then
   echo "deployment environment is not readable: $ENV_FILE" >&2
@@ -19,6 +21,11 @@ set -a
 source "$ENV_FILE"
 set +a
 set -u
+
+# The outer job wrapper validated these launch-scoped values. Restore them
+# after sourcing .env so stale persistent settings cannot replace provenance.
+RAG_CODE_COMMIT=$LAUNCH_CODE_COMMIT
+RAG_CODE_BRANCH=$LAUNCH_CODE_BRANCH
 
 : "${CONDA_EXTRACT_ENV:=civic-rag-extract}"
 
@@ -43,26 +50,26 @@ if ! command -v conda >/dev/null 2>&1; then
   echo "conda is not available on PATH" >&2
   exit 1
 fi
-if ! command -v git >/dev/null 2>&1; then
-  echo "git is not available on PATH" >&2
-  exit 1
-fi
-
-if [[ -z ${RAG_CODE_COMMIT:-} ]]; then
-  RAG_CODE_COMMIT=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null || true)
-fi
 if [[ ! $RAG_CODE_COMMIT =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]; then
-  echo "RAG_CODE_COMMIT must identify the checked-out Git commit" >&2
+  echo "RAG_CODE_COMMIT must be a full lowercase 40- or 64-character hexadecimal commit" >&2
   exit 1
 fi
-mapfile -t git_changes < <(
-  git -C "$PROJECT_ROOT" status --porcelain=v1 --untracked-files=normal 2>/dev/null
-)
-if ((${#git_changes[@]} != 0)); then
-  echo "repository worktree must be clean before extraction" >&2
+if [[ ${#RAG_CODE_BRANCH} -gt 255 || \
+  ! $RAG_CODE_BRANCH =~ ^[A-Za-z0-9_][A-Za-z0-9._/-]*$ || \
+  $RAG_CODE_BRANCH == HEAD || \
+  $RAG_CODE_BRANCH == *".."* || \
+  $RAG_CODE_BRANCH == *"//"* || \
+  $RAG_CODE_BRANCH == *"@{"* || \
+  $RAG_CODE_BRANCH == */.* || \
+  $RAG_CODE_BRANCH == *.lock/* || \
+  $RAG_CODE_BRANCH == */ || \
+  $RAG_CODE_BRANCH == *. || \
+  $RAG_CODE_BRANCH == *.lock ]]; then
+  echo "RAG_CODE_BRANCH must be a safe non-empty branch name" >&2
   exit 1
 fi
 export RAG_CODE_COMMIT
+export RAG_CODE_BRANCH
 
 cd "$PROJECT_ROOT"
 exec env \

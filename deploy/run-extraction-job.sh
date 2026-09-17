@@ -4,12 +4,14 @@ set -euo pipefail
 # Never expose sourced secrets or command arguments through shell tracing.
 { set +x; } 2>/dev/null
 
-PROJECT_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+PROJECT_ROOT=$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 ENV_FILE=${RAG_ENV_FILE:-$PROJECT_ROOT/deploy/.env}
 RUN_VLLM=$PROJECT_ROOT/deploy/run-vllm.sh
 RUN_EXTRACTION=$PROJECT_ROOT/deploy/run-extraction.sh
 VERIFY_LISTENER_OWNER=$PROJECT_ROOT/deploy/verify-listener-owner.py
 DEFAULT_QWEN_MODEL_PATH=$PROJECT_ROOT/models/Qwen3-30B-A3B
+readonly LAUNCH_CODE_COMMIT=${RAG_CODE_COMMIT-}
+readonly LAUNCH_CODE_BRANCH=${RAG_CODE_BRANCH-}
 
 die() {
   printf 'ERROR: %s\n' "$1" >&2
@@ -19,6 +21,7 @@ die() {
 usage() {
   printf '%s\n' \
     'Usage: bash deploy/run-extraction-job.sh [--full] [main.py options]' \
+    'Required environment: RAG_CODE_COMMIT=<full hash> RAG_CODE_BRANCH=<branch>' \
     'Without --limit, the wrapper adds --limit 1 --concurrency 1.' \
     'A bounded pilot accepts at most --limit 100.' \
     'A full pass requires: --full --resume [--concurrency N]'
@@ -39,6 +42,11 @@ source "$ENV_FILE"
 set +a
 set -u
 
+# Code provenance must come from this job's launch command, never from a
+# potentially stale value in the persistent deployment environment file.
+RAG_CODE_COMMIT=$LAUNCH_CODE_COMMIT
+RAG_CODE_BRANCH=$LAUNCH_CODE_BRANCH
+
 : "${CONDA_EXTRACT_ENV:=civic-rag-extract}"
 : "${QWEN_MODEL_PATH:=$DEFAULT_QWEN_MODEL_PATH}"
 : "${QWEN_SERVED_MODEL_NAME:=Qwen3-30B-A3B}"
@@ -55,10 +63,27 @@ set -u
 : "${RAG_INPUT_SHA256:=1b778548b618de5f051e749232e47648323979898397588ac79b53d2123aac0c}"
 : "${RAG_INPUT_SIZE_BYTES:=655769345}"
 
+[[ $RAG_CODE_COMMIT =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]] || \
+  die "RAG_CODE_COMMIT must be supplied by the launch command as a full lowercase 40- or 64-character hexadecimal commit"
+[[ ${#RAG_CODE_BRANCH} -le 255 && \
+  $RAG_CODE_BRANCH =~ ^[A-Za-z0-9_][A-Za-z0-9._/-]*$ && \
+  $RAG_CODE_BRANCH != HEAD && \
+  $RAG_CODE_BRANCH != *".."* && \
+  $RAG_CODE_BRANCH != *"//"* && \
+  $RAG_CODE_BRANCH != *"@{"* && \
+  $RAG_CODE_BRANCH != */.* && \
+  $RAG_CODE_BRANCH != *.lock/* && \
+  $RAG_CODE_BRANCH != */ && \
+  $RAG_CODE_BRANCH != *. && \
+  $RAG_CODE_BRANCH != *.lock ]] || \
+  die "RAG_CODE_BRANCH must be supplied by the launch command as a safe non-empty branch name"
+
 export CONDA_EXTRACT_ENV
 export QWEN_MODEL_PATH
 export QWEN_SERVED_MODEL_NAME
 export QWEN_MODEL_FINGERPRINT_SHA256
+export RAG_CODE_COMMIT
+export RAG_CODE_BRANCH
 export HF_HUB_OFFLINE=1
 export HF_HUB_DISABLE_TELEMETRY=1
 export TRANSFORMERS_OFFLINE=1
@@ -94,7 +119,6 @@ fi
   die "listener ownership verifier is missing: $VERIFY_LISTENER_OWNER"
 command -v curl >/dev/null 2>&1 || die "curl is required for vLLM health checks"
 command -v conda >/dev/null 2>&1 || die "conda is not available on PATH"
-command -v git >/dev/null 2>&1 || die "git is not available on PATH"
 command -v realpath >/dev/null 2>&1 || die "realpath is required for path validation"
 command -v setsid >/dev/null 2>&1 || \
   die "setsid is required so all vLLM and extraction subprocesses can be cleaned up"
@@ -220,15 +244,75 @@ if [[ $config_path != /* ]]; then
   config_path=$PROJECT_ROOT/$config_path
 fi
 
-git_commit=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null || printf unknown)
-git_branch=$(git -C "$PROJECT_ROOT" symbolic-ref --quiet --short HEAD 2>/dev/null || printf detached)
-mapfile -t git_changes < <(
-  git -C "$PROJECT_ROOT" status --porcelain=v1 --untracked-files=normal 2>/dev/null
-)
-[[ $git_commit =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]] || \
-  die "repository HEAD is not a valid Git commit"
-((${#git_changes[@]} == 0)) || die "repository worktree must be clean before extraction"
-export RAG_CODE_COMMIT=$git_commit
+git_commit=$RAG_CODE_COMMIT
+git_branch=$RAG_CODE_BRANCH
+git_runtime_available=false
+git_commit_verified=false
+git_branch_verified=false
+git_worktree_verified=false
+git_worktree_changes=unknown
+if command -v git >/dev/null 2>&1 && git --version >/dev/null 2>&1; then
+  git_runtime_available=true
+  if checked_git_root=$(git -C "$PROJECT_ROOT" rev-parse --show-toplevel 2>/dev/null); then
+    if ! checked_git_root=$(cd -P -- "$checked_git_root" && pwd -P); then
+      die "git is available but its repository root could not be resolved"
+    fi
+    if [[ $checked_git_root != "$PROJECT_ROOT" ]]; then
+      if [[ -e $PROJECT_ROOT/.git ]]; then
+        die "local git metadata does not resolve to the project root"
+      else
+        printf '%s\n' \
+          'WARNING: git found only ancestor repository metadata; using the explicit launch provenance without worktree verification.' \
+          >&2
+      fi
+    else
+      if ! checked_git_commit=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null); then
+        die "git is available but the repository HEAD could not be read"
+      fi
+      [[ $checked_git_commit =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]] || \
+        die "repository HEAD is not a valid Git commit"
+      [[ $checked_git_commit == "$git_commit" ]] || \
+        die "RAG_CODE_COMMIT does not match the checked-out repository HEAD"
+      git_commit_verified=true
+
+      if ! checked_git_ref=$(
+        git -C "$PROJECT_ROOT" symbolic-ref --quiet HEAD 2>/dev/null
+      ); then
+        die "repository HEAD must be attached to the declared branch"
+      fi
+      [[ $checked_git_ref == refs/heads/* ]] || \
+        die "repository HEAD must reference a local branch under refs/heads"
+      checked_git_branch=${checked_git_ref#refs/heads/}
+      [[ $checked_git_branch == "$git_branch" ]] || \
+        die "RAG_CODE_BRANCH does not match the checked-out repository branch"
+      git_branch_verified=true
+
+      if ! git_status=$(
+        git -C "$PROJECT_ROOT" status --porcelain=v1 --untracked-files=normal 2>/dev/null
+      ); then
+        die "git is available but the repository worktree status could not be read"
+      fi
+      git_changes=()
+      if [[ -n $git_status ]]; then
+        mapfile -t git_changes <<< "$git_status"
+      fi
+      git_worktree_changes=${#git_changes[@]}
+      ((git_worktree_changes == 0)) || \
+        die "repository worktree must be clean before extraction"
+      git_worktree_verified=true
+    fi
+  elif [[ -e $PROJECT_ROOT/.git ]]; then
+    die "git metadata exists, but git could not inspect the project worktree"
+  else
+    printf '%s\n' \
+      'WARNING: this runtime has git but no repository metadata; using the explicit launch provenance without worktree verification.' \
+      >&2
+  fi
+else
+  printf '%s\n' \
+    'WARNING: git is unavailable on this runtime; using the explicit launch provenance without verifying the H100 worktree.' \
+    >&2
+fi
 
 umask 077
 mkdir -p -- "$RAG_JOB_LOG_DIR"
@@ -419,7 +503,12 @@ trap 'exit 129' HUP
 printf '%s job_started\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" >> "$status_log"
 printf 'git_commit=%s\n' "$git_commit" >> "$status_log"
 printf 'git_branch=%s\n' "$git_branch" >> "$status_log"
-printf 'git_worktree_changes=%d\n' "${#git_changes[@]}" >> "$status_log"
+printf 'code_provenance_source=launch_environment\n' >> "$status_log"
+printf 'git_runtime_available=%s\n' "$git_runtime_available" >> "$status_log"
+printf 'git_commit_verified=%s\n' "$git_commit_verified" >> "$status_log"
+printf 'git_branch_verified=%s\n' "$git_branch_verified" >> "$status_log"
+printf 'git_worktree_verified=%s\n' "$git_worktree_verified" >> "$status_log"
+printf 'git_worktree_changes=%s\n' "$git_worktree_changes" >> "$status_log"
 printf 'extraction_run_id=%s\n' "$RAG_EXTRACTION_RUN_ID" >> "$status_log"
 printf 'job_lock_path=%s\n' "$RAG_JOB_LOCK_PATH" >> "$status_log"
 printf 'default_smoke=%s\n' "$default_smoke" >> "$status_log"

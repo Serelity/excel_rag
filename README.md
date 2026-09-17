@@ -22,6 +22,10 @@ cp deploy/.env.example deploy/.env
 bash deploy/create-conda-extract-env.sh
 ```
 
+Run Git operations on the login/test node. Record the clean checkout's literal
+`git rev-parse HEAD` and `git symbolic-ref --quiet --short HEAD` output for the
+H100 launch command; do not persist these release-specific values in `.env`.
+
 Do not run the H100 runtime gate in a CPU or V100 setup session. Use a short
 first H100 task to compute the model fingerprint with
 `deploy/model-fingerprint.py`. Put it into the persistent `.env` from the test
@@ -39,12 +43,15 @@ broken links before hashing the sorted model files.
 Run the read-only server diagnostic after configuring `.env`:
 
 ```bash
-bash deploy/server-preflight.sh
+RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' \
+  bash deploy/server-preflight.sh
 ```
 
-It reports platform, Git, Conda, GPU, memory, disk/mounts, persistent-path
-candidates, sanitized-input size/SHA256, and safe model metadata. It does not
-decode ticket records, print prompts, run inference, or access a model hub.
+It reports platform, declared code provenance, optional local Git verification,
+Conda, GPU, memory, disk/mounts, persistent-path candidates, sanitized-input
+size/SHA256, and safe model metadata. It does not decode ticket records, print
+prompts, run inference, or access a model hub. Git is not required in the H100
+runtime.
 
 ## H100 deployment
 
@@ -69,11 +76,20 @@ With no arguments, the job deliberately processes only one record at
 concurrency one. Submit each command below as a separate H100 platform task,
 inspect its result, and only then continue to the next gate:
 
+If the standard output paths already contain results from an older code or
+prompt contract, first archive `problem_chunks.jsonl`, its `.errors.jsonl`, and
+its `.manifest.json` together in a new, non-reused directory. The first command
+below intentionally starts a fresh one-record run. After it has produced one
+compatible terminal result, do not run it again; continue with the 19-record
+resume command. If the task fails before that point, inspect the manifest and
+counts using the runbook before choosing overwrite or resume. Never resume
+across a changed commit or prompt version.
+
 ```bash
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh --resume --limit 19 --concurrency 2
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh --resume --limit 80 --concurrency 4
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh --full --resume --concurrency 4
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh --overwrite
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh --resume --limit 19 --concurrency 2
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh --resume --limit 80 --concurrency 4
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh --full --resume --concurrency 4
 ```
 
 `--limit` counts newly submitted rows, so the first three commands produce
@@ -83,15 +99,19 @@ non-full invocation rejects a limit above 100 to prevent an accidental full
 run disguised as a pilot.
 
 Each invocation takes the shared Stage A lock and verifies the declared local
-model fingerprint before loading the GPU. Logs and a status report containing
-the Git commit, extraction run ID, final output counts, and exit code are
-written under `RAG_JOB_LOG_DIR`. The result manifest binds resume to that Git
-commit. Runtime health failures stop the extraction instead of quarantining the
-remaining file. vLLM request and access logging are disabled, and the wrapper
-does not record CLI arguments, prompts, or ticket content. The health monitor
-also verifies that the loopback listener remains attributable to the vLLM
-process group and session created by that job. Stage A clears inherited proxy
-variables so local model requests cannot be routed through a platform proxy.
+model fingerprint before loading the GPU. After early launch validation passes,
+logs and a status report containing the declared commit/branch, local Git
+verification state, extraction run ID, final output counts, and exit code are
+written under `RAG_JOB_LOG_DIR`. When Git and repository metadata are available,
+the wrapper also requires the declaration to match a clean checkout. Otherwise
+it records the worktree as unverified. The result manifest binds resume to the
+declared commit. Runtime health failures stop the extraction instead of
+quarantining the remaining file. vLLM request and access logging are disabled,
+and the wrapper does not record CLI arguments, prompts, or ticket content. The
+health monitor also verifies that the loopback listener remains attributable to
+the vLLM process group and session created by that job. Stage A clears inherited
+proxy variables so local model requests cannot be routed through a platform
+proxy.
 
 Successful chunks go to `data/processed/problem_chunks.jsonl`. Failed records
 go to `data/processed/problem_chunks.errors.jsonl` without source text. Exit

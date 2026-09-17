@@ -4,9 +4,11 @@ set -uo pipefail
 # Keep secrets from deploy/.env out of traces even if the caller used bash -x.
 { set +x; } 2>/dev/null
 
-PROJECT_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+PROJECT_ROOT=$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 ENV_FILE=${RAG_ENV_FILE:-$PROJECT_ROOT/deploy/.env}
 DEFAULT_QWEN_MODEL_PATH=$PROJECT_ROOT/models/Qwen3-30B-A3B
+readonly LAUNCH_CODE_COMMIT=${RAG_CODE_COMMIT-}
+readonly LAUNCH_CODE_BRANCH=${RAG_CODE_BRANCH-}
 
 failures=0
 warnings=0
@@ -106,6 +108,11 @@ else
   warn "deployment settings not found at $ENV_FILE; using diagnostic defaults"
 fi
 
+# Provenance is launch-scoped. Do not accept values that may have been left in
+# the persistent .env by an older checkout.
+RAG_CODE_COMMIT=$LAUNCH_CODE_COMMIT
+RAG_CODE_BRANCH=$LAUNCH_CODE_BRANCH
+
 QWEN_MODEL_PATH=${QWEN_MODEL_PATH:-$DEFAULT_QWEN_MODEL_PATH}
 QWEN_SERVED_MODEL_NAME=${QWEN_SERVED_MODEL_NAME:-Qwen3-30B-A3B}
 CONDA_EXTRACT_ENV=${CONDA_EXTRACT_ENV:-civic-rag-extract}
@@ -145,33 +152,121 @@ fi
 printf 'slurm_job_id=%s\n' "${SLURM_JOB_ID:-not-set}"
 printf 'cuda_visible_devices=%s\n' "${CUDA_VISIBLE_DEVICES:-not-set}"
 
-section "Git"
-if command -v git >/dev/null 2>&1; then
-  printf 'git_version=%s\n' "$(git --version)"
-  if git -C "$PROJECT_ROOT" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    git_head=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null || printf unknown)
-    git_branch=$(git -C "$PROJECT_ROOT" symbolic-ref --quiet --short HEAD 2>/dev/null || printf detached)
-    mapfile -t git_changes < <(git -C "$PROJECT_ROOT" status --porcelain=v1 --untracked-files=normal 2>/dev/null)
-    printf 'repository_root=%s\n' "$PROJECT_ROOT"
-    printf 'git_head=%s\n' "$git_head"
-    printf 'git_branch=%s\n' "$git_branch"
-    printf 'git_worktree_changes=%d\n' "${#git_changes[@]}"
-    if ((${#git_changes[@]} == 0)); then
-      pass "Git worktree is clean"
-    else
-      fail "Git worktree has tracked or untracked changes"
-    fi
-    if git -C "$PROJECT_ROOT" remote get-url origin >/dev/null 2>&1; then
-      pass "Git origin is configured (URL suppressed)"
-    else
-      warn "Git origin is not configured"
-    fi
-  else
-    fail "$PROJECT_ROOT is not a Git worktree"
-  fi
+section "Code provenance"
+code_provenance_valid=yes
+if [[ $RAG_CODE_COMMIT =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]; then
+  printf 'declared_git_commit=%s\n' "$RAG_CODE_COMMIT"
+  pass "launch command supplied a full lowercase commit"
 else
-  fail "git is not available on PATH"
+  fail "RAG_CODE_COMMIT must be supplied by the launch command as a full lowercase 40- or 64-character hexadecimal commit"
+  code_provenance_valid=no
 fi
+if [[ ${#RAG_CODE_BRANCH} -le 255 && \
+  $RAG_CODE_BRANCH =~ ^[A-Za-z0-9_][A-Za-z0-9._/-]*$ && \
+  $RAG_CODE_BRANCH != HEAD && \
+  $RAG_CODE_BRANCH != *".."* && \
+  $RAG_CODE_BRANCH != *"//"* && \
+  $RAG_CODE_BRANCH != *"@{"* && \
+  $RAG_CODE_BRANCH != */.* && \
+  $RAG_CODE_BRANCH != *.lock/* && \
+  $RAG_CODE_BRANCH != */ && \
+  $RAG_CODE_BRANCH != *. && \
+  $RAG_CODE_BRANCH != *.lock ]]; then
+  printf 'declared_git_branch=%s\n' "$RAG_CODE_BRANCH"
+  pass "launch command supplied a safe branch name"
+else
+  fail "RAG_CODE_BRANCH must be supplied by the launch command as a safe non-empty branch name"
+  code_provenance_valid=no
+fi
+
+git_runtime_available=false
+git_commit_verified=false
+git_branch_verified=false
+git_worktree_verified=false
+git_worktree_changes=unknown
+if command -v git >/dev/null 2>&1 && git --version >/dev/null 2>&1; then
+  git_runtime_available=true
+  printf 'git_version=%s\n' "$(git --version)"
+  if git_root=$(git -C "$PROJECT_ROOT" rev-parse --show-toplevel 2>/dev/null); then
+    if git_root=$(cd -P -- "$git_root" && pwd -P); then
+      printf 'repository_root=%s\n' "$git_root"
+    else
+      fail "Git repository root could not be resolved"
+      git_root=
+    fi
+    if [[ -n $git_root && $git_root != "$PROJECT_ROOT" ]]; then
+      if [[ -e $PROJECT_ROOT/.git ]]; then
+        fail "local Git metadata does not resolve to the project root"
+      else
+        warn "git found only ancestor repository metadata; project worktree checks are unverified"
+      fi
+    elif [[ -n $git_root ]]; then
+      if git_head=$(git -C "$PROJECT_ROOT" rev-parse HEAD 2>/dev/null); then
+        printf 'git_head=%s\n' "$git_head"
+        if [[ $code_provenance_valid == yes && $git_head == "$RAG_CODE_COMMIT" ]]; then
+          git_commit_verified=true
+          pass "declared commit matches repository HEAD"
+        elif [[ $code_provenance_valid == yes ]]; then
+          fail "RAG_CODE_COMMIT does not match repository HEAD"
+        fi
+      else
+        fail "Git repository HEAD could not be read"
+      fi
+
+      if git_ref=$(git -C "$PROJECT_ROOT" symbolic-ref --quiet HEAD 2>/dev/null); then
+        if [[ $git_ref == refs/heads/* ]]; then
+          git_branch=${git_ref#refs/heads/}
+          printf 'git_branch=%s\n' "$git_branch"
+          if [[ $code_provenance_valid == yes && $git_branch == "$RAG_CODE_BRANCH" ]]; then
+            git_branch_verified=true
+            pass "declared branch matches the checked-out repository branch"
+          elif [[ $code_provenance_valid == yes ]]; then
+            fail "RAG_CODE_BRANCH does not match the checked-out repository branch"
+          fi
+        else
+          fail "Git repository HEAD does not reference a local branch under refs/heads"
+        fi
+      else
+        fail "Git repository is detached or its branch could not be read"
+      fi
+
+      if git_status=$(
+        git -C "$PROJECT_ROOT" status --porcelain=v1 --untracked-files=normal 2>/dev/null
+      ); then
+        git_changes=()
+        if [[ -n $git_status ]]; then
+          mapfile -t git_changes <<< "$git_status"
+        fi
+        git_worktree_changes=${#git_changes[@]}
+        if ((git_worktree_changes == 0)); then
+          git_worktree_verified=true
+          pass "Git worktree is clean"
+        else
+          fail "Git worktree has tracked or untracked changes"
+        fi
+      else
+        fail "Git worktree status could not be read"
+      fi
+      if git -C "$PROJECT_ROOT" remote get-url origin >/dev/null 2>&1; then
+        pass "Git origin is configured (URL suppressed)"
+      else
+        warn "Git origin is not configured"
+      fi
+    fi
+  elif [[ -e $PROJECT_ROOT/.git ]]; then
+    fail "Git metadata exists, but Git could not inspect the project worktree"
+  elif [[ $code_provenance_valid == yes ]]; then
+    warn "project has no local Git metadata; accepting the launch declaration without worktree verification"
+  fi
+elif [[ $code_provenance_valid == yes ]]; then
+  warn "git is unavailable on this runtime; accepting the launch declaration without worktree verification"
+fi
+printf 'code_provenance_source=launch_environment\n'
+printf 'git_runtime_available=%s\n' "$git_runtime_available"
+printf 'git_commit_verified=%s\n' "$git_commit_verified"
+printf 'git_branch_verified=%s\n' "$git_branch_verified"
+printf 'git_worktree_verified=%s\n' "$git_worktree_verified"
+printf 'git_worktree_changes=%s\n' "$git_worktree_changes"
 
 section "Conda"
 if command -v conda >/dev/null 2>&1; then

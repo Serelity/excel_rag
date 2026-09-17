@@ -14,6 +14,7 @@ from types import SimpleNamespace
 import pytest
 
 REQUIRED_COMMANDS = ("bash", "flock", "git", "ps", "setsid", "sha256sum")
+TEST_CODE_BRANCH = "test/h100-stage-a"
 
 
 def _write_executable(path: Path, content: str) -> None:
@@ -21,13 +22,14 @@ def _write_executable(path: Path, content: str) -> None:
     path.chmod(0o755)
 
 
-def _git(project: Path, *arguments: str) -> None:
-    subprocess.run(
+def _git(project: Path, *arguments: str) -> str:
+    result = subprocess.run(
         ["git", "-C", str(project), *arguments],
         check=True,
         capture_output=True,
         text=True,
     )
+    return result.stdout.strip()
 
 
 def _group_members(pgid: int) -> list[int]:
@@ -78,7 +80,9 @@ def job_fixture(tmp_path):
     fake_bin.mkdir()
     external.mkdir()
     real_setsid = shutil.which("setsid")
+    real_git = shutil.which("git")
     assert real_setsid is not None
+    assert real_git is not None
     shutil.copy2(source_root / "deploy" / "run-extraction-job.sh", deploy)
     _write_executable(
         deploy / "verify-listener-owner.py",
@@ -147,6 +151,22 @@ def job_fixture(tmp_path):
           ' _ "$@"
         fi
         exec "$REAL_SETSID_PATH" "$@"
+        """,
+    )
+    _write_executable(
+        fake_bin / "git",
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+        if [[ ${FAKE_GIT_MODE:-real} == unavailable ]]; then
+          exit 127
+        fi
+        if [[ ${FAKE_GIT_MODE:-real} == status_failure ]]; then
+          for argument in "$@"; do
+            [[ $argument == status ]] && exit 74
+          done
+        fi
+        exec "$REAL_GIT_PATH" "$@"
         """,
     )
 
@@ -291,13 +311,17 @@ def job_fixture(tmp_path):
     _git(project, "init", "-q")
     _git(project, "config", "user.email", "tests@example.invalid")
     _git(project, "config", "user.name", "Test Runner")
+    _git(project, "switch", "-q", "-c", TEST_CODE_BRANCH)
     _git(project, "add", ".")
     _git(project, "commit", "-qm", "fixture")
+    git_commit = _git(project, "rev-parse", "HEAD")
 
     environment = os.environ.copy()
     environment.update(
         {
             "PATH": f"{fake_bin}{os.pathsep}{environment['PATH']}",
+            "RAG_CODE_COMMIT": git_commit,
+            "RAG_CODE_BRANCH": TEST_CODE_BRANCH,
             "RAG_ENV_FILE": str(env_file),
             "FAKE_CONFIG_INPUT": str(input_path),
             "FAKE_CONFIG_OUTPUT": str(output_path),
@@ -310,13 +334,16 @@ def job_fixture(tmp_path):
             "FAKE_SETSID_STARTED": str(setsid_started),
             "FAKE_SETSID_GROUP_RECORD": str(setsid_group_record),
             "REAL_SETSID_PATH": real_setsid,
+            "REAL_GIT_PATH": real_git,
         }
     )
     fixture = SimpleNamespace(
         project=project,
         script=deploy / "run-extraction-job.sh",
+        env_file=env_file,
         log_dir=log_dir,
         environment=environment,
+        git_commit=git_commit,
         vllm_pid_record=vllm_pid_record,
         extraction_pid_record=extraction_pid_record,
         extraction_child_record=extraction_child_record,
@@ -333,9 +360,14 @@ def job_fixture(tmp_path):
 def _run_job(
     fixture,
     *arguments: str,
-    **environment_overrides: str,
+    **environment_overrides: str | None,
 ) -> subprocess.CompletedProcess[str]:
-    environment = fixture.environment | environment_overrides
+    environment = fixture.environment.copy()
+    for name, value in environment_overrides.items():
+        if value is None:
+            environment.pop(name, None)
+        else:
+            environment[name] = value
     return subprocess.run(
         ["bash", str(fixture.script), *arguments],
         cwd=fixture.project,
@@ -350,6 +382,204 @@ def _status_text(fixture) -> str:
     status_files = list(fixture.log_dir.glob("job-*.status"))
     assert len(status_files) == 1
     return status_files[0].read_text(encoding="utf-8")
+
+
+def _assert_status_value(status: str, key: str, value: str) -> None:
+    assert f"{key}={value}" in status.splitlines()
+
+
+def test_gitless_runtime_uses_declared_code_metadata(job_fixture) -> None:
+    result = _run_job(job_fixture, FAKE_GIT_MODE="unavailable")
+
+    assert result.returncode == 0, result.stderr
+    assert "git is unavailable on this runtime" in result.stderr
+    status = _status_text(job_fixture)
+    _assert_status_value(status, "git_commit", job_fixture.git_commit)
+    _assert_status_value(status, "git_branch", TEST_CODE_BRANCH)
+    _assert_status_value(status, "code_provenance_source", "launch_environment")
+    _assert_status_value(status, "git_runtime_available", "false")
+    _assert_status_value(status, "git_commit_verified", "false")
+    _assert_status_value(status, "git_branch_verified", "false")
+    _assert_status_value(status, "git_worktree_verified", "false")
+    _assert_status_value(status, "git_worktree_changes", "unknown")
+    assert job_fixture.vllm_pid_record.exists()
+    assert job_fixture.extraction_pid_record.exists()
+
+
+def test_git_checkout_verifies_declared_code_metadata(job_fixture) -> None:
+    result = _run_job(job_fixture)
+
+    assert result.returncode == 0, result.stderr
+    status = _status_text(job_fixture)
+    _assert_status_value(status, "git_runtime_available", "true")
+    _assert_status_value(status, "git_commit_verified", "true")
+    _assert_status_value(status, "git_branch_verified", "true")
+    _assert_status_value(status, "git_worktree_verified", "true")
+    _assert_status_value(status, "git_worktree_changes", "0")
+
+
+@pytest.mark.parametrize(
+    "commit",
+    [None, "", "a" * 39, "A" * 40, "g" * 40, "a" * 65],
+)
+def test_job_rejects_invalid_declared_code_commit(job_fixture, commit) -> None:
+    result = _run_job(job_fixture, RAG_CODE_COMMIT=commit)
+
+    assert result.returncode == 2
+    assert "RAG_CODE_COMMIT" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_gitless_runtime_accepts_full_sha256_git_object_id(job_fixture) -> None:
+    result = _run_job(
+        job_fixture,
+        FAKE_GIT_MODE="unavailable",
+        RAG_CODE_COMMIT="b" * 64,
+    )
+
+    assert result.returncode == 0, result.stderr
+    _assert_status_value(_status_text(job_fixture), "git_commit", "b" * 64)
+
+
+@pytest.mark.parametrize("branch", ["_release", "release./child"])
+def test_gitless_runtime_accepts_safe_git_branch_names(job_fixture, branch) -> None:
+    result = _run_job(
+        job_fixture,
+        FAKE_GIT_MODE="unavailable",
+        RAG_CODE_BRANCH=branch,
+    )
+
+    assert result.returncode == 0, result.stderr
+    _assert_status_value(_status_text(job_fixture), "git_branch", branch)
+
+
+@pytest.mark.parametrize(
+    "branch",
+    [
+        None,
+        "",
+        "bad\nbranch",
+        "/leading",
+        "trailing/",
+        "HEAD",
+        "bad..branch",
+        "bad@{ref",
+        "release/.hidden",
+        "release.lock/child",
+    ],
+)
+def test_job_rejects_invalid_declared_code_branch(job_fixture, branch) -> None:
+    result = _run_job(job_fixture, RAG_CODE_BRANCH=branch)
+
+    assert result.returncode == 2
+    assert "RAG_CODE_BRANCH" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_job_rejects_declared_commit_mismatch(job_fixture) -> None:
+    result = _run_job(job_fixture, RAG_CODE_COMMIT="f" * 40)
+
+    assert result.returncode == 2
+    assert "RAG_CODE_COMMIT does not match" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_job_rejects_declared_branch_mismatch(job_fixture) -> None:
+    result = _run_job(job_fixture, RAG_CODE_BRANCH="other/h100-stage-a")
+
+    assert result.returncode == 2
+    assert "RAG_CODE_BRANCH does not match" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_job_rejects_detached_head_as_a_verified_branch(job_fixture) -> None:
+    _git(job_fixture.project, "checkout", "--detach", "-q")
+
+    result = _run_job(job_fixture, RAG_CODE_BRANCH="detached")
+
+    assert result.returncode == 2
+    assert "repository HEAD must be attached" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_job_rejects_symbolic_head_outside_local_branches(job_fixture) -> None:
+    _git(job_fixture.project, "tag", "symbolic-target")
+    _git(job_fixture.project, "symbolic-ref", "HEAD", "refs/tags/symbolic-target")
+
+    result = _run_job(job_fixture, RAG_CODE_BRANCH="symbolic-target")
+
+    assert result.returncode == 2
+    assert "HEAD must reference a local branch" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_ancestor_git_repository_is_not_used_for_verification(job_fixture) -> None:
+    shutil.rmtree(job_fixture.project / ".git")
+    parent = job_fixture.project.parent
+    _git(parent, "init", "-q")
+    _git(parent, "config", "user.email", "tests@example.invalid")
+    _git(parent, "config", "user.name", "Test Runner")
+    _git(parent, "switch", "-q", "-c", "unrelated/parent")
+    sentinel = parent / "parent-sentinel.txt"
+    sentinel.write_text("unrelated parent repository\n", encoding="utf-8")
+    _git(parent, "add", sentinel.name)
+    _git(parent, "commit", "-qm", "parent fixture")
+
+    result = _run_job(job_fixture)
+
+    assert result.returncode == 0, result.stderr
+    assert "git found only ancestor repository metadata" in result.stderr
+    status = _status_text(job_fixture)
+    _assert_status_value(status, "git_runtime_available", "true")
+    _assert_status_value(status, "git_commit_verified", "false")
+    _assert_status_value(status, "git_branch_verified", "false")
+    _assert_status_value(status, "git_worktree_verified", "false")
+    _assert_status_value(status, "git_worktree_changes", "unknown")
+
+
+def test_job_rejects_dirty_git_worktree(job_fixture) -> None:
+    tracked_file = job_fixture.project / "deploy" / "run-vllm.sh"
+    tracked_file.write_text(
+        tracked_file.read_text(encoding="utf-8") + "\n# dirty test\n",
+        encoding="utf-8",
+    )
+
+    result = _run_job(job_fixture)
+
+    assert result.returncode == 2
+    assert "repository worktree must be clean" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_job_fails_closed_when_git_status_fails(job_fixture) -> None:
+    result = _run_job(job_fixture, FAKE_GIT_MODE="status_failure")
+
+    assert result.returncode == 2
+    assert "worktree status could not be read" in result.stderr
+    assert not job_fixture.vllm_pid_record.exists()
+    assert not job_fixture.extraction_pid_record.exists()
+
+
+def test_launch_metadata_overrides_stale_environment_file(job_fixture) -> None:
+    with job_fixture.env_file.open("a", encoding="utf-8") as environment_file:
+        environment_file.write(f"RAG_CODE_COMMIT={'e' * 40}\n")
+        environment_file.write("RAG_CODE_BRANCH=stale/branch\n")
+
+    result = _run_job(job_fixture, FAKE_GIT_MODE="unavailable")
+
+    assert result.returncode == 0, result.stderr
+    status = _status_text(job_fixture)
+    _assert_status_value(status, "git_commit", job_fixture.git_commit)
+    _assert_status_value(status, "git_branch", TEST_CODE_BRANCH)
+    assert f"git_commit={'e' * 40}" not in status.splitlines()
+    assert "git_branch=stale/branch" not in status.splitlines()
 
 
 @pytest.mark.parametrize("extraction_rc", [0, 1, 2])
@@ -611,3 +841,119 @@ def test_termination_during_setsid_handshake_cleans_the_new_session(
             process.kill()
             process.communicate(timeout=5)
         _terminate_group_from_record(job_fixture.setsid_group_record)
+
+
+def test_production_extraction_launcher_runs_without_git(tmp_path) -> None:
+    source_root = Path(__file__).parents[1]
+    project = tmp_path / "project"
+    deploy = project / "deploy"
+    runtime_bin = tmp_path / "runtime-bin"
+    deploy.mkdir(parents=True)
+    runtime_bin.mkdir()
+    shutil.copy2(source_root / "deploy" / "run-extraction.sh", deploy)
+
+    for command in ("bash", "dirname", "env"):
+        executable = shutil.which(command)
+        assert executable is not None
+        (runtime_bin / command).symlink_to(executable)
+
+    marker = tmp_path / "conda-invocation.txt"
+    _write_executable(
+        runtime_bin / "conda",
+        """
+        #!/usr/bin/env bash
+        set -euo pipefail
+        printf 'commit=%s\nbranch=%s\nargs=%s\n' \
+          "$RAG_CODE_COMMIT" "$RAG_CODE_BRANCH" "$*" > "$FAKE_CONDA_MARKER"
+        """,
+    )
+    env_file = deploy / ".env"
+    env_file.write_text(
+        "".join(
+            (
+                "CONDA_EXTRACT_ENV=fake-extract\n",
+                f"QWEN_MODEL_FINGERPRINT_SHA256=sha256:{'a' * 64}\n",
+                "QWEN_MODELSCOPE_REPO_ID=Qwen/Qwen3-30B-A3B\n",
+                "QWEN_MODEL_REVISION=test-revision\n",
+                f"RAG_CODE_COMMIT={'e' * 40}\n",
+                "RAG_CODE_BRANCH=stale/branch\n",
+            )
+        ),
+        encoding="utf-8",
+    )
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "PATH": str(runtime_bin),
+            "RAG_ENV_FILE": str(env_file),
+            "RAG_JOB_WRAPPER_ACTIVE": "1",
+            "RAG_CODE_COMMIT": "d" * 40,
+            "RAG_CODE_BRANCH": "release/h100-stage-a",
+            "FAKE_CONDA_MARKER": str(marker),
+        }
+    )
+
+    result = subprocess.run(
+        [str(runtime_bin / "bash"), str(deploy / "run-extraction.sh"), "--limit", "1"],
+        cwd=project,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 0, result.stderr
+    invocation = marker.read_text(encoding="utf-8")
+    assert f"commit={'d' * 40}" in invocation.splitlines()
+    assert "branch=release/h100-stage-a" in invocation.splitlines()
+    assert "python main.py --limit 1" in invocation
+
+
+def test_preflight_treats_gitless_code_verification_as_a_warning(tmp_path) -> None:
+    source_root = Path(__file__).parents[1]
+    project = tmp_path / "project"
+    deploy = project / "deploy"
+    fake_bin = tmp_path / "bin"
+    deploy.mkdir(parents=True)
+    fake_bin.mkdir()
+    shutil.copy2(source_root / "deploy" / "server-preflight.sh", deploy)
+    _write_executable(
+        fake_bin / "git",
+        """
+        #!/usr/bin/env bash
+        exit 127
+        """,
+    )
+    _write_executable(
+        fake_bin / "conda",
+        """
+        #!/usr/bin/env bash
+        exit 1
+        """,
+    )
+    environment = os.environ.copy()
+    environment.update(
+        {
+            "PATH": f"{fake_bin}{os.pathsep}{environment['PATH']}",
+            "RAG_CODE_COMMIT": "c" * 40,
+            "RAG_CODE_BRANCH": "release/h100-stage-a",
+        }
+    )
+
+    result = subprocess.run(
+        ["bash", str(deploy / "server-preflight.sh")],
+        cwd=project,
+        env=environment,
+        capture_output=True,
+        text=True,
+        timeout=10,
+    )
+
+    assert result.returncode == 1  # Other intentionally absent preflight assets fail.
+    assert "WARN: git is unavailable on this runtime" in result.stdout
+    assert "FAIL: git is not available" not in result.stdout
+    assert "git_runtime_available=false" in result.stdout.splitlines()
+    assert "git_commit_verified=false" in result.stdout.splitlines()
+    assert "git_branch_verified=false" in result.stdout.splitlines()
+    assert "git_worktree_verified=false" in result.stdout.splitlines()
+    assert "git_worktree_changes=unknown" in result.stdout.splitlines()

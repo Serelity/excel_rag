@@ -37,11 +37,11 @@ source of loader errors and is outside this tested dependency layout.
 Package versions do not prove model or binary identity. Record model source
 revisions, strong model content fingerprints, the Qdrant archive checksum,
 `nvidia-smi`, `conda list`, `pip freeze --all`, and the final config. The
-extraction manifest records the exact Git commit, served alias, source
-revision, and declared `QWEN_MODEL_FINGERPRINT_SHA256`. Resume refuses to mix
-records across commits or model/prompt contracts. The launch wrappers recompute
-the fingerprint before GPU startup; a revision label alone is not an identity
-check.
+extraction manifest records the full commit declared by the launch command,
+served alias, source revision, and declared `QWEN_MODEL_FINGERPRINT_SHA256`.
+Resume refuses to mix records across commits or model/prompt contracts. The
+launch wrappers recompute the model fingerprint before GPU startup; a revision
+label alone is not an identity check.
 
 The repository has passed local unit and static checks. Real H100 throughput,
 vLLM structured-output behavior, CUDA compatibility, and full Qdrant capacity
@@ -86,18 +86,21 @@ Initial planning values, to be replaced with target-host measurements:
 - A practical starting target is 100 GiB free disk after models and packages
   are staged; 200 GiB is safer when retaining snapshots and benchmark runs.
 
-## 3. Pull code and configure the persistent checkout
+## 3. Prepare code on the Git-capable login node
 
-The server only pulls code from GitHub; it does not push code, logs, data, or
-results. For a first checkout, replace `<BRANCH>` with the branch supplied for
-the run:
+Run every command in this section on the login/test node against the persistent
+project tree that the H100 task will mount. The H100 runtime itself needs
+neither a Git executable nor local `.git` metadata. The server only pulls code
+from GitHub; it does not push code, logs, data, or results. For a first checkout,
+replace `<BRANCH>` with the branch supplied for the run:
 
 ```bash
 cd <PERSISTENT_PARENT>
 git clone --branch <BRANCH> https://github.com/Serelity/excel_rag.git excel_rag
 cd excel_rag
-git status --short --branch
-git log -1 --format='commit=%H%nsubject=%s'
+git status --porcelain=v1 --untracked-files=normal
+git rev-parse HEAD
+git symbolic-ref --quiet --short HEAD
 ```
 
 For an existing checkout, update without creating a server-side merge commit:
@@ -107,17 +110,29 @@ cd <SERVER_REPO>
 git fetch origin
 git switch <BRANCH>
 git pull --ff-only origin <BRANCH>
-git status --short --branch
-git log -1 --format='commit=%H%nsubject=%s'
+git status --porcelain=v1 --untracked-files=normal
+git rev-parse HEAD
+git symbolic-ref --quiet --short HEAD
 ```
 
-Do not pull or edit tracked files between the 1/20/100/full tasks. The wrapper
-requires a clean worktree, and the manifest rejects resume under a different
-commit. Finish or deliberately abandon the current output before changing code.
-Root-level scheduler-generated `*.out`, `*.err`, and `script_*.sh` files are
-ignored because the platform creates them before the launch command starts.
-Keep personal launch scripts outside the checkout; they remain visible to the
-clean-worktree gate.
+The status command must print nothing. Copy the literal full commit and branch
+outputs into `RAG_CODE_COMMIT` and `RAG_CODE_BRANCH` in every H100 launch command
+below. Do not use command substitution in the platform command and do not put
+these release-specific values in `.env`. If the login and H100 nodes do not
+mount the same persistent tree, stage that exact prepared tree through the
+site's approved channel.
+
+Do not pull or edit tracked files, or change the two declarations, between the
+1/20/100/full tasks. The manifest rejects resume under a different declared
+commit. When Git is available in a runtime checkout, the wrapper additionally
+requires the declaration to match the current branch, commit, and clean
+worktree. Without Git, it records those local checks as unverified. Finish or
+deliberately abandon the current output before changing code. Root-level
+scheduler-generated `*.out`, `*.err`, and `script_*.sh` files are ignored
+because the platform creates them before the launch command starts. Move
+personal untracked launchers such as `run_extract.sh` outside the checkout so
+the login-node status check remains meaningful; use the tracked wrapper command
+below for the H100 task.
 
 The default model location is `<SERVER_REPO>/models/Qwen3-30B-A3B`. Create the
 private configuration in the persistent checkout:
@@ -199,22 +214,28 @@ output:
 
 ```bash
 cd <SERVER_REPO>
-bash deploy/server-preflight.sh
+RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' \
+  bash deploy/server-preflight.sh
 ```
 
 Preflight checks the pinned Python/CUDA/vLLM ABI, exactly one full H100, the
-clean Git checkout, persistent paths, sanitized TSV size/SHA256, and the local
-model fingerprint. It does not load Qwen3, decode a ticket, print prompts, or
-contact a model hub. Resolve every `FAIL` before starting inference.
+declared code provenance, persistent paths, sanitized TSV size/SHA256, and the
+local model fingerprint. If Git and repository metadata are available, it also
+checks the commit, branch, and clean worktree. Otherwise those checks are
+reported as unverified warnings, not failures. It does not load Qwen3, decode a
+ticket, print prompts, or contact a model hub. Resolve every `FAIL` before
+starting inference.
 
 ## 6. Stage A: single-job extraction with vLLM
 
 The paid platform needs one foreground command. The job wrapper takes an
-exclusive Stage A lock, requires a clean Git checkout, verifies the local model
-fingerprint, starts `run-vllm.sh` in a private process group, waits for
-`/health`, verifies the served alias, runs extraction, then stops only the
-processes it created. Its health monitor verifies through Linux `/proc` that
-the loopback listener remains attributable to that process group and session.
+exclusive Stage A lock, validates the explicit code declaration, verifies the
+local model fingerprint, starts `run-vllm.sh` in a private process group, waits
+for `/health`, verifies the served alias, runs extraction, then stops only the
+processes it created. When local Git inspection is possible it also verifies
+the declared commit/branch and clean worktree. Its health monitor verifies
+through Linux `/proc` that the loopback listener remains attributable to that
+process group and session.
 It aborts after consecutive runtime health failures, traps signals, and
 preserves the extraction exit code. vLLM request and access logging are
 disabled; the wrapper never records its CLI arguments, API key, prompt, or
@@ -224,19 +245,115 @@ ticket body. It clears inherited HTTP proxy variables and forces loopback into
 Submit each command below as a separate H100 task after inspecting the previous
 task's output. Every invocation starts its own vLLM, waits for readiness, runs
 the bounded extraction, and stops vLLM. With no arguments it intentionally runs
-a one-record, concurrency-one smoke test. The platform launch command is:
+a one-record, concurrency-one smoke test.
+
+Before overwriting an existing result, or after an interrupted one-record task,
+run this metadata-only check on the login node. It does not decode or print a
+ticket. `compatible=true` means the same final commit has a ready v4 manifest,
+exactly one successful output record, and zero quarantine records:
 
 ```bash
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh
+cd <SERVER_REPO>
+set -a
+. deploy/.env
+set +a
+RAG_CODE_COMMIT='<FULL_COMMIT>' conda run --no-capture-output \
+  -n "$CONDA_EXTRACT_ENV" python - <<'PY'
+import json
+import os
+from pathlib import Path
+
+output = Path("data/processed/problem_chunks.jsonl")
+quarantine = Path("data/processed/problem_chunks.errors.jsonl")
+manifest_path = Path(f"{output}.manifest.json")
+required = (output, quarantine, manifest_path)
+if not all(path.is_file() for path in required):
+    print("compatible=false reason=missing-result-file")
+    raise SystemExit(3)
+
+with manifest_path.open(encoding="utf-8") as handle:
+    manifest = json.load(handle)
+
+def line_count(path):
+    with path.open(encoding="utf-8") as handle:
+        return sum(1 for _ in handle)
+
+output_count = line_count(output)
+quarantine_count = line_count(quarantine)
+commit = manifest.get("code", {}).get("git_commit")
+prompt = manifest.get("extraction", {}).get("prompt_version")
+state = manifest.get("state")
+compatible = (
+    state == "ready"
+    and commit == os.environ["RAG_CODE_COMMIT"]
+    and prompt == "problem-extraction-v4"
+    and output_count == 1
+    and quarantine_count == 0
+)
+print(f"state={state}")
+print(f"git_commit={commit}")
+print(f"prompt_version={prompt}")
+print(f"output_records={output_count}")
+print(f"quarantine_records={quarantine_count}")
+print(f"compatible={str(compatible).lower()}")
+raise SystemExit(0 if compatible else 3)
+PY
+```
+
+If this reports `compatible=true`, skip both the archive and overwrite blocks
+and continue with the 19-record resume command. An e9be781 v4 result is not
+compatible with the later Gitless-runtime fix commit, even though its prompt is
+also v4. A result with one quarantine record intentionally reports
+`compatible=false`: the one-record quality gate requires one success and zero
+quarantine. Investigate its error category and logs, do not continue to 20, and
+only start another overwrite run after resolving the cause.
+
+If the standard paths contain the known 20-record result from commit `19bd9170`
+and prompt v3, preserve its output, quarantine, and manifest together before the
+first v4 run. This block deliberately fails rather than reuse an existing
+archive directory:
+
+```bash
+cd <SERVER_REPO>
+set -euo pipefail
+umask 077
+archive_dir=data/processed/archive/v3-20-19bd9170
+archive_files=(
+  data/processed/problem_chunks.jsonl
+  data/processed/problem_chunks.errors.jsonl
+  data/processed/problem_chunks.jsonl.manifest.json
+)
+for archive_file in "${archive_files[@]}"; do
+  [[ -f $archive_file ]] || { printf 'missing archive input: %s\n' "$archive_file" >&2; exit 2; }
+done
+mkdir -p data/processed/archive
+mkdir "$archive_dir"
+cp -p -- "${archive_files[@]}" "$archive_dir/"
+wc -l -- "$archive_dir"/*
+sha256sum -- "$archive_dir"/*
+chmod -R a-w -- "$archive_dir"
+```
+
+Then submit this platform launch command. `--overwrite` starts a clean v4
+one-record run at the standard output paths; it does not modify the archive.
+After it produces one compatible terminal result, do not overwrite that result;
+continue with the 19-record resume command instead. If the task exits before
+then, rerun the metadata-only check and follow the reported state plus the job
+error rather than blindly repeating `--overwrite`:
+
+```bash
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh --overwrite
 ```
 
 The command prints the extraction run ID plus the private vLLM, extraction, and
-status-log paths. They are created under `RAG_JOB_LOG_DIR`. Before GPU startup,
-the wrapper resolves
+status-log paths after early launch validation passes. They are created under
+`RAG_JOB_LOG_DIR`. Before GPU startup, the wrapper resolves
 `data.input` from the selected config, requires it to equal `RAG_INPUT_PATH`,
 and checks `RAG_INPUT_SIZE_BYTES` plus `RAG_INPUT_SHA256`. The status report
-records that result, the Git commit/branch/dirty count, model fingerprint, run
-ID, final output/quarantine counts, and exit code. Follow progress from another
+records that result, the declared commit/branch, Git availability and
+verification state, model fingerprint, run ID, final output/quarantine counts,
+and exit code. On a Gitless H100, `git_worktree_changes=unknown` is expected and
+must not be read as a clean-worktree verification. Follow progress from another
 shell only when needed:
 
 ```bash
@@ -247,9 +364,9 @@ Inspect the one-record output contract before continuing. Then add new records
 in bounded resumable gates; do not skip directly to the full file:
 
 ```bash
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh \
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh \
   --resume --limit 19 --concurrency 2
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh \
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh \
   --resume --limit 80 --concurrency 4
 ```
 
@@ -264,11 +381,11 @@ HUP/INT/TERM. A `1` does not discard successful records. Existing outputs are
 never silently replaced; use `--resume` when the manifest and inputs match. Use
 `--overwrite` only for an intentional fresh run.
 
-Only after the 1/20/100-row outputs and logs are correct, run the full resumable
-pass explicitly:
+Only after the 1/20/100 attempted-record results and logs are correct, run the
+full resumable pass explicitly:
 
 ```bash
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh \
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh \
   --full --resume --concurrency 4
 ```
 
@@ -288,7 +405,11 @@ candidate-output review remain mandatory.
 Review quarantine categories without printing source text:
 
 ```bash
-conda run -n "$CONDA_EXTRACT_ENV" python - <<'PY'
+cd <SERVER_REPO>
+set -a
+. deploy/.env
+set +a
+conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" python - <<'PY'
 import collections
 import json
 from pathlib import Path
@@ -310,7 +431,7 @@ Treat `UPSTREAM_RATE_LIMITED`, `UPSTREAM_TIMEOUT`, and
 contract have not changed:
 
 ```bash
-cd <SERVER_REPO> && exec bash deploy/run-extraction-job.sh \
+cd <SERVER_REPO> && RAG_CODE_COMMIT='<FULL_COMMIT>' RAG_CODE_BRANCH='<BRANCH>' exec bash deploy/run-extraction-job.sh \
   --full --resume --retry-failures --concurrency 4
 ```
 
