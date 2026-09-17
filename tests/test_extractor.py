@@ -60,6 +60,8 @@ def ticket(content: str = "夜间施工噪声"):
         content=content,
         goal="希望核实处理",
         category_path=("环境保护", "噪声污染", "施工噪声"),
+        city="常州市",
+        district="武进区",
     )
 
 
@@ -82,7 +84,7 @@ def valid_content() -> str:
     return json.dumps(
         {
             "problem_type": "施工噪声",
-            "symptom": ["夜间施工产生噪声"],
+            "symptom": ["夜间施工噪声"],
             "impact": [],
             "location_type": "住宅区",
             "keywords": ["施工", "噪声"],
@@ -99,7 +101,7 @@ def test_extract_uses_structured_output_and_injects_category() -> None:
     result = asyncio.run(extractor.extract(ticket(hostile)))
 
     assert result.category == ["环境保护", "噪声污染", "施工噪声"]
-    assert extractor.prompt_version == "problem-extraction-v3"
+    assert extractor.prompt_version == "problem-extraction-v4"
     call = fake.completions.calls[0]
     assert call["temperature"] == 0.1
     assert call["max_tokens"] == 768
@@ -116,6 +118,619 @@ def test_extract_uses_structured_output_and_injects_category() -> None:
     assert "category" not in response_schema["schema"]["properties"]
     assert response_schema["schema"]["properties"]["symptom"]["maxItems"] == 3
     assert response_schema["schema"]["properties"]["keywords"]["maxItems"] == 6
+    for field_name in ("problem_type", "symptom", "impact", "location_type", "keywords"):
+        assert response_schema["schema"]["properties"][field_name]["description"]
+
+
+def test_extract_removes_unsupported_details_requests_and_admin_keywords() -> None:
+    response = {
+        "problem_type": "占道经营",
+        "symptom": ["路边有人摆摊", "希望清理"],
+        "impact": ["影响交通", "可能引发交通事故"],
+        "location_type": "常州市",
+        "keywords": ["占道经营", "常州市", "武进区", "流动摊贩"],
+    }
+    fake = FakeClient(json.dumps(response, ensure_ascii=False))
+    extractor = ProblemExtractor(config(), client=fake)
+    source_ticket = ticket("路边有人摆摊，希望清理，已经影响交通")
+
+    result = asyncio.run(extractor.extract(source_ticket))
+
+    assert result.symptom == ["路边有人摆摊"]
+    assert result.impact == ["影响交通"]
+    assert result.location_type == "行政区域"
+    assert result.keywords == ["占道经营", "流动摊贩"]
+
+
+def test_extract_keeps_observed_fact_that_contains_requires_wording() -> None:
+    observed = "商家要求先交物业费后才能缴纳车辆管理费"
+    response = {
+        "problem_type": "物业收费争议",
+        "symptom": [observed],
+        "impact": [],
+        "location_type": "小区",
+        "keywords": ["物业费", "车辆管理费"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(observed)))
+
+    assert result.symptom == [observed]
+
+
+def test_extract_uses_only_case_content_as_detail_evidence() -> None:
+    response = {
+        "problem_type": "退款咨询",
+        "symptom": ["申请退款"],
+        "impact": ["申请退款"],
+        "location_type": "未知",
+        "keywords": ["退款咨询"],
+    }
+    source_ticket = ticket("商家已经停业")
+    source_ticket.goal = "申请退款"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(source_ticket))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+def test_extract_request_filter_does_not_treat_named_school_as_request() -> None:
+    response = {
+        "problem_type": "校门口积水",
+        "symptom": ["希望清理", "要求反馈处理", "希望小学门口积水"],
+        "impact": [],
+        "location_type": "学校",
+        "keywords": ["积水"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(
+        extractor.extract(ticket("希望清理，要求反馈处理，希望小学门口积水"))
+    )
+
+    assert result.symptom == ["希望小学门口积水"]
+
+
+def test_extract_evidence_normalization_preserves_punctuation_boundaries() -> None:
+    response = {
+        "problem_type": "施工噪声",
+        "symptom": ["夜间施工噪声", "CAFÉ噪声", "噪声希望处理"],
+        "impact": [],
+        "location_type": "住宅区",
+        "keywords": ["施工噪声"],
+    }
+    source = "夜间 施工噪声；Cafe\u0301噪声；噪声，希望处理"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == ["夜间施工噪声", "CAFÉ噪声"]
+
+
+def test_extract_admin_filter_uses_only_normalized_exact_values() -> None:
+    response = {
+        "problem_type": "公交服务问题",
+        "symptom": [],
+        "impact": [],
+        "location_type": "常州",
+        "keywords": ["常州市", "武进区", "常州", "武进", "常州市公交", "武进区物业"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("公交服务问题")))
+
+    assert result.location_type == "行政区域"
+    assert result.keywords == ["常州市公交", "武进区物业"]
+
+
+def test_extract_preserves_uncertainty_for_unconfirmed_allegations() -> None:
+    response = {
+        "problem_type": "个人信息被盗用",
+        "symptom": ["个人信息被盗用", "怀疑个人信息被盗用"],
+        "impact": ["认为工单被篡改", "服务对象认为工作人员不核实问题"],
+        "location_type": "未知",
+        "keywords": ["个人信息", "盗用"],
+    }
+    source = (
+        "投诉人怀疑个人信息被盗用，认为工单被篡改，"
+        "服务对象认为工作人员不核实问题"
+    )
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.problem_type == "疑似个人信息被盗用"
+    assert result.symptom == ["怀疑个人信息被盗用"]
+    assert result.impact == []
+
+
+def test_extract_remains_cautious_for_confirmed_allegation_wording() -> None:
+    response = {
+        "problem_type": "个人信息被盗用",
+        "symptom": ["个人信息被盗用"],
+        "impact": [],
+        "location_type": "未知",
+        "keywords": ["个人信息", "盗用"],
+    }
+    source = "经核实个人信息被盗用"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.problem_type == "疑似个人信息被盗用"
+    assert result.symptom == []
+
+
+def test_extract_does_not_apply_unrelated_confirmation_to_allegation() -> None:
+    response = {
+        "problem_type": "个人信息被盗用",
+        "symptom": ["个人信息被盗用"],
+        "impact": [],
+        "location_type": "未知",
+        "keywords": ["个人信息", "盗用"],
+    }
+    source = "经核实，先前的缴费记录没有问题；投诉人怀疑个人信息被盗用"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.problem_type == "疑似个人信息被盗用"
+    assert result.symptom == []
+
+
+def test_extract_does_not_treat_negated_finding_as_confirmation() -> None:
+    response = {
+        "problem_type": "个人信息被盗用",
+        "symptom": ["个人信息被盗用"],
+        "impact": [],
+        "location_type": "未知",
+        "keywords": ["个人信息", "盗用"],
+    }
+    source = "经核实尚未确认个人信息被盗用"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.problem_type == "个人信息被盗用争议"
+    assert result.symptom == []
+
+
+def test_extract_drops_details_supported_only_by_negated_source() -> None:
+    response = {
+        "problem_type": "设施状况咨询",
+        "symptom": ["破损"],
+        "impact": ["影响交通"],
+        "location_type": "道路",
+        "keywords": ["道路设施"],
+    }
+    source = "侧石没有破损，未影响交通"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+def test_extract_drops_details_behind_negated_result_verbs() -> None:
+    response = {
+        "problem_type": "设施状况咨询",
+        "symptom": ["破损"],
+        "impact": ["交通拥堵"],
+        "location_type": "道路",
+        "keywords": ["道路设施"],
+    }
+    source = "经核实未造成交通拥堵，未发现存在破损"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+@pytest.mark.parametrize(
+    ("source", "detail"),
+    [
+        ("侧石并非破损", "破损"),
+        ("申请退款未能到账", "到账"),
+        ("设施无法正常运转", "正常运转"),
+        ("设备不能正常使用", "正常使用"),
+        ("尚无证据表明存在破损", "破损"),
+        ("经核实未能造成交通拥堵", "交通拥堵"),
+    ],
+)
+def test_extract_drops_additional_negated_source_forms(source, detail) -> None:
+    response = {
+        "problem_type": "情况咨询",
+        "symptom": [],
+        "impact": [detail],
+        "location_type": "未知",
+        "keywords": ["情况咨询"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.impact == []
+
+
+def test_extract_keeps_negated_failure_and_its_observed_consequence() -> None:
+    response = {
+        "problem_type": "道路维修不及时",
+        "symptom": ["未及时维修"],
+        "impact": ["路面破损"],
+        "location_type": "道路",
+        "keywords": ["维修不及时", "路面破损"],
+    }
+    source = "未及时维修导致路面破损"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == ["未及时维修"]
+    assert result.impact == ["路面破损"]
+
+
+def test_extract_keeps_detail_with_a_later_positive_source_occurrence() -> None:
+    response = {
+        "problem_type": "侧石破损",
+        "symptom": ["破损"],
+        "impact": [],
+        "location_type": "道路",
+        "keywords": ["侧石", "破损"],
+    }
+    source = "首次检查未发现存在破损；后续核实确认侧石确有破损"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == ["破损"]
+
+
+def test_extract_filters_compound_requests_and_bare_action_keywords() -> None:
+    response = {
+        "problem_type": "占道经营",
+        "symptom": ["希望相关部门尽快清理", "请有关部门及时处理", "申请退款"],
+        "impact": [],
+        "location_type": "道路",
+        "keywords": ["占道经营", "清理", "退款", "退款纠纷"],
+    }
+    source = "占道经营，希望相关部门尽快清理，请有关部门及时处理，申请退款"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == []
+    assert result.keywords == ["占道经营", "退款纠纷"]
+
+
+@pytest.mark.parametrize(
+    "request_detail",
+    [
+        "服务对象希望相关部门解决占道经营的问题",
+        "希望维修路灯",
+        "希望尽快妥善处理",
+        "要求对其进行处理",
+        "申请办理退款",
+        "请处理？",
+        "希望以后一直加强监管",
+        "希望相关部门仍由原单位处理",
+        "建议不予办理",
+        "希望查询结果并回复",
+        "希望解决一直存在的噪声问题",
+        "希望维修，但不要更换设备",
+        "希望清理但是不要影响通行",
+    ],
+)
+def test_extract_filters_pure_requests_with_specific_objects(request_detail) -> None:
+    response = {
+        "problem_type": "占道经营",
+        "symptom": [request_detail],
+        "impact": [request_detail],
+        "location_type": "道路",
+        "keywords": ["占道经营"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(request_detail)))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+def test_extract_keeps_request_prefixed_facts_with_reported_outcomes() -> None:
+    response = {
+        "problem_type": "退款及维修处理问题",
+        "symptom": ["申请退款后商家失联", "要求维修却一直无人处理"],
+        "impact": [],
+        "location_type": "商户",
+        "keywords": ["商家失联", "无人处理"],
+    }
+    source = "申请退款后商家失联，要求维修却一直无人处理"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == ["申请退款后商家失联", "要求维修却一直无人处理"]
+
+
+@pytest.mark.parametrize(
+    "detail",
+    [
+        "申请退款没有到账",
+        "申请退款迟迟不到账",
+    ],
+)
+def test_extract_keeps_request_prefixed_failed_outcomes(detail) -> None:
+    response = {
+        "problem_type": "退款失败",
+        "symptom": [detail],
+        "impact": [],
+        "location_type": "商户",
+        "keywords": ["退款失败"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(detail)))
+
+    assert result.symptom == [detail]
+
+
+def test_extract_filters_bare_handling_actions_from_details() -> None:
+    response = {
+        "problem_type": "服务诉求",
+        "symptom": ["退款", "维修"],
+        "impact": ["退款", "维修"],
+        "location_type": "未知",
+        "keywords": ["服务诉求"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("申请退款，要求维修")))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "服务对象认为工作人员不核实问题",
+        "服务对象认为，工作人员不核实问题",
+        "服务对象认为当地有关主管部门和相关单位的工作人员不核实问题",
+        "经核实其他事项正常，服务对象仍认为工作人员不核实问题",
+    ],
+)
+def test_extract_drops_detail_detached_from_subjective_source_context(source) -> None:
+    detail = "工作人员不核实问题"
+    response = {
+        "problem_type": "工单处理争议",
+        "symptom": [detail],
+        "impact": [detail],
+        "location_type": "未知",
+        "keywords": ["工单处理"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == []
+    assert result.impact == []
+
+
+def test_extract_keeps_detail_with_later_non_subjective_source_support() -> None:
+    detail = "工作人员不核实问题"
+    response = {
+        "problem_type": "工单处理争议",
+        "symptom": [detail],
+        "impact": [detail],
+        "location_type": "未知",
+        "keywords": ["工单处理"],
+    }
+    source = "服务对象认为工作人员不核实问题；后续核实确认工作人员不核实问题"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == [detail]
+    assert result.impact == [detail]
+
+
+def test_extract_confirmation_resets_earlier_subjective_context_in_same_sentence() -> None:
+    detail = "工作人员不核实问题"
+    response = {
+        "problem_type": "工单处理问题",
+        "symptom": [detail],
+        "impact": [detail],
+        "location_type": "未知",
+        "keywords": ["工单处理"],
+    }
+    source = "服务对象认为工单被篡改，经核实工作人员不核实问题"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket(source)))
+
+    assert result.symptom == [detail]
+    assert result.impact == [detail]
+
+
+@pytest.mark.parametrize(
+    "keyword",
+    sorted(extractor_module._HANDLING_ACTION_KEYWORDS),
+)
+def test_extract_filters_every_bare_handling_action_keyword(keyword) -> None:
+    response = {
+        "problem_type": "占道经营",
+        "symptom": [],
+        "impact": [],
+        "location_type": "道路",
+        "keywords": [keyword],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("占道经营")))
+
+    assert result.keywords == []
+
+
+def test_extract_keeps_compound_concepts_that_contain_handling_actions() -> None:
+    response = {
+        "problem_type": "服务处理争议",
+        "symptom": [],
+        "impact": [],
+        "location_type": "未知",
+        "keywords": ["维修纠纷", "退款纠纷", "办理进度"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("服务处理争议")))
+
+    assert result.keywords == ["维修纠纷", "退款纠纷", "办理进度"]
+
+
+def test_extract_evidence_does_not_cross_line_boundaries() -> None:
+    response = {
+        "problem_type": "施工噪声",
+        "symptom": ["噪声希望处理"],
+        "impact": [],
+        "location_type": "住宅区",
+        "keywords": ["噪声"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("噪声\n希望处理")))
+
+    assert result.symptom == []
+
+
+def test_extract_ignores_missing_or_non_string_admin_metadata() -> None:
+    source_ticket = ticket("夜间施工噪声")
+    source_ticket.city = None
+    source_ticket.district = 7
+    extractor = ProblemExtractor(config(), client=FakeClient(valid_content()))
+
+    result = asyncio.run(extractor.extract(source_ticket))
+
+    assert result.location_type == "住宅区"
+
+
+def test_extract_normalizes_global_non_location_values() -> None:
+    response = {
+        "problem_type": "公交服务问题",
+        "symptom": [],
+        "impact": [],
+        "location_type": "不涉及",
+        "keywords": ["公交服务", "本级", "无"],
+    }
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(ticket("公交服务问题")))
+
+    assert result.location_type == "未知"
+    assert result.keywords == ["公交服务"]
+
+
+def test_extract_filters_suffixed_admin_names_from_unsuffixed_metadata() -> None:
+    response = {
+        "problem_type": "公交服务问题",
+        "symptom": [],
+        "impact": [],
+        "location_type": "常州市",
+        "keywords": ["常州市", "武进区", "公交服务"],
+    }
+    source_ticket = ticket("公交服务问题")
+    source_ticket.city = "常州"
+    source_ticket.district = "武进"
+    extractor = ProblemExtractor(
+        config(),
+        client=FakeClient(json.dumps(response, ensure_ascii=False)),
+    )
+
+    result = asyncio.run(extractor.extract(source_ticket))
+
+    assert result.location_type == "行政区域"
+    assert result.keywords == ["公交服务"]
 
 
 @pytest.mark.parametrize(
@@ -234,6 +849,15 @@ def test_extract_redacts_sensitive_input_before_request() -> None:
         "[ID_CARD_REDACTED]",
         "[LANDLINE_REDACTED]",
         "[EMAIL_REDACTED]",
+        "[PHONE]",
+        "[PERSON]",
+        "[DETAILED_ADDRESS]",
+        "[BUSINESS_ID]",
+        "[ID_CARD]",
+        "[LICENSE_PLATE]",
+        "[BANK_ACCOUNT]",
+        "[EMAIL]",
+        "[SOCIAL_ACCOUNT]",
     ],
 )
 def test_extract_rejects_sensitive_model_output_without_echo(sensitive_value) -> None:
