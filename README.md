@@ -1,13 +1,101 @@
 # Civic RAG pipeline
 
-This repository currently provides two recoverable offline stages:
+This repository currently provides two recoverable model stages and one
+retrieval benchmark:
 
 1. Extract candidate problem chunks from a sanitized ticket TSV through a
    local OpenAI-compatible vLLM endpoint.
 2. Generate dense BGE-M3 embeddings and upsert them into Qdrant.
+3. Build and evaluate a title-level ticket-to-knowledge retrieval baseline.
 
-Query retrieval, reranking, grounded answer generation, and evaluation are not
-yet implemented.
+Full knowledge-document retrieval, reranking, and grounded answer generation
+remain deferred until the versioned knowledge body corpus is available.
+
+## Title-level retrieval baseline
+
+The first retrieval benchmark intentionally bypasses Qwen extraction. It uses
+the source ticket text as the query, expands `knowledge_quote` into observed
+positive edges, and treats the distinct `type:value` knowledge titles as a
+static corpus. This is a knowledge-title recommendation benchmark, not yet a
+full document RAG benchmark; knowledge body text and effective versions are
+not present in the source TSV.
+
+The builder streams the TSV through temporary SQLite storage so the full file
+does not need to fit in memory. It groups physical rows by `order_id`, audits
+parent conflicts, excludes deleted or unlabeled rows from qrels, and excludes
+exact `case_content + case_goal` fingerprints that span multiple time splits.
+Unobserved ticket-knowledge pairs remain unknown and are never emitted as
+negative labels.
+
+Create the benchmark on a CPU/login node:
+
+```bash
+bash deploy/create-conda-retrieval-env.sh
+bash deploy/run-retrieval-baseline.sh build
+```
+
+The default time windows are:
+
+```text
+train  2024-05-01 through 2025-06-30
+dev    2025-07-01 through 2025-07-31
+test   2025-08-01 through 2025-08-29
+```
+
+Outputs are written below `data/retrieval/title-v1` by default:
+
+```text
+corpus.jsonl
+queries.jsonl
+queries.content.jsonl
+queries.goal.jsonl
+queries.joint.jsonl
+qrels/train.tsv
+qrels/dev.tsv
+qrels/test.tsv
+dataset_manifest.json
+parent_conflicts.jsonl
+cross_split_duplicates.jsonl
+knowledge_title_conflicts.jsonl
+rejects.jsonl
+```
+
+Run the two CPU-only popularity controls and evaluate them using training-only
+knowledge frequencies:
+
+```bash
+bash deploy/run-retrieval-baseline.sh popularity dev 50
+bash deploy/run-retrieval-baseline.sh popularity test 50
+```
+
+Run the pinned Pyserini 1.2.0/Lucene Chinese BM25 baseline on CPU. Pyserini is
+kept at 1.2.0 because its dependency bounds remain compatible with the locked
+Python 3.11, Torch 2.6, and Transformers 4.51 environment; current Pyserini 2.x
+requires a different runtime. The first call builds and fingerprints a reusable
+Lucene index:
+
+```bash
+bash deploy/run-retrieval-baseline.sh bm25 dev content 50
+bash deploy/run-retrieval-baseline.sh bm25 dev goal 50
+bash deploy/run-retrieval-baseline.sh bm25 dev joint 50
+```
+
+After placing an audited local BGE-M3 ModelScope snapshot at the absolute
+`BGE_M3_MODEL_PATH` configured in `deploy/.env`, run exact normalized dense
+retrieval on one H100. The knowledge corpus is small enough to keep its matrix
+on the GPU, so this baseline does not require Qdrant or FAISS:
+
+```bash
+bash deploy/run-retrieval-baseline.sh bge dev content 50
+bash deploy/run-retrieval-baseline.sh bge dev goal 50
+bash deploy/run-retrieval-baseline.sh bge dev joint 50
+```
+
+Each run produces a six-column TREC run file and a metrics JSON containing
+Hit/Recall at 1, 5, 10, and 50, MRR@10, nDCG@10, macro knowledge recall, and
+training-frequency head/mid/tail results. The category-popularity run is an
+oracle-style diagnostic because source taxonomy availability at intake time
+has not yet been established.
 
 ## Stage A: Qwen3 extraction on one H100
 
