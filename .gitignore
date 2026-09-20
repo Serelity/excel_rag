@@ -64,3 +64,6 @@ venv/
 # Runtime records and caches
 run-records/
 .cache/
+
+# Local aggregate reports. Review them for disclosure risk before publishing.
+data_analysis/output/
