@@ -38,7 +38,8 @@ class RunStats:
     failed: int = 0
     cache_hits: int = 0
     model_calls: int = 0
-    alignment_repairs: int = 0
+    grounded_spans: int = 0
+    ambiguous_span_matches: int = 0
 
 
 def content_sha256(content: str) -> str:
@@ -274,7 +275,7 @@ async def _process_batch(
         cached = cache.get(key, content_sha256=source_hash, source=group[0].case_content)
         if cached is not None:
             results[source_hash] = (
-                DocumentExtraction(cached, 0, 0, 0),
+                DocumentExtraction(cached, 0, 0, 0, 0),
                 None,
                 0,
                 True,
@@ -423,7 +424,8 @@ async def run_pipeline(
                         reused = cache_hit or source_hash in emitted_hashes
                         model_calls = 0 if reused else document.model_calls
                         segments = 0 if reused else document.segments
-                        alignment_repairs = 0 if reused else document.alignment_repairs
+                        grounded_spans = 0 if reused else document.grounded_spans
+                        ambiguous_matches = 0 if reused else document.ambiguous_span_matches
                         value = {
                             "schema_version": SCHEMA_VERSION,
                             "source_id": record.source_id,
@@ -438,7 +440,8 @@ async def run_pipeline(
                                 "attempts": 0 if reused else attempts,
                                 "model_calls": model_calls,
                                 "segments": segments,
-                                "alignment_repairs": alignment_repairs,
+                                "grounded_spans": grounded_spans,
+                                "ambiguous_span_matches": ambiguous_matches,
                             },
                         }
                         output.write(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
@@ -447,7 +450,8 @@ async def run_pipeline(
                         stats.succeeded += 1
                         stats.cache_hits += int(reused)
                         stats.model_calls += model_calls
-                        stats.alignment_repairs += alignment_repairs
+                        stats.grounded_spans += grounded_spans
+                        stats.ambiguous_span_matches += ambiguous_matches
                         emitted_hashes.add(source_hash)
                     else:
                         assert error is not None

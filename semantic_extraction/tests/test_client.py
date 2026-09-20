@@ -30,14 +30,14 @@ def valid_value() -> dict:
         "events": [
             {
                 "normalized_event_type": "施工噪声",
-                "trigger": {"text": "施工噪声", "start": 2, "end": 6},
+                "trigger": {"text": "施工噪声"},
                 "actors": [],
                 "objects": [],
-                "behaviors": [{"text": "施工噪声", "start": 2, "end": 6}],
+                "behaviors": [{"text": "施工噪声"}],
                 "impacts": [],
                 "requests": [],
                 "locations": [],
-                "time_expressions": [{"text": "夜间", "start": 0, "end": 2}],
+                "time_expressions": [{"text": "夜间"}],
                 "search_terms": ["施工噪声"],
                 "polarity": "occurred",
             }
@@ -53,15 +53,19 @@ async def test_client_sends_only_case_content_and_disables_thinking() -> None:
     result = await client.extract_document("夜间施工噪声")
 
     assert result.extraction.events[0].normalized_event_type == "施工噪声"
+    assert result.extraction.events[0].trigger.start == 2
+    assert result.grounded_spans == 3
     call = fake.completions.calls[0]
     assert json.loads(call["messages"][1]["content"]) == {"case_content": "夜间施工噪声"}
     assert call["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
     assert call["response_format"]["json_schema"]["strict"] is True
-    required = call["response_format"]["json_schema"]["schema"]["$defs"]["ExtractedEvent"][
+    required = call["response_format"]["json_schema"]["schema"]["$defs"]["ModelExtractedEvent"][
         "required"
     ]
     assert "requests" in required
     assert "locations" in required
+    quote_schema = call["response_format"]["json_schema"]["schema"]["$defs"]["EvidenceQuote"]
+    assert set(quote_schema["properties"]) == {"text"}
 
 
 def test_long_document_splits_on_sentence_boundary_without_loss() -> None:

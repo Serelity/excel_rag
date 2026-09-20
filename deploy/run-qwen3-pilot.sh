@@ -15,8 +15,8 @@ set +a
 : "${RAG_PILOT_SEED:=20260920}"
 : "${RAG_EXTRACTION_CONCURRENCY:=4}"
 : "${RAG_PILOT_PATH:=$PROJECT_ROOT/data/derived/qwen3-pilot-${RAG_PILOT_SIZE}.jsonl}"
-: "${RAG_SEMANTIC_OUTPUT_DIR:=$PROJECT_ROOT/data/processed/qwen3-semantic-v1}"
-: "${RAG_RUN_RECORDS_PATH:=$PROJECT_ROOT/run-records/qwen3-semantic-v1}"
+: "${RAG_SEMANTIC_OUTPUT_DIR:=$PROJECT_ROOT/data/processed/qwen3-semantic-v2}"
+: "${RAG_RUN_RECORDS_PATH:=$PROJECT_ROOT/run-records/qwen3-semantic-v2}"
 : "${VLLM_HOST:=127.0.0.1}"
 : "${VLLM_PORT:=8000}"
 : "${VLLM_STARTUP_TIMEOUT_SECONDS:=1800}"
@@ -89,7 +89,7 @@ printf 'pilot_input=%s\noutput=%s\nerrors=%s\n' \
   "$RAG_PILOT_PATH" "$output" "$errors" | tee -a "$status_log"
 printf 'vllm_log=%s\nextraction_log=%s\n' "$vllm_log" "$extraction_log" | tee -a "$status_log"
 printf 'model_fingerprint=%s\nprompt_version=%s\n' \
-  "$QWEN_MODEL_FINGERPRINT_SHA256" "case-content-semantic-v1" >> "$status_log"
+  "$QWEN_MODEL_FINGERPRINT_SHA256" "case-content-semantic-v2" >> "$status_log"
 printf 'pilot_sha256=%s\n' "$(sha256sum "$RAG_PILOT_PATH" | awk '{print $1}')" >> "$status_log"
 printf 'Request logging is disabled; prompts and source text are not written to job logs.\n'
 

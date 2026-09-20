@@ -4,8 +4,8 @@ from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
-SCHEMA_VERSION = "semantic-extraction-v1"
-PROMPT_VERSION = "case-content-semantic-v1"
+SCHEMA_VERSION = "semantic-extraction-v2"
+PROMPT_VERSION = "case-content-semantic-v2"
 
 ShortText = Annotated[
     str,
@@ -123,7 +123,7 @@ class ExtractedEvent(BaseModel):
 
 
 class SemanticExtraction(BaseModel):
-    """The complete model-owned response for one case_content value."""
+    """The grounded, persisted extraction for one case_content value."""
 
     model_config = ConfigDict(extra="forbid", strict=True)
 
@@ -133,4 +133,81 @@ class SemanticExtraction(BaseModel):
             "case_content 中可独立检索的事件。没有足够信息时返回空数组；不得创建"
             "“未知问题”占位事件。"
         ),
+    )
+
+
+class EvidenceQuote(BaseModel):
+    """Exact source text requested from Qwen; offsets are assigned in code."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    text: ShortText = Field(description="case_content 中连续出现的原文，不得改写或补字。")
+
+
+class ModelLocationMention(BaseModel):
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    evidence: EvidenceQuote
+    kind: LocationKind
+    normalized_name: str | None = Field(
+        max_length=120,
+        description=(
+            "仅规范原文已有地名的空格、简称或行政后缀；无法可靠规范时必须为 null，"
+            "不得补全原文没有的地址层级。"
+        ),
+    )
+
+
+class ModelExtractedEvent(BaseModel):
+    """Compact model response that avoids unreliable character arithmetic."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    normalized_event_type: EventTypeText = Field(
+        description="简短、通用、适合检索的事件类型；保留咨询、疑似等语义。"
+    )
+    trigger: EvidenceQuote = Field(description="最能指示该事件的最短原文短语。")
+    actors: list[EvidenceQuote] = Field(
+        max_length=4,
+        description="原文明示的涉事主体角色或机构；不要推断省略的主体。",
+    )
+    objects: list[EvidenceQuote] = Field(
+        max_length=5,
+        description="事件涉及的设施、商品、服务或事项。",
+    )
+    behaviors: list[EvidenceQuote] = Field(
+        max_length=5,
+        description="已经陈述的行为或可观察现象，不含办理诉求。",
+    )
+    impacts: list[EvidenceQuote] = Field(
+        max_length=4,
+        description="原文明示的实际影响或风险，不得补造常识性后果。",
+    )
+    requests: list[EvidenceQuote] = Field(
+        max_length=4,
+        description="来电人的咨询、希望、申请、建议或要求。",
+    )
+    locations: list[ModelLocationMention] = Field(
+        max_length=5,
+        description="与事件直接相关的地点、地址或场所。",
+    )
+    time_expressions: list[EvidenceQuote] = Field(
+        max_length=4,
+        description="与事件直接相关的时间或频率表达。",
+    )
+    search_terms: list[SearchTermText] = Field(
+        max_length=8,
+        description="基于该事件的通用检索概念，不含专名和新事实。",
+    )
+    polarity: Polarity = Field(description="事件的原文确定性或咨询属性。")
+
+
+class ModelSemanticExtraction(BaseModel):
+    """The complete Qwen-owned response before deterministic grounding."""
+
+    model_config = ConfigDict(extra="forbid", strict=True)
+
+    events: list[ModelExtractedEvent] = Field(
+        max_length=6,
+        description="可独立检索的事件；没有足够信息时必须返回空数组。",
     )

@@ -40,6 +40,8 @@ def audit(output: Path, errors: Path) -> dict:
             summary["cache_hits"] += int(bool(processing.get("cache_hit")))
             summary["model_calls"] += int(processing.get("model_calls", 0))
             summary["alignment_repairs"] += int(processing.get("alignment_repairs", 0))
+            summary["grounded_spans"] += int(processing.get("grounded_spans", 0))
+            summary["ambiguous_span_matches"] += int(processing.get("ambiguous_span_matches", 0))
         for event in events:
             if not isinstance(event, dict):
                 raise ValueError("event must be an object")

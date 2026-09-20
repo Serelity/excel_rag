@@ -6,14 +6,10 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from .alignment import (
-    EvidenceAlignmentError,
-    align_extraction,
-    merge_extractions,
-    shift_extraction,
-)
+from .alignment import EvidenceAlignmentError, merge_extractions, shift_extraction
+from .grounding import EvidenceGroundingError, GroundingResult, ground_extraction
 from .prompt import SYSTEM_PROMPT, user_message
-from .schema import SemanticExtraction
+from .schema import ModelSemanticExtraction, SemanticExtraction
 
 
 class ExtractionError(RuntimeError):
@@ -28,7 +24,7 @@ class ClientConfig:
     model: str = "Qwen3-30B-A3B"
     api_key: str = "EMPTY"
     temperature: float = 0.0
-    max_tokens: int = 3072
+    max_tokens: int = 4096
     timeout_seconds: float = 180.0
     max_retries: int = 1
     seed: int = 42
@@ -40,7 +36,8 @@ class DocumentExtraction:
     extraction: SemanticExtraction
     model_calls: int
     segments: int
-    alignment_repairs: int
+    grounded_spans: int
+    ambiguous_span_matches: int
 
 
 def split_document(text: str, max_chars: int) -> list[tuple[int, str]]:
@@ -82,35 +79,32 @@ class Qwen3ExtractionClient:
         else:
             self.client = client
 
-        schema = SemanticExtraction.model_json_schema()
+        schema = ModelSemanticExtraction.model_json_schema()
         self.response_format = {
             "type": "json_schema",
             "json_schema": {
-                "name": "semantic_extraction_v1",
+                "name": "case_content_semantic_v2",
                 "strict": True,
                 "schema": schema,
             },
         }
 
-    async def extract_segment(self, content: str) -> tuple[SemanticExtraction, int]:
+    async def extract_segment(self, content: str) -> GroundingResult:
         if not content.strip():
-            return SemanticExtraction(events=[]), 0
-        try:
-            response = await self.client.chat.completions.create(
-                model=self.config.model,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_message(content)},
-                ],
-                response_format=self.response_format,
-                temperature=self.config.temperature,
-                max_tokens=self.config.max_tokens,
-                seed=self.config.seed,
-                timeout=self.config.timeout_seconds,
-                extra_body={"chat_template_kwargs": {"enable_thinking": False}},
-            )
-        except Exception:
-            raise
+            return GroundingResult(SemanticExtraction(events=[]), 0, 0)
+        response = await self.client.chat.completions.create(
+            model=self.config.model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": user_message(content)},
+            ],
+            response_format=self.response_format,
+            temperature=self.config.temperature,
+            max_tokens=self.config.max_tokens,
+            seed=self.config.seed,
+            timeout=self.config.timeout_seconds,
+            extra_body={"chat_template_kwargs": {"enable_thinking": False}},
+        )
 
         choices = getattr(response, "choices", None)
         if not choices:
@@ -130,16 +124,16 @@ class Qwen3ExtractionClient:
         except json.JSONDecodeError as exc:
             raise ExtractionError("model content is not valid JSON", code="INVALID_JSON") from exc
         try:
-            extraction = SemanticExtraction.model_validate(value)
-            aligned = align_extraction(extraction, content)
+            model_result = ModelSemanticExtraction.model_validate(value)
+            grounded = ground_extraction(model_result, content)
         except ValidationError as exc:
             raise ExtractionError(
-                "model JSON does not match semantic-extraction-v1",
+                "model JSON does not match case-content-semantic-v2",
                 code="SCHEMA_VALIDATION_FAILED",
             ) from exc
-        except EvidenceAlignmentError as exc:
-            raise ExtractionError(str(exc), code="EVIDENCE_ALIGNMENT_FAILED") from exc
-        return aligned.extraction, aligned.repairs
+        except EvidenceGroundingError as exc:
+            raise ExtractionError(str(exc), code=exc.code) from exc
+        return grounded
 
     async def extract_document(self, content: str) -> DocumentExtraction:
         if not content.strip():
@@ -147,11 +141,13 @@ class Qwen3ExtractionClient:
 
         segments = split_document(content, self.config.segment_chars)
         parts: list[SemanticExtraction] = []
-        repairs = 0
+        grounded_spans = 0
+        ambiguous_matches = 0
         for offset, segment in segments:
-            extraction, segment_repairs = await self.extract_segment(segment)
-            parts.append(shift_extraction(extraction, offset))
-            repairs += segment_repairs
+            grounded = await self.extract_segment(segment)
+            parts.append(shift_extraction(grounded.extraction, offset))
+            grounded_spans += grounded.grounded_spans
+            ambiguous_matches += grounded.ambiguous_matches
         try:
             merged = merge_extractions(parts)
         except EvidenceAlignmentError as exc:
@@ -160,5 +156,6 @@ class Qwen3ExtractionClient:
             extraction=merged,
             model_calls=len(segments),
             segments=len(segments),
-            alignment_repairs=repairs,
+            grounded_spans=grounded_spans,
+            ambiguous_span_matches=ambiguous_matches,
         )

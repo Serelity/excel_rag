@@ -19,7 +19,8 @@ class FakeExtractionClient:
             extraction=SemanticExtraction(events=[]),
             model_calls=1,
             segments=1,
-            alignment_repairs=0,
+            grounded_spans=0,
+            ambiguous_span_matches=0,
         )
 
 

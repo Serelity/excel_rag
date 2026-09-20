@@ -17,8 +17,7 @@ SYSTEM_PROMPT = """\
    “怀疑信息被盗用”只能写“疑似个人信息盗用”，不能升级成已证实违法。
 3. trigger、actors、objects、behaviors、impacts、requests、locations.evidence 和
    time_expressions 都是证据字段。每项 text 必须是 case_content 中连续、逐字一致的最短
-   充分片段；start/end 使用 Python 字符串的 Unicode 字符下标，从 0 开始、左闭右开，且
-   case_content[start:end] 必须严格等于 text。不要复制无关上下文。
+   充分片段。不要计算或输出字符下标，不要复制无关上下文，不要将原文改写后放入证据字段。
 4. behaviors 只放原文描述的行为或现象；requests 单独放“希望、要求、申请、建议、咨询”等
    办理意图；impacts 只放原文明示的影响或风险，禁止根据常识补出安全隐患、法律后果。
 5. polarity=occurred 仅表示原文把事件当作已发生事实陈述，不表示已经外部核实；“疑似、怀疑、
@@ -29,7 +28,8 @@ SYSTEM_PROMPT = """\
 7. search_terms 是少量通用检索概念，可加入原文概念的标准称呼或常见同义说法，但不能加入
    原文没有依据的新事件。排除人名、电话、证件号、工号、具体地址、具体机构名和法规名称。
 8. 不读取、猜测或输出工单分类、处理部门、办理结果、满意度等 case_content 之外的信息。
-9. 只返回符合 JSON Schema 的 JSON 对象，不输出 Markdown、解释或思考过程。
+9. 所有数组字段都必须返回；没有内容时返回 []。只返回符合 JSON Schema 的 JSON 对象，
+   不输出 Markdown、解释或思考过程。
 
 边界示例：
 - “路边有人摆摊，希望清理，已经影响通行”：一个事件；摆摊是 behavior，希望清理是

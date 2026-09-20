@@ -17,12 +17,13 @@ department, status, satisfaction, address columns, or any other source field.
 This prevents target leakage and makes a later raw-vs-extracted retrieval
 comparison interpretable.
 
-`semantic-extraction-v1` supports zero to six events. Every trigger, actor,
+`semantic-extraction-v2` supports zero to six events. Every trigger, actor,
 object, behavior, impact, request, location, and time expression is tied to an
-exact half-open source span (`text`, `start`, `end`). A normalized event type
-and generic search terms may be generated, but factual evidence may not be.
-Missing evidence is represented by an empty array; there is no `未知问题`
-placeholder.
+exact source quote. Qwen only returns the quote text; deterministic code finds
+its half-open source span (`text`, `start`, `end`). This avoids treating a
+generative model as a character counter. A normalized event type and generic
+search terms may be generated, but factual evidence may not be. Missing
+evidence is represented by an empty array; there is no `未知问题` placeholder.
 
 The output includes five derived retrieval views:
 
@@ -47,9 +48,9 @@ not a population-weighted evaluation set. The category is used only for sample
 selection and is never passed to Qwen3.
 
 Long inputs are split at sentence boundaries at 8,000 characters. Segment
-offsets are converted back to document offsets. Qwen offset mistakes are
-repaired only when the returned evidence text has a deterministic position;
-missing or ambiguous evidence is quarantined.
+offsets are converted back to document offsets. A quote absent from the source
+is quarantined. Repeated exact quotes are located nearest to the event trigger
+and counted as ambiguous matches for quality review.
 
 Successful extraction results are cached by the SHA256 of the exact
 `case_content` plus the model/Prompt contract. Duplicate text therefore needs
@@ -116,8 +117,8 @@ set -a
 set +a
 conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
   python -m semantic_extraction.audit \
-  --output data/processed/qwen3-semantic-v1/pilot-2000.jsonl \
-  --errors data/processed/qwen3-semantic-v1/pilot-2000.errors.jsonl
+  --output data/processed/qwen3-semantic-v2/pilot-2000.jsonl \
+  --errors data/processed/qwen3-semantic-v2/pilot-2000.errors.jsonl
 ```
 
 Proceed only if quarantine is zero and a manual evidence review is acceptable.
@@ -128,7 +129,7 @@ records, and `--resume` validates the prior manifest before appending:
 bash deploy/run-qwen3-pilot.sh --limit 1980 --resume
 ```
 
-Runtime logs live under `run-records/qwen3-semantic-v1/`. Request and access
+Runtime logs live under `run-records/qwen3-semantic-v2/`. Request and access
 logging are disabled, and exception messages or source text are not written to
 the quarantine file. Results, pilot data, cache, logs, and private environment
 settings are ignored by Git.
