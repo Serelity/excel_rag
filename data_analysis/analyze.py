@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-SCHEMA_VERSION = "civic-data-profile-v1"
+SCHEMA_VERSION = "civic-data-profile-v2"
 NULL_TOKENS = {"null", "none", "nan", "n/a", "na"}
 TEXT_FIELDS = {
     "case_content",
@@ -80,6 +80,524 @@ TAXONOMY_FIELDS = tuple(
     f"case_accord_type_{name}_name" for name in ("one", "two", "three", "four", "five")
 )
 GEOGRAPHY_FIELDS = ("area_code_city", "area_code_area", "area_code_street")
+WORKFLOW_FIELDS = (
+    "order_status",
+    "order_invalid_type",
+    "case_complete_time",
+    "is_accuracy",
+    "deptName",
+    "isOverTime",
+    "isSignOverTime",
+    "resultSatisfied",
+    "visitCount",
+    "visitResult",
+    "firstVisitSatisfied",
+    "appeal_status",
+)
+
+SEMANTIC_STATUS_LABELS = {
+    "data_confirmed": "数据证据确认",
+    "inferred": "字段名和值域推断",
+    "unknown": "业务口径待确认",
+}
+
+# These definitions describe what the sanitized export supports. They are not a
+# substitute for the source system's official data dictionary. Ambiguous fields
+# remain explicitly marked instead of being promoted from a name-based guess to
+# a business fact.
+FIELD_SEMANTICS: dict[str, dict[str, str | bool]] = {
+    "id": {
+        "business_name": "记录标识",
+        "definition": "当前导出中每条记录的唯一标识；只证明行级唯一，不证明它等同于唯一工单。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "system",
+        "serving_availability": "system_key",
+        "rag_role": "record_key",
+        "requires_confirmation": False,
+        "caution": "不得据此推断用户身份。",
+    },
+    "order_no": {
+        "business_name": "业务编号",
+        "definition": "疑似面向业务展示或外部交换的工单编号，确切生成规则和唯一性需确认。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "system",
+        "serving_availability": "unknown",
+        "rag_role": "audit_only",
+        "requires_confirmation": True,
+        "caution": "缺失率高且不是稳定主键，不进入模型文本。",
+    },
+    "order_id": {
+        "business_name": "业务关联标识",
+        "definition": "可关联多条记录的标识；组内既可能是流程快照，也可能是内容修订或连续提交。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "system",
+        "serving_availability": "system_key",
+        "rag_role": "association_key",
+        "requires_confirmation": True,
+        "caution": "不能直接解释为父工单、用户ID，也不能据此无条件合并记录。",
+    },
+    "service_object_type": {
+        "business_name": "诉求类型",
+        "definition": "咨询、求助、投诉举报、意见建议等诉求性质分类。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": True,
+        "caution": "需确认是用户选择、坐席标注还是后处理结果。",
+    },
+    "case_content": {
+        "business_name": "工单正文",
+        "definition": "对事件、问题和上下文的主要文本描述；是否为用户原话或坐席转写尚未确认。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "intake_or_editing",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "primary_query_candidate",
+        "requires_confirmation": True,
+        "caution": "含隐私信息且可能在流程中修订；建模前需脱敏并确认版本时点。",
+    },
+    "case_goal": {
+        "business_name": "诉求目标",
+        "definition": "通常比正文更短的办理目标或诉求摘要，可能由坐席归纳。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "intake_or_classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "query_view_candidate",
+        "requires_confirmation": True,
+        "caution": "若在检索之后生成，作为输入会造成未来信息泄漏。",
+    },
+    "case_public": {
+        "business_name": "是否公开",
+        "definition": "工单或案例是否允许公开的控制标志。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "governance",
+        "serving_availability": "unknown",
+        "rag_role": "policy_filter",
+        "requires_confirmation": True,
+        "caution": "用于合规控制，不作为语义相关性特征。",
+    },
+    "area_code_city": {
+        "business_name": "市级地域名称",
+        "definition": "工单关联的市级地域文本。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_routing",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_filter_or_metadata",
+        "requires_confirmation": True,
+        "caution": "需确认表示事发地、诉求人所在地还是承办归属地。",
+    },
+    "area_code_area": {
+        "business_name": "区县级地域名称",
+        "definition": "工单关联的区县或市本级地域文本。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_routing",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_filter_or_metadata",
+        "requires_confirmation": True,
+        "caution": "存在市本级、不涉及和历史名称，不能直接当标准行政区。",
+    },
+    "area_code_street": {
+        "business_name": "街道乡镇名称",
+        "definition": "工单关联的街道或乡镇文本。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_routing",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_filter_or_metadata",
+        "requires_confirmation": True,
+        "caution": "缺失率高，且地域含义仍需与源系统确认。",
+    },
+    "address_detail": {
+        "business_name": "详细地址",
+        "definition": "源字段用于详细地点；当前脱敏表中的有效值已统一替换，已不保留地址语义。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake",
+        "serving_availability": "unusable_after_sanitization",
+        "rag_role": "excluded",
+        "requires_confirmation": False,
+        "caution": "当前数据中仅有一个脱敏占位值，禁止把它输入模型。",
+    },
+    "order_type": {
+        "business_name": "诉求主体类型",
+        "definition": "从个人、企业等值域看，表示诉求主体或服务对象类别，而非流程类型。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "intake",
+        "serving_availability": "likely_at_intake",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": True,
+        "caution": "字段名与实际值域不完全一致，需确认官方名称。",
+    },
+    "case_is_visit": {
+        "business_name": "回访标志",
+        "definition": "疑似表示是否需要或是否进入回访，具体是计划状态还是执行结果尚不明确。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "workflow_or_follow_up",
+        "serving_availability": "unknown",
+        "rag_role": "excluded_until_confirmed",
+        "requires_confirmation": True,
+        "caution": "存在少量越域数字值；不能仅凭是/否确定业务含义。",
+    },
+    "case_is_urgent": {
+        "business_name": "紧急程度",
+        "definition": "一般、紧急、非常紧急等工单优先级。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_triage",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": True,
+        "caution": "通常影响处理优先级，不必然影响知识相关性。",
+    },
+    "info_protect": {
+        "business_name": "信息保护标志",
+        "definition": "表示记录是否需要执行额外的信息保护。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "governance",
+        "serving_availability": "likely_at_intake",
+        "rag_role": "policy_filter",
+        "requires_confirmation": True,
+        "caution": "只能用于访问控制和脱敏策略，不能作为检索语义。",
+    },
+    "hotspot": {
+        "business_name": "热点标志",
+        "definition": "疑似标记热点事件或热点工单。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "triage_or_monitoring",
+        "serving_availability": "unknown",
+        "rag_role": "audit_or_slice",
+        "requires_confirmation": True,
+        "caution": "正例极少，适合作为分析切片而非主要输入特征。",
+    },
+    "case_labels": {
+        "business_name": "补充业务标签",
+        "definition": "稀疏的专题、渠道或问题标签，可包含多个层级化标签。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification_or_routing",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "assisted_mode_metadata",
+        "requires_confirmation": True,
+        "caution": "可能是人工或规则后标注，直接输入可能产生标签泄漏。",
+    },
+    "order_source": {
+        "business_name": "受理渠道大类",
+        "definition": "电话、互联网、承办转办等工单来源大类。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake",
+        "serving_availability": "at_intake",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": False,
+        "caution": "渠道分布高度偏向电话，评测应按渠道分层。",
+    },
+    "special_type": {
+        "business_name": "特殊工单类型",
+        "definition": "用于少量特殊关怀或特殊流程工单的附加类型。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake_or_triage",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "audit_or_slice",
+        "requires_confirmation": True,
+        "caution": "覆盖率极低，不适合作为通用模型特征。",
+    },
+    "case_accord_type_one_name": {
+        "business_name": "事项分类一级",
+        "definition": "工单所属事项分类体系的一级名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "assisted_mode_metadata",
+        "requires_confirmation": True,
+        "caution": "需确认分类发生在知识检索之前还是之后。",
+    },
+    "case_accord_type_two_name": {
+        "business_name": "事项分类二级",
+        "definition": "工单所属事项分类体系的二级名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "assisted_mode_metadata",
+        "requires_confirmation": True,
+        "caution": "可能与被引用知识高度相关，存在标签泄漏风险。",
+    },
+    "case_accord_type_three_name": {
+        "business_name": "事项分类三级",
+        "definition": "工单所属事项分类体系的三级名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "assisted_mode_metadata",
+        "requires_confirmation": True,
+        "caution": "粒度较细，只能在坐席辅助场景单独评测。",
+    },
+    "case_accord_type_four_name": {
+        "business_name": "事项分类四级",
+        "definition": "少量记录使用的事项分类四级名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "assisted_mode_metadata",
+        "requires_confirmation": True,
+        "caution": "覆盖率极低且可能直接表达问题答案。",
+    },
+    "case_accord_type_five_name": {
+        "business_name": "事项分类五级",
+        "definition": "极少量记录使用的事项分类五级名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "classification",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "excluded_from_baseline",
+        "requires_confirmation": True,
+        "caution": "仅3条有效记录，不能形成稳定特征。",
+    },
+    "order_status": {
+        "business_name": "流程状态码",
+        "definition": "数字化工单流程状态；当前数据没有代码到状态名称的映射。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "workflow",
+        "serving_availability": "changes_over_time",
+        "rag_role": "audit_only",
+        "requires_confirmation": True,
+        "caution": "必须取得状态码表，不能按数值大小解释流程先后。",
+    },
+    "order_invalid_type": {
+        "business_name": "无效工单原因",
+        "definition": "骚扰电话、无声电话、拨错号码、无效多诉求等无效原因。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "triage_or_workflow",
+        "serving_availability": "potentially_post_intake",
+        "rag_role": "eligibility_filter",
+        "requires_confirmation": True,
+        "caution": "应作为样本纳入/排除规则，不作为知识检索文本。",
+    },
+    "call_time": {
+        "business_name": "受理时间",
+        "definition": "电话渠道下疑似来电或受理时间；非电话渠道的统一含义需确认。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "intake",
+        "serving_availability": "at_intake",
+        "rag_role": "temporal_split_key",
+        "requires_confirmation": True,
+        "caution": "用于时间切分前需确认跨渠道口径和历史回灌情况。",
+    },
+    "case_complete_time": {
+        "business_name": "工单完成时间",
+        "definition": "疑似流程完成或办结时间。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "closure",
+        "serving_availability": "post_resolution",
+        "rag_role": "audit_only",
+        "requires_confirmation": True,
+        "caution": "属于检索后的未来信息，不能进入在线检索输入。",
+    },
+    "knowledge_quote": {
+        "business_name": "知识引用记录",
+        "definition": "JSON数组，每项含type、value和label，记录系统中观察到的知识条目引用。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "agent_action_or_workflow",
+        "serving_availability": "target_only",
+        "rag_role": "weak_observed_label",
+        "requires_confirmation": True,
+        "caution": "历史引用不是完整相关性金标；空值也不是负例。",
+    },
+    "delete_flag": {
+        "business_name": "逻辑删除标志",
+        "definition": "0/1逻辑删除状态。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "system",
+        "serving_availability": "system_key",
+        "rag_role": "eligibility_filter",
+        "requires_confirmation": False,
+        "caution": "建模集应默认排除已删除记录并保留数量审计。",
+    },
+    "order_source_detail": {
+        "business_name": "受理渠道明细",
+        "definition": "12345、12393、小程序、APP、网站、微信等细粒度来源。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake",
+        "serving_availability": "at_intake",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": False,
+        "caution": "渠道可能与样本分布和标注方式相关，应做分层评测。",
+    },
+    "area_code": {
+        "business_name": "行政区划代码",
+        "definition": "6位地域代码，值域符合常州市及下辖区域编码形态。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "routing_or_system",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_filter_or_metadata",
+        "requires_confirmation": True,
+        "caution": "需确认是事发地代码、受理归属代码还是承办区域代码。",
+    },
+    "is_accuracy": {
+        "business_name": "准确性标志",
+        "definition": "主要为0/1，但“准确”的对象和产生规则无法从当前数据确定。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "quality_control",
+        "serving_availability": "unknown",
+        "rag_role": "excluded_until_confirmed",
+        "requires_confirmation": True,
+        "caution": "存在两个时间字符串越域值；取得官方定义前不得用于过滤或训练。",
+    },
+    "belong_platform": {
+        "business_name": "归属平台代码",
+        "definition": "疑似表示受理或管辖平台的6位区域代码。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "routing_or_system",
+        "serving_availability": "needs_timing_confirmation",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": True,
+        "caution": "不能与事发地域或承办部门自动视为同义。",
+    },
+    "return_visit_reason": {
+        "business_name": "回访原因",
+        "definition": "回访流程中的原因字段，具体表示触发原因、未回访原因还是结果原因待确认。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "follow_up",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "属于后验流程信息，不进入知识检索基线。",
+    },
+    "deptName": {
+        "business_name": "部门名称",
+        "definition": "与工单关联的部门名称；是受理、当前处理还是最终承办部门待确认。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "routing_or_workflow",
+        "serving_availability": "potentially_post_intake",
+        "rag_role": "excluded_from_baseline",
+        "requires_confirmation": True,
+        "caution": "可能直接泄漏路由或处理结果，且报告中不输出原始值。",
+    },
+    "isOverTime": {
+        "business_name": "办理超时标志",
+        "definition": "疑似表示整体办理是否超时；当前仅观察到值1。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "workflow_or_closure",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "空值不能未经确认解释为未超时。",
+    },
+    "isSignOverTime": {
+        "business_name": "签收超时标志",
+        "definition": "疑似表示承办方签收是否超时；当前仅观察到值1。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "workflow",
+        "serving_availability": "post_intake",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "空值不能未经确认解释为未超时。",
+    },
+    "resultSatisfied": {
+        "business_name": "结果满意度",
+        "definition": "满意、基本满意、不满意或未表态等结果评价。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "follow_up",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "需确认与visitResult、firstVisitSatisfied的口径差异。",
+    },
+    "visitCount": {
+        "business_name": "回访次数",
+        "definition": "记录回访次数的整数计数。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "follow_up",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": False,
+        "caution": "不进入检索输入。",
+    },
+    "visitResult": {
+        "business_name": "回访结果",
+        "definition": "当前值域表现为满意度结果，而非自由文本回访记录。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "follow_up",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "需确认与结果满意度字段的适用流程差异。",
+    },
+    "firstVisitSatisfied": {
+        "business_name": "首次回访满意度",
+        "definition": "首次回访时记录的满意、基本满意、不满意或未表态。",
+        "semantic_status": "inferred",
+        "lifecycle_stage": "follow_up",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": True,
+        "caution": "与原始表中的firstVistSatisfied拼写近似字段需核对来源。",
+    },
+    "appeal_status": {
+        "business_name": "申诉审核状态",
+        "definition": "审核中、审核通过、审核不通过等申诉流程状态。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "appeal",
+        "serving_availability": "post_resolution",
+        "rag_role": "outcome_analysis_only",
+        "requires_confirmation": False,
+        "caution": "覆盖率极低，不进入检索输入。",
+    },
+    "form_type": {
+        "business_name": "表单模板类型",
+        "definition": "通用表单或占道经营、拖欠工资等专题表单名称。",
+        "semantic_status": "data_confirmed",
+        "lifecycle_stage": "intake",
+        "serving_availability": "likely_at_intake",
+        "rag_role": "candidate_metadata",
+        "requires_confirmation": True,
+        "caution": "专题表单本身带有问题类别信息，需单独报告是否造成捷径学习。",
+    },
+    "custom_form_data_str": {
+        "business_name": "自定义表单数据",
+        "definition": "自定义表单提交的JSON数组；当前尚未解析内部字段语义。",
+        "semantic_status": "unknown",
+        "lifecycle_stage": "intake",
+        "serving_availability": "likely_at_intake",
+        "rag_role": "quarantine_until_schema_known",
+        "requires_confirmation": True,
+        "caution": "可能包含隐私信息，必须取得子字段schema后才能清洗和使用。",
+    },
+}
+
+BUSINESS_CONFIRMATION_QUESTIONS = {
+    "order_no": "该字段的官方名称、生成规则、唯一性范围以及为何仅部分记录存在是什么？",
+    "order_id": "该标识关联的是流程版本、同一来电、同一用户连续提交，还是其他业务对象？",
+    "service_object_type": "该分类由谁在什么时点产生，知识检索发生时是否已经可用？",
+    "case_content": "该文本是用户原话、坐席转写还是可被后续修改的最终正文？",
+    "case_goal": "该字段由谁归纳、何时写入，是否早于知识检索行为？",
+    "case_public": "“公开”的对象、适用渠道和赋值时点分别是什么？",
+    "area_code_city": "该地域表示事发地、诉求人所在地、受理地还是承办归属地？",
+    "area_code_area": "该地域表示事发地、诉求人所在地、受理地还是承办归属地？",
+    "area_code_street": "该地域表示事发地、诉求人所在地、受理地还是承办归属地？",
+    "order_type": "字段官方名称是否为诉求主体类型，个人/企业之外值的口径是什么？",
+    "case_is_visit": "该字段表示需要回访、已经回访还是可回访，赋值时点是什么？",
+    "case_is_urgent": "紧急程度由谁判断，知识检索发生时是否已经确定？",
+    "info_protect": "保护标志具体控制哪些信息和流程，0与空值是否有定义？",
+    "hotspot": "热点标志由人工、规则还是事后统计产生，赋值时点是什么？",
+    "case_labels": "标签由谁生成、何时写入，多个标签的分隔和层级规则是什么？",
+    "special_type": "特殊类型的完整码表、触发规则和写入时点是什么？",
+    "case_accord_type_one_name": "事项分类由谁完成，是否发生在知识检索之前？",
+    "case_accord_type_two_name": "事项分类由谁完成，是否发生在知识检索之前？",
+    "case_accord_type_three_name": "事项分类由谁完成，是否发生在知识检索之前？",
+    "case_accord_type_four_name": "四级分类只在少量专题流程出现，还是历史口径缺失？",
+    "case_accord_type_five_name": "五级分类仅3条有效记录的业务原因是什么？",
+    "order_status": "21个状态码对应的名称、转换关系和终态分别是什么？",
+    "order_invalid_type": "无效原因在哪个流程节点产生，标记后是否还可能引用知识？",
+    "call_time": "电话、互联网和转办渠道下该时间分别代表来电、创建还是受理时刻？",
+    "case_complete_time": "该时间表示坐席录入完成、工单办结还是流程实例结束？",
+    "knowledge_quote": "type=0/2分别代表什么，引用由坐席点击还是系统自动记录，写入时点是什么？",
+    "area_code": "该代码表示事发区域、受理区域、派单区域还是承办区域？",
+    "is_accuracy": "准确性评价针对分类、派单、地址还是其他对象，由谁在何时评价？",
+    "belong_platform": "平台代码表示受理平台、数据归属平台还是最终承办平台？",
+    "return_visit_reason": "该字段表示触发回访、未回访还是回访结果原因？",
+    "deptName": "该部门是受理部门、当前处理部门还是最终承办部门？",
+    "isOverTime": "空值是否等于未超时，超时判断针对哪个办理时限？",
+    "isSignOverTime": "空值是否等于未超时，“签收”的业务节点和时限是什么？",
+    "resultSatisfied": "该满意度评价的对象和采集轮次是什么，与回访结果有何区别？",
+    "visitResult": "该字段与resultSatisfied的适用流程、采集轮次和覆盖范围有何区别？",
+    "firstVisitSatisfied": "该字段与原始表firstVistSatisfied是否为同一指标的不同版本？",
+    "form_type": "专题表单是在用户提交前选择，还是受理后由坐席切换？",
+    "custom_form_data_str": "JSON数组中各子字段的schema、表单版本和隐私等级是什么？",
+}
 
 PHONE_PATTERN = re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)")
 ID_CARD_PATTERN = re.compile(r"(?<!\d)\d{17}[\dXx](?!\d)")
@@ -304,7 +822,7 @@ class DateProfile:
         }
 
 
-class ParentStore:
+class AssociationStore:
     def __init__(self, database_path: Path) -> None:
         self.connection = sqlite3.connect(database_path)
         self.connection.executescript(
@@ -312,7 +830,7 @@ class ParentStore:
             PRAGMA journal_mode=OFF;
             PRAGMA synchronous=OFF;
             PRAGMA temp_store=MEMORY;
-            CREATE TABLE parents (
+            CREATE TABLE order_groups (
                 order_id TEXT PRIMARY KEY,
                 row_count INTEGER NOT NULL,
                 content_hash TEXT NOT NULL,
@@ -320,11 +838,17 @@ class ParentStore:
                 taxonomy_hash TEXT NOT NULL,
                 geography_hash TEXT NOT NULL,
                 knowledge_hash TEXT NOT NULL,
-                content_conflict INTEGER NOT NULL DEFAULT 0,
-                goal_conflict INTEGER NOT NULL DEFAULT 0,
-                taxonomy_conflict INTEGER NOT NULL DEFAULT 0,
-                geography_conflict INTEGER NOT NULL DEFAULT 0,
-                knowledge_conflict INTEGER NOT NULL DEFAULT 0
+                call_time_hash TEXT NOT NULL,
+                completion_time_hash TEXT NOT NULL,
+                workflow_hash TEXT NOT NULL,
+                content_variation INTEGER NOT NULL DEFAULT 0,
+                goal_variation INTEGER NOT NULL DEFAULT 0,
+                taxonomy_variation INTEGER NOT NULL DEFAULT 0,
+                geography_variation INTEGER NOT NULL DEFAULT 0,
+                knowledge_variation INTEGER NOT NULL DEFAULT 0,
+                call_time_variation INTEGER NOT NULL DEFAULT 0,
+                completion_time_variation INTEGER NOT NULL DEFAULT 0,
+                workflow_variation INTEGER NOT NULL DEFAULT 0
             );
             CREATE TABLE record_ids (
                 record_id TEXT PRIMARY KEY,
@@ -367,54 +891,79 @@ class ParentStore:
                 )
             ),
             short_hash(semantic_value(row.get("knowledge_quote")) or "<MISSING>"),
+            short_hash(semantic_value(row.get("call_time")) or "<MISSING>"),
+            short_hash(semantic_value(row.get("case_complete_time")) or "<MISSING>"),
+            short_hash(
+                "\x1f".join(
+                    semantic_value(row.get(name)) or "<MISSING>"
+                    for name in WORKFLOW_FIELDS
+                )
+            ),
         )
         self.connection.execute(
             """
-            INSERT INTO parents(
+            INSERT INTO order_groups(
                 order_id, row_count, content_hash, goal_hash, taxonomy_hash,
-                geography_hash, knowledge_hash
-            ) VALUES (?, 1, ?, ?, ?, ?, ?)
+                geography_hash, knowledge_hash, call_time_hash,
+                completion_time_hash, workflow_hash
+            ) VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(order_id) DO UPDATE SET
                 row_count = row_count + 1,
-                content_conflict = content_conflict OR content_hash <> excluded.content_hash,
-                goal_conflict = goal_conflict OR goal_hash <> excluded.goal_hash,
-                taxonomy_conflict = taxonomy_conflict OR taxonomy_hash <> excluded.taxonomy_hash,
-                geography_conflict = (
-                    geography_conflict OR geography_hash <> excluded.geography_hash
+                content_variation = content_variation OR content_hash <> excluded.content_hash,
+                goal_variation = goal_variation OR goal_hash <> excluded.goal_hash,
+                taxonomy_variation = taxonomy_variation OR taxonomy_hash <> excluded.taxonomy_hash,
+                geography_variation = (
+                    geography_variation OR geography_hash <> excluded.geography_hash
                 ),
-                knowledge_conflict = knowledge_conflict OR knowledge_hash <> excluded.knowledge_hash
+                knowledge_variation = (
+                    knowledge_variation OR knowledge_hash <> excluded.knowledge_hash
+                ),
+                call_time_variation = (
+                    call_time_variation OR call_time_hash <> excluded.call_time_hash
+                ),
+                completion_time_variation = (
+                    completion_time_variation
+                    OR completion_time_hash <> excluded.completion_time_hash
+                ),
+                workflow_variation = (
+                    workflow_variation OR workflow_hash <> excluded.workflow_hash
+                )
             """,
             (order_id, *values),
         )
 
     def result(self) -> dict[str, Any]:
         self.connection.commit()
-        parent_count, row_count, duplicate_parents, rows_in_multi = self.connection.execute(
+        group_count, row_count, multirow_groups, rows_in_multi = self.connection.execute(
             """
             SELECT COUNT(*), COALESCE(SUM(row_count), 0),
                    COALESCE(SUM(row_count > 1), 0),
                    COALESCE(SUM(CASE WHEN row_count > 1 THEN row_count ELSE 0 END), 0)
-            FROM parents
+            FROM order_groups
             """
         ).fetchone()
         group_sizes = {
             str(size): count
             for size, count in self.connection.execute(
-                "SELECT row_count, COUNT(*) FROM parents GROUP BY row_count ORDER BY row_count"
+                "SELECT row_count, COUNT(*) FROM order_groups "
+                "GROUP BY row_count ORDER BY row_count"
             )
         }
-        conflict_names = (
-            "content_conflict",
-            "goal_conflict",
-            "taxonomy_conflict",
-            "geography_conflict",
-            "knowledge_conflict",
+        variation_names = (
+            "content_variation",
+            "goal_variation",
+            "taxonomy_variation",
+            "geography_variation",
+            "knowledge_variation",
+            "call_time_variation",
+            "completion_time_variation",
+            "workflow_variation",
         )
-        conflict_columns = ", ".join(
-            f"COALESCE(SUM({name}), 0)" for name in conflict_names
+        variation_columns = ", ".join(
+            f"COALESCE(SUM({name}), 0)" for name in variation_names
         )
-        conflict_values = self.connection.execute(
-            f"SELECT {conflict_columns} FROM parents"
+        variation_values = self.connection.execute(
+            f"SELECT {variation_columns} FROM order_groups"
         ).fetchone()
         record_id_count, duplicate_record_ids, duplicate_record_rows = self.connection.execute(
             """
@@ -424,13 +973,15 @@ class ParentStore:
             """
         ).fetchone()
         return {
-            "parent_tickets": parent_count,
-            "rows_with_parent_id": row_count,
-            "missing_parent_id_rows": self.missing_order_id,
-            "parents_with_multiple_rows": duplicate_parents,
-            "rows_in_multirow_parents": rows_in_multi,
-            "parent_row_count_histogram": group_sizes,
-            "parent_conflicts": dict(zip(conflict_names, conflict_values)),
+            "order_id_groups": group_count,
+            "rows_with_order_id": row_count,
+            "missing_order_id_rows": self.missing_order_id,
+            "multirow_order_id_groups": multirow_groups,
+            "rows_in_multirow_order_id_groups": rows_in_multi,
+            "order_id_group_size_histogram": group_sizes,
+            "order_id_group_variations": dict(
+                zip(variation_names, variation_values)
+            ),
             "distinct_record_ids": record_id_count,
             "missing_record_id_rows": self.missing_record_id,
             "duplicate_record_ids": duplicate_record_ids,
@@ -442,11 +993,13 @@ class ParentStore:
 
 
 class DatasetProfiler:
-    def __init__(self, header: list[str], top_k: int, parent_store: ParentStore) -> None:
+    def __init__(
+        self, header: list[str], top_k: int, association_store: AssociationStore
+    ) -> None:
         self.header = header
         self.top_k = top_k
         self.columns = {name: ColumnProfile(name) for name in header}
-        self.parent_store = parent_store
+        self.association_store = association_store
         self.records = 0
         self.valid_width_records = 0
         self.invalid_width_records = 0
@@ -489,7 +1042,7 @@ class DatasetProfiler:
         for name, value in row.items():
             self.columns[name].update(value)
         self.full_row_distinct.add("\x1e".join(values))
-        self.parent_store.update(row)
+        self.association_store.update(row)
         self._update_domains(row)
         self._update_text(row)
         self._update_dates(row)
@@ -648,11 +1201,11 @@ class DatasetProfiler:
                 self.custom_json[f"root_{type(parsed_custom).__name__}"] += 1
 
     def result(self) -> dict[str, Any]:
-        parent_result = self.parent_store.result()
+        association_result = self.association_store.result()
         column_results = [self.columns[name].result(self.top_k) for name in self.header]
         exact_distinct = {
-            "id": parent_result["distinct_record_ids"],
-            "order_id": parent_result["parent_tickets"],
+            "id": association_result["distinct_record_ids"],
+            "order_id": association_result["order_id_groups"],
         }
         for column in column_results:
             if column["name"] in exact_distinct:
@@ -668,7 +1221,7 @@ class DatasetProfiler:
                 "approximate_distinct_full_rows": self.full_row_distinct.estimate(),
             },
             "columns": column_results,
-            "entities": parent_result,
+            "entities": association_result,
             "domain_violations": {
                 name: {
                     "count": sum(values.values()),
@@ -783,12 +1336,12 @@ def profile_sources(
     database_path: Path,
     progress_every: int,
 ) -> tuple[dict[str, Any], dict[str, Any] | None, int]:
-    parent_store = ParentStore(database_path)
+    association_store = AssociationStore(database_path)
     try:
         with input_path.open("r", encoding="utf-8-sig", newline="") as sanitized_file:
             sanitized_reader = csv.reader(sanitized_file, delimiter="\t", strict=True)
             sanitized_header = next(sanitized_reader)
-            profiler = DatasetProfiler(sanitized_header, top_k, parent_store)
+            profiler = DatasetProfiler(sanitized_header, top_k, association_store)
             raw_comparison: dict[str, Any] | None = None
             if raw_path is None:
                 for values in sanitized_reader:
@@ -875,7 +1428,51 @@ def profile_sources(
                     }
             return profiler.result(), raw_comparison, physical_lines
     finally:
-        parent_store.close()
+        association_store.close()
+
+
+def build_field_dictionary(columns: list[dict[str, Any]]) -> dict[str, Any]:
+    entries: list[dict[str, Any]] = []
+    unmapped_fields: list[str] = []
+    for column in columns:
+        name = column["name"]
+        semantic = FIELD_SEMANTICS.get(name)
+        if semantic is None:
+            unmapped_fields.append(name)
+            semantic = {
+                "business_name": "未定义字段",
+                "definition": "当前画像版本没有该字段的业务定义。",
+                "semantic_status": "unknown",
+                "lifecycle_stage": "unknown",
+                "serving_availability": "unknown",
+                "rag_role": "excluded_until_confirmed",
+                "requires_confirmation": True,
+                "caution": "必须补充源系统业务口径后才能使用。",
+            }
+        entries.append(
+            {
+                "name": name,
+                **semantic,
+                "requires_confirmation": name in BUSINESS_CONFIRMATION_QUESTIONS,
+                "confirmation_question": BUSINESS_CONFIRMATION_QUESTIONS.get(name),
+                "observed": {
+                    "filled": column["filled"],
+                    "missing_rate": column["missing_rate"],
+                    "distinct": column["distinct"],
+                    "distinct_method": column["distinct_method"],
+                },
+            }
+        )
+    return {
+        "scope": "sanitized_export",
+        "status_labels": SEMANTIC_STATUS_LABELS,
+        "official_source_dictionary_present_in_repository": False,
+        "entries": entries,
+        "unmapped_fields": unmapped_fields,
+        "fields_requiring_business_confirmation": [
+            entry["name"] for entry in entries if entry["requires_confirmation"]
+        ],
+    }
 
 
 def write_columns_csv(columns: list[dict[str, Any]], path: Path) -> None:
@@ -910,6 +1507,81 @@ def write_columns_csv(columns: list[dict[str, Any]], path: Path) -> None:
             )
 
 
+def write_field_dictionary_csv(dictionary: dict[str, Any], path: Path) -> None:
+    fields = [
+        "name",
+        "business_name",
+        "definition",
+        "semantic_status",
+        "lifecycle_stage",
+        "serving_availability",
+        "rag_role",
+        "requires_confirmation",
+        "confirmation_question",
+        "caution",
+        "filled",
+        "missing_rate",
+        "distinct",
+        "distinct_method",
+    ]
+    with path.open("w", encoding="utf-8", newline="") as output:
+        writer = csv.DictWriter(output, fieldnames=fields)
+        writer.writeheader()
+        for entry in dictionary["entries"]:
+            writer.writerow(
+                {
+                    **{name: entry.get(name) for name in fields},
+                    **entry["observed"],
+                }
+            )
+
+
+def markdown_cell(value: Any) -> str:
+    return str(value).replace("|", "\\|").replace("\n", " ")
+
+
+def build_dictionary_markdown(profile: dict[str, Any]) -> str:
+    dictionary = profile["semantic_layer"]
+    lines = []
+    for entry in dictionary["entries"]:
+        lines.append(
+            "| `{name}` | {business_name} | {definition} | {status} | {stage} | "
+            "{availability} | `{role}` | {confirmation} | {caution} |".format(
+                name=markdown_cell(entry["name"]),
+                business_name=markdown_cell(entry["business_name"]),
+                definition=markdown_cell(entry["definition"]),
+                status=markdown_cell(
+                    SEMANTIC_STATUS_LABELS[entry["semantic_status"]]
+                ),
+                stage=markdown_cell(entry["lifecycle_stage"]),
+                availability=markdown_cell(entry["serving_availability"]),
+                role=markdown_cell(entry["rag_role"]),
+                confirmation="是" if entry["requires_confirmation"] else "否",
+                caution=markdown_cell(entry["caution"]),
+            )
+        )
+    confirmations = "\n".join(
+        f"- `{entry['name']}`：{entry['confirmation_question']}"
+        for entry in dictionary["entries"]
+        if entry["requires_confirmation"]
+    )
+    return f"""# 字段业务语义字典
+
+画像协议：`{profile['schema_version']}`
+
+本字典描述当前脱敏导出能够支持的解释，不冒充源系统官方数据字典。语义状态分为“数据证据确认”、
+“字段名和值域推断”和“业务口径待确认”。后两类字段在获得业务确认前不能升级为生产特征。
+
+| 字段 | 业务名称 | 当前定义 | 证据状态 | 生命周期 | 在线可用性 | RAG角色 | 待确认 | 风险与限制 |
+|---|---|---|---|---|---|---|---|---|
+{chr(10).join(lines)}
+
+## 待业务确认
+
+{confirmations}
+"""
+
+
 def percent(value: float) -> str:
     return f"{value * 100:.2f}%"
 
@@ -936,15 +1608,22 @@ def build_markdown(profile: dict[str, Any]) -> str:
     call_time_counts = f"{call_time.get('valid', 0):,} / {call_time_missing:,}"
     taxonomy = analysis["hierarchies"]["taxonomy"]
     geography = analysis["hierarchies"]["geography"]
+    dictionary = profile["semantic_layer"]
+    semantic_by_name = {
+        entry["name"]: entry for entry in dictionary["entries"]
+    }
+    semantic_counts = Counter(
+        entry["semantic_status"] for entry in dictionary["entries"]
+    )
     column_lines = []
     for column in analysis["columns"]:
-        length = column["length"]
+        semantic = semantic_by_name[column["name"]]
         column_lines.append(
-            f"| `{column['name']}` | {column['filled']:,} | {percent(column['missing_rate'])} | "
-            f"{column['distinct']:,} ({column['distinct_method']}) | "
-            f"{length['p50'] if length['p50'] is not None else '-'} / "
-            f"{length['p95'] if length['p95'] is not None else '-'} / "
-            f"{length['max'] if length['max'] is not None else '-'} |"
+            f"| `{column['name']}` | {markdown_cell(semantic['business_name'])} | "
+            f"{markdown_cell(semantic['definition'])} | "
+            f"{SEMANTIC_STATUS_LABELS[semantic['semantic_status']]} | "
+            f"`{semantic['rag_role']}` | {percent(column['missing_rate'])} | "
+            f"{column['distinct']:,} ({column['distinct_method']}) |"
         )
     raw_comparison = profile.get("raw_to_sanitized_comparison")
     comparison_text = "未执行原始表对照。"
@@ -953,11 +1632,16 @@ def build_markdown(profile: dict[str, Any]) -> str:
             f"原始表 {raw_comparison['raw_columns']} 列，脱敏表 {raw_comparison['sanitized_columns']} 列，"
             f"保留 {raw_comparison['shared_columns']} 个同名字段，删除 "
             f"{len(raw_comparison['removed_columns'])} 个字段；成对记录 "
-            f"{raw_comparison['paired_records']:,} 条，ID/父工单键位置不一致计数为 "
+            f"{raw_comparison['paired_records']:,} 条，记录ID/关联键位置不一致计数为 "
             f"{sum(raw_comparison['positional_key_mismatches'].values()):,}，原始表非标准列宽记录 "
             f"{raw_comparison['invalid_raw_width_records']:,} 条。"
         )
-    conflict_total = sum(entities["parent_conflicts"].values())
+    variations = entities["order_id_group_variations"]
+    confirmation_lines = "\n".join(
+        f"- `{entry['name']}`：{entry['confirmation_question']}"
+        for entry in dictionary["entries"]
+        if entry["requires_confirmation"]
+    )
     return f"""# 数据画像报告
 
 生成时间：`{profile['generated_at']}`
@@ -981,19 +1665,35 @@ def build_markdown(profile: dict[str, Any]) -> str:
 
 本报告不输出原始表字段值、工单正文、地址、ID、部门名、知识标题或 PII 命中内容。
 
-## 3. 记录与父工单
+## 3. 记录与关联组
 
 - 唯一记录 ID：{entities['distinct_record_ids']:,}
 - 重复记录 ID：{entities['duplicate_record_ids']:,}
-- 父工单：{entities['parent_tickets']:,}
-- 多行父工单：{entities['parents_with_multiple_rows']:,}
-- 位于多行父工单中的记录：{entities['rows_in_multirow_parents']:,}
-- 父工单字段冲突标记总计：{conflict_total:,}
+- 不同 `order_id`：{entities['order_id_groups']:,}
+- 多行 `order_id` 组：{entities['multirow_order_id_groups']:,}
+- 位于多行组中的记录：{entities['rows_in_multirow_order_id_groups']:,}
+- 正文/诉求变化组：{variations['content_variation']:,} / {variations['goal_variation']:,}
+- 分类/地域变化组：{variations['taxonomy_variation']:,} / {variations['geography_variation']:,}
+- 知识引用变化组：{variations['knowledge_variation']:,}
+- 受理时间/完成时间变化组：{variations['call_time_variation']:,} / {variations['completion_time_variation']:,}
+- 任一流程字段变化组：{variations['workflow_variation']:,}
 
-父工单冲突详见 `profile.json` 的 `analysis.entities.parent_conflicts`。后续建模必须先按
-`order_id` 聚合，不能把数据库物理行直接当成独立样本。
+组内变化详见 `profile.json` 的 `analysis.entities.order_id_group_variations`。`order_id` 只被定义为
+业务关联键：它既不证明组内记录是不同工单，也不证明它们必须合并。每个 `id` 原样保留；后续
+建模样本需要根据可用输入版本另行构造，同时让同一关联组留在同一数据切分中。
 
-## 4. 文本与隐私风险
+## 4. 业务语义覆盖
+
+- 数据证据可确认字段：{semantic_counts['data_confirmed']}
+- 依据字段名和值域推断字段：{semantic_counts['inferred']}
+- 当前业务含义不明确字段：{semantic_counts['unknown']}
+- 仍需至少确认一个业务口径的字段：{len(dictionary['fields_requiring_business_confirmation'])}
+- 未映射字段：{len(dictionary['unmapped_fields'])}
+
+当前仓库没有源系统官方字段说明，因此报告严格区分已观察事实与推断。完整定义、生命周期、
+在线可用性、RAG角色和风险见 `data_dictionary.md` 与 `field_dictionary.csv`。
+
+## 5. 文本与隐私风险
 
 - 启发式 PII 命中记录：{quality_flags.get('rows_with_possible_pii', 0):,}（字段命中 {pii_total:,}）
 - 受约束字段域异常记录：{quality_flags.get('rows_with_domain_violation', 0):,}（字段命中 {domain_total:,}）
@@ -1001,10 +1701,10 @@ def build_markdown(profile: dict[str, Any]) -> str:
 - `case_goal` 有效/缺失：{goal_counts}
 - 正文/诉求关系：`{json.dumps(analysis['text']['content_goal_relationship'], ensure_ascii=False)}`
 
-PII 检测是高召回正则筛查，既可能误报，也不能证明未命中的文本安全。命中记录在进入训练、
+PII 检测是启发式正则筛查，既可能误报，也远非完整覆盖。命中记录在进入训练、
 embedding 或外部服务前必须隔离复核。
 
-## 5. 知识引用
+## 6. 知识引用
 
 - 有有效知识项的记录：{knowledge.get('rows_with_items', 0):,}
 - 引用项总数：{knowledge.get('items', 0):,}
@@ -1015,7 +1715,7 @@ embedding 或外部服务前必须隔离复核。
 
 空引用表示“未观察到引用”，不是知识负例。后续召回评估只能把已引用知识作为 observed positive。
 
-## 6. 时间与层级覆盖
+## 7. 时间与层级覆盖
 
 - `call_time` 有效/缺失：{call_time_counts}
 - `call_time` 范围：`{call_time.get('min')}` 至 `{call_time.get('max')}`
@@ -1026,25 +1726,31 @@ embedding 或外部服务前必须隔离复核。
 月度量存在明显不连续区间，时间切分前必须区分真实业务波动、历史回灌和批次缺失，不能只按
 随机比例划分。
 
-## 7. 字段画像
+## 8. 字段语义与质量
 
-| 字段 | 有效值 | 缺失率 | 基数 | 长度 P50 / P95 / Max |
-|---|---:|---:|---:|---:|
+| 字段 | 业务名称 | 当前定义 | 证据状态 | RAG角色 | 缺失率 | 基数 |
+|---|---|---|---|---|---:|---:|
 {chr(10).join(column_lines)}
 
-完整安全枚举、时间月分布、分类/地域路径、异常域值计数见 `profile.json`；平面字段表见
-`columns.csv`。
+完整安全枚举、长度、时间月分布、分类/地域路径、异常域值计数见 `profile.json`；纯统计表见
+`columns.csv`，业务数据字典见 `data_dictionary.md` 和 `field_dictionary.csv`。
 
-## 8. 数据处理阶段建议
+## 9. 待业务确认
+
+以下问题不能仅靠字段名或统计分布得出结论：
+
+{confirmation_lines}
+
+## 10. 数据处理阶段建议
 
 1. **冻结数据契约**：以文件 SHA256、45 列顺序和逻辑记录数作为输入门禁，拒绝静默换表。
 2. **统一缺失值**：把空串及大小写不同的 `NULL/null/None/NaN/N/A` 统一为真正缺失值，保留原始缺失类型审计列。
 3. **先隔离再清洗**：列宽异常、字段域异常、无效时间、负处理时长和 PII 命中进入 quarantine，不自动猜测修复。
-4. **父工单聚合**：按 `order_id` 生成唯一建模单元；正文、诉求、分类、地域、知识集合冲突分别留审计标记。
+4. **保留事件与关联**：每个 `id` 保留为原始事件；`order_id` 只建关联组和变化标记，不做无条件聚合或删除。
 5. **保留双文本视图**：`case_content` 与 `case_goal` 分开清洗，同时构造 joint 视图；不要用生成摘要覆盖原文。
 6. **分类分层处理**：保留原始层级和规范化层级；层级缺口与罕见路径不直接回填。
 7. **知识引用结构化**：解析为 `type:value` 稳定 ID，标签只作展示文本；空引用保持 unknown，不造负样本。
-8. **时间切分防泄漏**：使用 `call_time` 做 train/dev/test，跨时间窗的相同父工单或相同文本指纹必须整体排除。
+8. **时间切分防泄漏**：确认 `call_time` 的跨渠道口径后再做 train/dev/test；相同关联组或相同文本指纹不能跨集合。
 9. **处理版本化**：清洗结果写入新目录，附输入哈希、规则版本、记录计数和拒绝原因；绝不覆盖 `data/raw/`。
 """
 
@@ -1100,6 +1806,7 @@ def run_analysis(args: argparse.Namespace) -> dict[str, Any]:
         )
     sanitized_metadata = source_metadata(input_path, include_hash=True)
     sanitized_metadata["physical_lines"] = physical_lines
+    semantic_layer = build_field_dictionary(analysis["columns"])
     profile: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
@@ -1119,12 +1826,17 @@ def run_analysis(args: argparse.Namespace) -> dict[str, Any]:
             "sample": compare_sample_prefix(sample_path, input_path) if sample_path else None,
         },
         "raw_to_sanitized_comparison": comparison,
+        "semantic_layer": semantic_layer,
         "analysis": analysis,
     }
     (output / "profile.json").write_text(
         json.dumps(profile, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
     write_columns_csv(analysis["columns"], output / "columns.csv")
+    write_field_dictionary_csv(semantic_layer, output / "field_dictionary.csv")
+    (output / "data_dictionary.md").write_text(
+        build_dictionary_markdown(profile), encoding="utf-8"
+    )
     (output / "profile.md").write_text(build_markdown(profile), encoding="utf-8")
     return profile
 
@@ -1136,7 +1848,7 @@ def main() -> int:
         json.dumps(
             {
                 "records": profile["analysis"]["records"]["logical_records"],
-                "parents": profile["analysis"]["entities"]["parent_tickets"],
+                "order_id_groups": profile["analysis"]["entities"]["order_id_groups"],
                 "output": str(args.output.resolve()),
             },
             ensure_ascii=False,

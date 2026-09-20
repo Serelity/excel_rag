@@ -7,7 +7,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from data_analysis.analyze import run_analysis, safe_display_value, semantic_value
+from data_analysis.analyze import (
+    BUSINESS_CONFIRMATION_QUESTIONS,
+    FIELD_SEMANTICS,
+    SEMANTIC_STATUS_LABELS,
+    run_analysis,
+    safe_display_value,
+    semantic_value,
+)
 
 
 HEADER = [
@@ -30,6 +37,21 @@ HEADER = [
 
 
 class AnalyzeTests(unittest.TestCase):
+    def test_semantic_catalog_is_complete_and_questions_are_explicit(self) -> None:
+        self.assertEqual(len(FIELD_SEMANTICS), 45)
+        marked = {
+            name
+            for name, definition in FIELD_SEMANTICS.items()
+            if definition["requires_confirmation"]
+        }
+        self.assertEqual(marked, set(BUSINESS_CONFIRMATION_QUESTIONS))
+        self.assertTrue(
+            all(
+                definition["semantic_status"] in SEMANTIC_STATUS_LABELS
+                for definition in FIELD_SEMANTICS.values()
+            )
+        )
+
     def test_semantic_nulls(self) -> None:
         for value in (None, "", "  ", "NULL", "null", "NaN", "n/a"):
             self.assertIsNone(semantic_value(value))
@@ -40,7 +62,7 @@ class AnalyzeTests(unittest.TestCase):
         self.assertEqual(safe_display_value("202501081136160073091015"), "<REDACTED_LONG_NUMBER>")
         self.assertEqual(safe_display_value("正常枚举"), "正常枚举")
 
-    def test_profile_counts_parents_conflicts_and_suppresses_text(self) -> None:
+    def test_profile_counts_association_variations_and_suppresses_text(self) -> None:
         rows = [
             [
                 "1",
@@ -116,8 +138,13 @@ class AnalyzeTests(unittest.TestCase):
             profile = run_analysis(args)
             analysis = profile["analysis"]
             self.assertEqual(analysis["records"]["logical_records"], 3)
-            self.assertEqual(analysis["entities"]["parent_tickets"], 2)
-            self.assertEqual(analysis["entities"]["parent_conflicts"]["content_conflict"], 1)
+            self.assertEqual(analysis["entities"]["order_id_groups"], 2)
+            self.assertEqual(
+                analysis["entities"]["order_id_group_variations"][
+                    "content_variation"
+                ],
+                1,
+            )
             self.assertEqual(analysis["domain_violations"]["case_is_visit"]["count"], 1)
             self.assertEqual(analysis["quality_flags"]["rows_with_domain_violation"], 1)
             self.assertEqual(analysis["quality_flags"]["rows_with_possible_pii"], 1)
@@ -135,8 +162,19 @@ class AnalyzeTests(unittest.TestCase):
             self.assertIsNone(content["top_values"])
             serialized = json.dumps(profile, ensure_ascii=False)
             self.assertNotIn("13800138000", serialized)
+            self.assertEqual(profile["schema_version"], "civic-data-profile-v2")
+            self.assertEqual(profile["semantic_layer"]["unmapped_fields"], [])
+            order_id = next(
+                entry
+                for entry in profile["semantic_layer"]["entries"]
+                if entry["name"] == "order_id"
+            )
+            self.assertEqual(order_id["rag_role"], "association_key")
+            self.assertIn("不能直接解释为父工单", order_id["caution"])
             self.assertTrue((root / "output/profile.md").is_file())
             self.assertTrue((root / "output/columns.csv").is_file())
+            self.assertTrue((root / "output/data_dictionary.md").is_file())
+            self.assertTrue((root / "output/field_dictionary.csv").is_file())
 
 
 if __name__ == "__main__":

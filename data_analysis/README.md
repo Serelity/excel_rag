@@ -35,8 +35,17 @@ python3 data_analysis/analyze.py --skip-raw-comparison --skip-raw-hash
 Outputs are written to `data_analysis/output/`:
 
 - `profile.json`: complete machine-readable profile;
-- `columns.csv`: flat field-level quality table;
-- `profile.md`: conclusions and processing recommendations.
+- `columns.csv`: flat field-level structural and quality table;
+- `field_dictionary.csv`: machine-readable business meaning, lifecycle,
+  availability, RAG role, evidence status, and field risks;
+- `data_dictionary.md`: human-readable semantic dictionary for every field;
+- `profile.md`: semantic, structural, quality, privacy, and modelling conclusions.
+
+The repository does not contain the source system's official field manual.
+Consequently, the semantic dictionary distinguishes observations supported by
+the data from name/value-based inferences and unresolved business definitions.
+An inferred definition must not be treated as production truth until it is
+confirmed by the data owner.
 
 The output directory is ignored by Git. Reports contain aggregate values, but
 they must still receive a disclosure review before publication.
@@ -45,8 +54,9 @@ they must still receive a disclosure review before publication.
 
 - Source files are opened read-only.
 - Empty strings and literal null tokens are counted separately.
-- Parent-ticket counts and conflicts are exact and calculated in temporary
-  SQLite storage.
+- `order_id` association-group counts and within-group variations are exact and
+  calculated in temporary SQLite storage. The profiler does not assume that an
+  `order_id` is a parent ticket or that all rows in a group should be merged.
 - High-cardinality field counts use HyperLogLog p=12 and are marked as
   estimates.
 - Text, IDs, addresses, department names, knowledge titles, and PII matches
