@@ -1,0 +1,16 @@
+name: civic-rag-extract
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip>=24,<26
+  - setuptools>=75
+  - wheel>=0.44
+
+variables:
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  HF_HUB_DISABLE_TELEMETRY: "1"
+  VLLM_NO_USAGE_STATS: "1"
+  DO_NOT_TRACK: "1"
+  TOKENIZERS_PARALLELISM: "false"

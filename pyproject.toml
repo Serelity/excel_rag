@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "civic-rag-semantic-extraction"
+version = "0.1.0"
+description = "Evidence-grounded Qwen3 extraction for civic-service retrieval experiments"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "openai==1.75.0",
+  "pydantic==2.11.4",
+]
+
+[project.optional-dependencies]
+serve = [
+  "torch==2.6.0",
+  "transformers==4.51.3",
+  "vllm==0.8.5",
+]
+dev = [
+  "pytest==8.3.5",
+  "pytest-asyncio==0.26.0",
+  "ruff==0.11.7",
+]
+
+[tool.setuptools.packages.find]
+include = ["semantic_extraction*"]
+
+[tool.pytest.ini_options]
+testpaths = ["semantic_extraction/tests", "data_analysis"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

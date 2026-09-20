@@ -44,6 +44,7 @@ dist/
 # ======================
 
 .env
+deploy/.env.semantic
 .venv/
 venv/
 
