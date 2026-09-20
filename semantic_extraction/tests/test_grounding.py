@@ -42,6 +42,10 @@ def test_grounding_assigns_offsets_without_model_character_arithmetic() -> None:
     assert event.locations[0].evidence.start == 0
     assert result.grounded_spans == 5
     assert result.ambiguous_matches == 0
+    assert result.proposed_evidence_quotes == 5
+    assert result.rejected_evidence_quotes == 0
+    assert result.trigger_fallbacks == 0
+    assert result.dropped_events == 0
 
 
 def test_grounding_uses_unused_trigger_occurrences_in_event_order() -> None:
@@ -57,8 +61,41 @@ def test_grounding_uses_unused_trigger_occurrences_in_event_order() -> None:
     assert result.ambiguous_matches > 0
 
 
-def test_grounding_rejects_paraphrased_evidence() -> None:
+def test_grounding_falls_back_when_trigger_is_paraphrased() -> None:
     value = model_value(trigger="照明设施损坏")
+
+    result = ground_extraction(
+        ModelSemanticExtraction.model_validate(value),
+        "汉江路路灯不亮，希望维修",
+    )
+
+    assert result.extraction.events[0].trigger.text == "路灯不亮"
+    assert result.trigger_fallbacks == 1
+    assert result.rejected_evidence_quotes == 1
+
+
+def test_grounding_drops_only_paraphrased_optional_evidence() -> None:
+    value = model_value()
+    value["events"][0]["impacts"] = [{"text": "影响道路通行"}]
+
+    result = ground_extraction(
+        ModelSemanticExtraction.model_validate(value),
+        "汉江路路灯不亮，希望维修",
+    )
+
+    assert result.extraction.events[0].impacts == []
+    assert result.proposed_evidence_quotes == 6
+    assert result.rejected_evidence_quotes == 1
+    assert result.dropped_events == 0
+
+
+def test_grounding_quarantines_when_no_event_has_verbatim_evidence() -> None:
+    value = model_value(trigger="照明设施损坏")
+    event = value["events"][0]
+    event["objects"] = [{"text": "照明设备"}]
+    event["behaviors"] = [{"text": "灯具发生故障"}]
+    event["requests"] = [{"text": "请求有关部门修复"}]
+    event["locations"] = []
 
     with pytest.raises(EvidenceGroundingError) as caught:
         ground_extraction(
@@ -66,4 +103,10 @@ def test_grounding_rejects_paraphrased_evidence() -> None:
             "汉江路路灯不亮，希望维修",
         )
 
-    assert caught.value.code == "EVIDENCE_TEXT_NOT_FOUND"
+    assert caught.value.code == "NO_GROUNDED_EVENTS"
+    assert caught.value.processing == {
+        "proposed_evidence_quotes": 4,
+        "rejected_evidence_quotes": 4,
+        "trigger_fallbacks": 0,
+        "dropped_events": 1,
+    }

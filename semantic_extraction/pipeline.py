@@ -40,6 +40,10 @@ class RunStats:
     model_calls: int = 0
     grounded_spans: int = 0
     ambiguous_span_matches: int = 0
+    proposed_evidence_quotes: int = 0
+    rejected_evidence_quotes: int = 0
+    trigger_fallbacks: int = 0
+    dropped_events: int = 0
 
 
 def content_sha256(content: str) -> str:
@@ -252,7 +256,7 @@ async def _extract_with_attempts(
             if not _retryable(exc) or attempt == max_attempts:
                 break
             await asyncio.sleep((2 ** (attempt - 1)) * (0.75 + random.random() * 0.5))
-    return None, last, max_attempts
+    return None, last, attempt
 
 
 async def _process_batch(
@@ -275,7 +279,17 @@ async def _process_batch(
         cached = cache.get(key, content_sha256=source_hash, source=group[0].case_content)
         if cached is not None:
             results[source_hash] = (
-                DocumentExtraction(cached, 0, 0, 0, 0),
+                DocumentExtraction(
+                    extraction=cached,
+                    model_calls=0,
+                    segments=0,
+                    grounded_spans=0,
+                    ambiguous_span_matches=0,
+                    proposed_evidence_quotes=0,
+                    rejected_evidence_quotes=0,
+                    trigger_fallbacks=0,
+                    dropped_events=0,
+                ),
                 None,
                 0,
                 True,
@@ -426,6 +440,10 @@ async def run_pipeline(
                         segments = 0 if reused else document.segments
                         grounded_spans = 0 if reused else document.grounded_spans
                         ambiguous_matches = 0 if reused else document.ambiguous_span_matches
+                        proposed_quotes = 0 if reused else document.proposed_evidence_quotes
+                        rejected_quotes = 0 if reused else document.rejected_evidence_quotes
+                        trigger_fallbacks = 0 if reused else document.trigger_fallbacks
+                        dropped_events = 0 if reused else document.dropped_events
                         value = {
                             "schema_version": SCHEMA_VERSION,
                             "source_id": record.source_id,
@@ -442,6 +460,10 @@ async def run_pipeline(
                                 "segments": segments,
                                 "grounded_spans": grounded_spans,
                                 "ambiguous_span_matches": ambiguous_matches,
+                                "proposed_evidence_quotes": proposed_quotes,
+                                "rejected_evidence_quotes": rejected_quotes,
+                                "trigger_fallbacks": trigger_fallbacks,
+                                "dropped_events": dropped_events,
                             },
                         }
                         output.write(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
@@ -452,9 +474,16 @@ async def run_pipeline(
                         stats.model_calls += model_calls
                         stats.grounded_spans += grounded_spans
                         stats.ambiguous_span_matches += ambiguous_matches
+                        stats.proposed_evidence_quotes += proposed_quotes
+                        stats.rejected_evidence_quotes += rejected_quotes
+                        stats.trigger_fallbacks += trigger_fallbacks
+                        stats.dropped_events += dropped_events
                         emitted_hashes.add(source_hash)
                     else:
                         assert error is not None
+                        error_processing = getattr(error, "processing", {})
+                        if not isinstance(error_processing, dict):
+                            error_processing = {}
                         value = {
                             "schema_version": SCHEMA_VERSION,
                             "source_id": record.source_id,
@@ -466,11 +495,20 @@ async def run_pipeline(
                             "error_type": type(error).__name__,
                             "attempts": attempts,
                             "provenance": contract,
+                            "processing": error_processing,
                         }
                         errors.write(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
                         errors.write("\n")
                         failed[record.source_id] = source_hash
                         stats.failed += 1
+                        stats.proposed_evidence_quotes += int(
+                            error_processing.get("proposed_evidence_quotes", 0)
+                        )
+                        stats.rejected_evidence_quotes += int(
+                            error_processing.get("rejected_evidence_quotes", 0)
+                        )
+                        stats.trigger_fallbacks += int(error_processing.get("trigger_fallbacks", 0))
+                        stats.dropped_events += int(error_processing.get("dropped_events", 0))
                     writes_since_checkpoint += 1
                     if writes_since_checkpoint >= checkpoint_every:
                         output.flush()

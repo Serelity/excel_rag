@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from semantic_extraction.client import ClientConfig, DocumentExtraction
+from semantic_extraction.client import ClientConfig, DocumentExtraction, ExtractionError
 from semantic_extraction.pipeline import run_pipeline
 from semantic_extraction.schema import SemanticExtraction
 
@@ -21,7 +21,20 @@ class FakeExtractionClient:
             segments=1,
             grounded_spans=0,
             ambiguous_span_matches=0,
+            proposed_evidence_quotes=0,
+            rejected_evidence_quotes=0,
+            trigger_fallbacks=0,
+            dropped_events=0,
         )
+
+
+class NonRetryableFailureClient:
+    def __init__(self) -> None:
+        self.calls = 0
+
+    async def extract_document(self, content: str) -> DocumentExtraction:
+        self.calls += 1
+        raise ExtractionError("ungrounded", code="NO_GROUNDED_EVENTS")
 
 
 def write_input(path, rows: list[dict]) -> None:
@@ -87,3 +100,34 @@ async def test_pipeline_deduplicates_content_and_resumes(tmp_path) -> None:
     assert rows[0]["processing"]["cache_hit"] is False
     assert rows[1]["processing"]["cache_hit"] is True
     assert errors.read_text(encoding="utf-8") == ""
+
+
+@pytest.mark.asyncio
+async def test_pipeline_reports_actual_attempts_for_non_retryable_error(tmp_path) -> None:
+    source = tmp_path / "pilot.jsonl"
+    output = tmp_path / "output.jsonl"
+    errors = tmp_path / "errors.jsonl"
+    cache = tmp_path / "cache.sqlite3"
+    write_input(source, [{"source_id": "1", "source_row": 7, "case_content": "正文"}])
+    fake = NonRetryableFailureClient()
+
+    stats = await run_pipeline(
+        input_path=source,
+        output_path=output,
+        errors_path=errors,
+        cache_path=cache,
+        client_config=ClientConfig(model="fake"),
+        limit=1,
+        full=False,
+        resume=False,
+        overwrite=False,
+        concurrency=1,
+        max_attempts=2,
+        client=fake,
+    )
+
+    row = json.loads(errors.read_text(encoding="utf-8"))
+    assert stats.failed == 1
+    assert fake.calls == 1
+    assert row["attempts"] == 1
+    assert row["error_code"] == "NO_GROUNDED_EVENTS"

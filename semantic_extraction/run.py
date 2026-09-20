@@ -59,6 +59,12 @@ async def async_main() -> int:
         max_attempts=args.max_attempts,
         checkpoint_every=args.checkpoint_every,
     )
+    exact_quote_rate = (
+        (stats.proposed_evidence_quotes - stats.rejected_evidence_quotes)
+        / stats.proposed_evidence_quotes
+        if stats.proposed_evidence_quotes
+        else None
+    )
     print(
         " ".join(
             (
@@ -71,6 +77,15 @@ async def async_main() -> int:
                 f"model_calls={stats.model_calls}",
                 f"grounded_spans={stats.grounded_spans}",
                 f"ambiguous_span_matches={stats.ambiguous_span_matches}",
+                f"proposed_evidence_quotes={stats.proposed_evidence_quotes}",
+                f"rejected_evidence_quotes={stats.rejected_evidence_quotes}",
+                f"trigger_fallbacks={stats.trigger_fallbacks}",
+                f"dropped_events={stats.dropped_events}",
+                (
+                    f"exact_evidence_quote_rate={exact_quote_rate:.6f}"
+                    if exact_quote_rate is not None
+                    else "exact_evidence_quote_rate=n/a"
+                ),
             )
         )
     )

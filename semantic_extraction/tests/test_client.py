@@ -55,10 +55,13 @@ async def test_client_sends_only_case_content_and_disables_thinking() -> None:
     assert result.extraction.events[0].normalized_event_type == "施工噪声"
     assert result.extraction.events[0].trigger.start == 2
     assert result.grounded_spans == 3
+    assert result.proposed_evidence_quotes == 3
+    assert result.rejected_evidence_quotes == 0
     call = fake.completions.calls[0]
     assert json.loads(call["messages"][1]["content"]) == {"case_content": "夜间施工噪声"}
     assert call["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
     assert call["response_format"]["json_schema"]["strict"] is True
+    assert call["response_format"]["json_schema"]["name"] == "case_content_semantic_v3"
     required = call["response_format"]["json_schema"]["schema"]["$defs"]["ModelExtractedEvent"][
         "required"
     ]

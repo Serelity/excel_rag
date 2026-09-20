@@ -5,6 +5,20 @@ import json
 from collections import Counter
 from pathlib import Path
 
+GROUNDING_COUNTERS = (
+    "proposed_evidence_quotes",
+    "rejected_evidence_quotes",
+    "trigger_fallbacks",
+    "dropped_events",
+)
+
+
+def _add_grounding_counts(summary: Counter, processing: object) -> None:
+    if not isinstance(processing, dict):
+        return
+    for name in GROUNDING_COUNTERS:
+        summary[name] += int(processing.get(name, 0))
+
 
 def _records(path: Path):
     if not path.exists():
@@ -42,6 +56,7 @@ def audit(output: Path, errors: Path) -> dict:
             summary["alignment_repairs"] += int(processing.get("alignment_repairs", 0))
             summary["grounded_spans"] += int(processing.get("grounded_spans", 0))
             summary["ambiguous_span_matches"] += int(processing.get("ambiguous_span_matches", 0))
+        _add_grounding_counts(summary, processing)
         for event in events:
             if not isinstance(event, dict):
                 raise ValueError("event must be an object")
@@ -63,9 +78,17 @@ def audit(output: Path, errors: Path) -> dict:
     for record in _records(errors):
         summary["quarantine_records"] += 1
         error_codes[str(record.get("error_code", "missing"))] += 1
+        _add_grounding_counts(summary, record.get("processing", {}))
 
+    proposed_quotes = summary["proposed_evidence_quotes"]
+    exact_quote_rate = (
+        (proposed_quotes - summary["rejected_evidence_quotes"]) / proposed_quotes
+        if proposed_quotes
+        else None
+    )
     return {
         "counts": dict(sorted(summary.items())),
+        "rates": {"exact_evidence_quote_rate": exact_quote_rate},
         "event_polarity": dict(sorted(polarity.items())),
         "quarantine_by_code": dict(sorted(error_codes.items())),
     }

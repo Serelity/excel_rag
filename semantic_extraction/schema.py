@@ -4,8 +4,8 @@ from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
-SCHEMA_VERSION = "semantic-extraction-v2"
-PROMPT_VERSION = "case-content-semantic-v2"
+SCHEMA_VERSION = "semantic-extraction-v3"
+PROMPT_VERSION = "case-content-semantic-v3"
 
 ShortText = Annotated[
     str,

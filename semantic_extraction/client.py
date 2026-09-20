@@ -13,9 +13,16 @@ from .schema import ModelSemanticExtraction, SemanticExtraction
 
 
 class ExtractionError(RuntimeError):
-    def __init__(self, message: str, *, code: str = "EXTRACTION_ERROR") -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        code: str = "EXTRACTION_ERROR",
+        processing: dict[str, int] | None = None,
+    ) -> None:
         super().__init__(message)
         self.code = code
+        self.processing = processing or {}
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,6 +45,10 @@ class DocumentExtraction:
     segments: int
     grounded_spans: int
     ambiguous_span_matches: int
+    proposed_evidence_quotes: int
+    rejected_evidence_quotes: int
+    trigger_fallbacks: int
+    dropped_events: int
 
 
 def split_document(text: str, max_chars: int) -> list[tuple[int, str]]:
@@ -83,7 +94,7 @@ class Qwen3ExtractionClient:
         self.response_format = {
             "type": "json_schema",
             "json_schema": {
-                "name": "case_content_semantic_v2",
+                "name": "case_content_semantic_v3",
                 "strict": True,
                 "schema": schema,
             },
@@ -91,7 +102,15 @@ class Qwen3ExtractionClient:
 
     async def extract_segment(self, content: str) -> GroundingResult:
         if not content.strip():
-            return GroundingResult(SemanticExtraction(events=[]), 0, 0)
+            return GroundingResult(
+                extraction=SemanticExtraction(events=[]),
+                grounded_spans=0,
+                ambiguous_matches=0,
+                proposed_evidence_quotes=0,
+                rejected_evidence_quotes=0,
+                trigger_fallbacks=0,
+                dropped_events=0,
+            )
         response = await self.client.chat.completions.create(
             model=self.config.model,
             messages=[
@@ -128,11 +147,11 @@ class Qwen3ExtractionClient:
             grounded = ground_extraction(model_result, content)
         except ValidationError as exc:
             raise ExtractionError(
-                "model JSON does not match case-content-semantic-v2",
+                "model JSON does not match case-content-semantic-v3",
                 code="SCHEMA_VALIDATION_FAILED",
             ) from exc
         except EvidenceGroundingError as exc:
-            raise ExtractionError(str(exc), code=exc.code) from exc
+            raise ExtractionError(str(exc), code=exc.code, processing=exc.processing) from exc
         return grounded
 
     async def extract_document(self, content: str) -> DocumentExtraction:
@@ -143,11 +162,19 @@ class Qwen3ExtractionClient:
         parts: list[SemanticExtraction] = []
         grounded_spans = 0
         ambiguous_matches = 0
+        proposed_evidence_quotes = 0
+        rejected_evidence_quotes = 0
+        trigger_fallbacks = 0
+        dropped_events = 0
         for offset, segment in segments:
             grounded = await self.extract_segment(segment)
             parts.append(shift_extraction(grounded.extraction, offset))
             grounded_spans += grounded.grounded_spans
             ambiguous_matches += grounded.ambiguous_matches
+            proposed_evidence_quotes += grounded.proposed_evidence_quotes
+            rejected_evidence_quotes += grounded.rejected_evidence_quotes
+            trigger_fallbacks += grounded.trigger_fallbacks
+            dropped_events += grounded.dropped_events
         try:
             merged = merge_extractions(parts)
         except EvidenceAlignmentError as exc:
@@ -158,4 +185,8 @@ class Qwen3ExtractionClient:
             segments=len(segments),
             grounded_spans=grounded_spans,
             ambiguous_span_matches=ambiguous_matches,
+            proposed_evidence_quotes=proposed_evidence_quotes,
+            rejected_evidence_quotes=rejected_evidence_quotes,
+            trigger_fallbacks=trigger_fallbacks,
+            dropped_events=dropped_events,
         )
