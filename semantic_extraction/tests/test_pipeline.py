@@ -92,6 +92,7 @@ async def test_pipeline_deduplicates_content_and_resumes(tmp_path) -> None:
 
     rows = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
     assert first.succeeded == 2
+    assert first.scanned == 2
     assert first.model_calls == 1
     assert first.cache_hits == 1
     assert second.skipped == 2

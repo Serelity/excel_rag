@@ -46,10 +46,14 @@ the extraction output does not duplicate the raw text.
 ## Pilot design
 
 `selector.py` makes a deterministic 2,000-record pilot from unique, non-empty
-`case_content` values. It balances top-level source category and five text
-length buckets, including the long tail. That makes it a stress/quality pilot,
-not a population-weighted evaluation set. The category is used only for sample
-selection and is never passed to Qwen3.
+`case_content` values. Pilot v2 excludes source-boundary contamination: in this
+export, 177 otherwise parseable records contain tab-separated fields or later
+records inside `case_content`. Those records are quarantined from extraction
+rather than misclassified as long narratives. The selector balances top-level
+source category and five text length buckets, including the remaining clean
+long tail. That makes it a stress/quality pilot, not a population-weighted
+evaluation set. The category is used only for sample selection and is never
+passed to Qwen3.
 
 Long inputs are split at sentence boundaries at 8,000 characters. Segment
 offsets are converted back to document offsets. A quote absent from the source
@@ -124,8 +128,8 @@ set -a
 set +a
 conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
   python -m semantic_extraction.audit \
-  --output data/processed/qwen3-semantic-v3/pilot-2000.jsonl \
-  --errors data/processed/qwen3-semantic-v3/pilot-2000.errors.jsonl
+  --output data/processed/qwen3-semantic-v3-clean/pilot-2000.jsonl \
+  --errors data/processed/qwen3-semantic-v3-clean/pilot-2000.errors.jsonl
 ```
 
 Proceed only if quarantine is zero and a manual evidence review is acceptable.
@@ -136,7 +140,7 @@ records, and `--resume` validates the prior manifest before appending:
 bash deploy/run-qwen3-pilot.sh --limit 1980 --resume
 ```
 
-Runtime logs live under `run-records/qwen3-semantic-v3/`. Request and access
+Runtime logs live under `run-records/qwen3-semantic-v3-clean/`. Request and access
 logging are disabled, and exception messages or source text are not written to
 the quarantine file. Results, pilot data, cache, logs, and private environment
 settings are ignored by Git.

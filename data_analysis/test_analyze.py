@@ -84,7 +84,7 @@ class AnalyzeTests(unittest.TestCase):
             [
                 "2",
                 "parent-a",
-                "另一正文",
+                "另一正文\t嵌入字段",
                 "诉求",
                 "6015",
                 "2025-01-02 10:00:00",
@@ -148,6 +148,10 @@ class AnalyzeTests(unittest.TestCase):
             self.assertEqual(analysis["domain_violations"]["case_is_visit"]["count"], 1)
             self.assertEqual(analysis["quality_flags"]["rows_with_domain_violation"], 1)
             self.assertEqual(analysis["quality_flags"]["rows_with_possible_pii"], 1)
+            self.assertEqual(
+                analysis["quality_flags"]["case_content_tabular_contamination_rows"],
+                1,
+            )
             self.assertEqual(analysis["dates"]["fields"]["call_time"]["invalid"], 1)
             self.assertEqual(analysis["dates"]["negative_completion_duration_rows"], 1)
             self.assertEqual(
@@ -162,7 +166,7 @@ class AnalyzeTests(unittest.TestCase):
             self.assertIsNone(content["top_values"])
             serialized = json.dumps(profile, ensure_ascii=False)
             self.assertNotIn("13800138000", serialized)
-            self.assertEqual(profile["schema_version"], "civic-data-profile-v2")
+            self.assertEqual(profile["schema_version"], "civic-data-profile-v3")
             self.assertEqual(profile["semantic_layer"]["unmapped_fields"], [])
             order_id = next(
                 entry

@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-SCHEMA_VERSION = "civic-data-profile-v2"
+SCHEMA_VERSION = "civic-data-profile-v3"
 NULL_TOKENS = {"null", "none", "nan", "n/a", "na"}
 TEXT_FIELDS = {
     "case_content",
@@ -1013,6 +1013,7 @@ class DatasetProfiler:
         }
         self.rows_with_domain_violation = 0
         self.rows_with_possible_pii = 0
+        self.case_content_tabular_contamination_rows = 0
         self.dates = {field: DateProfile() for field in DATETIME_FIELDS if field in self.columns}
         self.duration_seconds = Counter()
         self.duration_negative = 0
@@ -1083,6 +1084,8 @@ class DatasetProfiler:
             self.rows_with_possible_pii += 1
         content = semantic_value(row.get("case_content"))
         goal = semantic_value(row.get("case_goal"))
+        if content is not None and "\t" in content:
+            self.case_content_tabular_contamination_rows += 1
         if content is None and goal is None:
             self.text_relations["both_missing"] += 1
         elif content is None:
@@ -1232,6 +1235,9 @@ class DatasetProfiler:
             "quality_flags": {
                 "rows_with_domain_violation": self.rows_with_domain_violation,
                 "rows_with_possible_pii": self.rows_with_possible_pii,
+                "case_content_tabular_contamination_rows": (
+                    self.case_content_tabular_contamination_rows
+                ),
             },
             "text": {
                 "content_goal_relationship": dict(self.text_relations),
@@ -1697,12 +1703,16 @@ def build_markdown(profile: dict[str, Any]) -> str:
 
 - 启发式 PII 命中记录：{quality_flags.get('rows_with_possible_pii', 0):,}（字段命中 {pii_total:,}）
 - 受约束字段域异常记录：{quality_flags.get('rows_with_domain_violation', 0):,}（字段命中 {domain_total:,}）
+- `case_content` 嵌入 TSV 数据记录：{quality_flags.get('case_content_tabular_contamination_rows', 0):,}
 - `case_content` 有效/缺失：{content_counts}
 - `case_goal` 有效/缺失：{goal_counts}
 - 正文/诉求关系：`{json.dumps(analysis['text']['content_goal_relationship'], ensure_ascii=False)}`
 
 PII 检测是启发式正则筛查，既可能误报，也远非完整覆盖。命中记录在进入训练、
 embedding 或外部服务前必须隔离复核。
+
+`case_content` 中出现制表符表示正文吞入了后续 TSV 字段或记录。此类记录即使逻辑列宽正确，
+也属于记录边界污染，必须在抽取、embedding 和检索实验之前隔离，不能当成长文本样本。
 
 ## 6. 知识引用
 

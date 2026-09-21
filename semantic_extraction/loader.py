@@ -8,6 +8,8 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
+from .quality import require_clean_case_content
+
 
 @dataclass(frozen=True, slots=True)
 class SourceRecord:
@@ -52,6 +54,7 @@ def _load_tsv(path: Path) -> Iterator[SourceRecord]:
                     raise ValueError(f"TSV source row {source_row} has no case_content field")
                 if content.strip().casefold() in {"null", "nan"}:
                     content = ""
+                require_clean_case_content(content, location=f"TSV source row {source_row}")
                 yield SourceRecord(source_id, content, source_row)
         except csv.Error as exc:
             raise ValueError(f"invalid TSV near physical line {reader.line_num}: {exc}") from exc
@@ -77,6 +80,7 @@ def _load_jsonl(path: Path) -> Iterator[SourceRecord]:
                 raise ValueError(f"missing case_content at {path}:{line_number}")
             if type(source_row) is not int or source_row < 1:
                 raise ValueError(f"invalid source_row at {path}:{line_number}")
+            require_clean_case_content(content, location=f"{path}:{line_number}")
             yield SourceRecord(source_id.strip(), content, source_row)
 
 

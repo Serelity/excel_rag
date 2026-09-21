@@ -64,3 +64,7 @@ they must still receive a disclosure review before publication.
 - PII-like values and digit sequences of seven or more characters are redacted
   even when malformed data places them in an otherwise safe categorical field.
 - PII regexes are screening signals, not proof of successful anonymization.
+- `case_content` values containing tab characters are counted as embedded TSV
+  contamination. They remain structurally parseable but are excluded from the
+  semantic-extraction pilot because multiple source fields or records have been
+  swallowed into one narrative field.

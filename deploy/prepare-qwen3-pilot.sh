@@ -13,7 +13,7 @@ set +a
 : "${CONDA_EXTRACT_ENV:=civic-rag-extract}"
 : "${RAG_PILOT_SIZE:=2000}"
 : "${RAG_PILOT_SEED:=20260920}"
-: "${RAG_PILOT_PATH:=$PROJECT_ROOT/data/derived/qwen3-pilot-${RAG_PILOT_SIZE}.jsonl}"
+: "${RAG_PILOT_PATH:=$PROJECT_ROOT/data/derived/qwen3-pilot-v2-${RAG_PILOT_SIZE}.jsonl}"
 
 cd "$PROJECT_ROOT"
 exec conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \

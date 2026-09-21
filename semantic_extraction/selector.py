@@ -13,6 +13,10 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
+from .quality import case_content_quality_issue
+
+PILOT_SCHEMA_VERSION = "qwen3-pilot-v2"
+
 
 @dataclass(frozen=True, slots=True)
 class Candidate:
@@ -47,7 +51,13 @@ def _csv_limit() -> None:
             value //= 10
 
 
-def select_pilot(input_path: Path, *, size: int, seed: int) -> list[Candidate]:
+def select_pilot(
+    input_path: Path,
+    *,
+    size: int,
+    seed: int,
+    excluded_quality: Counter[str] | None = None,
+) -> list[Candidate]:
     if size < 1:
         raise ValueError("size must be positive")
     _csv_limit()
@@ -71,6 +81,11 @@ def select_pilot(input_path: Path, *, size: int, seed: int) -> list[Candidate]:
                 or not content.strip()
                 or content.strip().casefold() in {"null", "nan"}
             ):
+                continue
+            quality_issue = case_content_quality_issue(content)
+            if quality_issue is not None:
+                if excluded_quality is not None:
+                    excluded_quality[quality_issue] += 1
                 continue
             content_hash = hashlib.sha256(content.encode("utf-8")).hexdigest()
             if content_hash in seen_content:
@@ -137,6 +152,7 @@ def write_pilot(path: Path, records: list[Candidate], *, seed: int) -> None:
             os.chmod(temporary, 0o600)
             for position, record in enumerate(records, start=1):
                 value = {
+                    "pilot_schema_version": PILOT_SCHEMA_VERSION,
                     "source_id": record.source_id,
                     "source_row": record.source_row,
                     "case_content": record.case_content,
@@ -173,11 +189,19 @@ def main() -> None:
     args = parse_args()
     if args.output.exists() and not args.overwrite:
         raise SystemExit(f"output already exists: {args.output}; use --overwrite")
-    records = select_pilot(args.input, size=args.size, seed=args.seed)
+    excluded_quality: Counter[str] = Counter()
+    records = select_pilot(
+        args.input,
+        size=args.size,
+        seed=args.seed,
+        excluded_quality=excluded_quality,
+    )
     write_pilot(args.output, records, seed=args.seed)
     counts = Counter((item.category1, item.length_bucket) for item in records)
     print(f"pilot_records={len(records)}")
     print(f"pilot_strata={len(counts)}")
+    for code, count in sorted(excluded_quality.items()):
+        print(f"excluded_quality_{code.lower()}={count}")
     print(f"pilot_output={args.output.resolve()}")
 
 

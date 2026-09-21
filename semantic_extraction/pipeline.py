@@ -518,7 +518,12 @@ async def run_pipeline(
                         writes_since_checkpoint = 0
                 batch.clear()
 
-            for record in load_records(input_path):
+            records = iter(load_records(input_path))
+            while limit is None or stats.submitted < limit:
+                try:
+                    record = next(records)
+                except StopIteration:
+                    break
                 stats.scanned += 1
                 source_hash = content_sha256(record.case_content)
                 previous = seen_input.get(record.source_id)
@@ -534,8 +539,6 @@ async def run_pipeline(
                         )
                     stats.skipped += 1
                     continue
-                if limit is not None and stats.submitted >= limit:
-                    break
                 batch.append(record)
                 stats.submitted += 1
                 if len(batch) >= max(concurrency * 4, checkpoint_every):
