@@ -31,7 +31,7 @@ class ClientConfig:
     model: str = "Qwen3-30B-A3B"
     api_key: str = "EMPTY"
     temperature: float = 0.0
-    max_tokens: int = 4096
+    max_tokens: int = 6144
     timeout_seconds: float = 180.0
     max_retries: int = 1
     seed: int = 42

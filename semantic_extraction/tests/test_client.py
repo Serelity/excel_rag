@@ -60,6 +60,7 @@ async def test_client_sends_only_case_content_and_disables_thinking() -> None:
     call = fake.completions.calls[0]
     assert json.loads(call["messages"][1]["content"]) == {"case_content": "夜间施工噪声"}
     assert call["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
+    assert call["max_tokens"] == 6144
     assert call["response_format"]["json_schema"]["strict"] is True
     assert call["response_format"]["json_schema"]["name"] == "case_content_retrieval_issue_v4"
     required = call["response_format"]["json_schema"]["schema"]["$defs"]["ModelExtractedEvent"][

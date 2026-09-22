@@ -14,6 +14,7 @@ set +a
 : "${RAG_PILOT_SIZE:=2000}"
 : "${RAG_PILOT_SEED:=20260920}"
 : "${RAG_EXTRACTION_CONCURRENCY:=4}"
+: "${RAG_EXTRACTION_MAX_TOKENS:=6144}"
 : "${RAG_PILOT_PATH:=$PROJECT_ROOT/data/derived/qwen3-pilot-v2-${RAG_PILOT_SIZE}.jsonl}"
 : "${RAG_SEMANTIC_OUTPUT_DIR:=$PROJECT_ROOT/data/processed/qwen3-semantic-v4}"
 : "${RAG_RUN_RECORDS_PATH:=$PROJECT_ROOT/run-records/qwen3-semantic-v4}"
@@ -50,6 +51,8 @@ done
   { printf 'ERROR: RAG_PILOT_SIZE must be positive\n' >&2; exit 2; }
 [[ $RAG_EXTRACTION_CONCURRENCY =~ ^[0-9]+$ ]] && ((RAG_EXTRACTION_CONCURRENCY >= 1)) || \
   { printf 'ERROR: RAG_EXTRACTION_CONCURRENCY must be positive\n' >&2; exit 2; }
+[[ $RAG_EXTRACTION_MAX_TOKENS =~ ^[0-9]+$ ]] && ((RAG_EXTRACTION_MAX_TOKENS >= 1)) || \
+  { printf 'ERROR: RAG_EXTRACTION_MAX_TOKENS must be positive\n' >&2; exit 2; }
 [[ $VLLM_STARTUP_TIMEOUT_SECONDS =~ ^[0-9]+$ ]] && ((VLLM_STARTUP_TIMEOUT_SECONDS >= 1)) || \
   { printf 'ERROR: VLLM_STARTUP_TIMEOUT_SECONDS must be positive\n' >&2; exit 2; }
 [[ ${QWEN_MODEL_FINGERPRINT_SHA256:-} =~ ^sha256:[0-9a-fA-F]{64}$ ]] || \
@@ -88,8 +91,9 @@ printf 'job_id=%s\n' "$job_id" | tee "$status_log"
 printf 'pilot_input=%s\noutput=%s\nerrors=%s\n' \
   "$RAG_PILOT_PATH" "$output" "$errors" | tee -a "$status_log"
 printf 'vllm_log=%s\nextraction_log=%s\n' "$vllm_log" "$extraction_log" | tee -a "$status_log"
-printf 'model_fingerprint=%s\nprompt_version=%s\n' \
-  "$QWEN_MODEL_FINGERPRINT_SHA256" "case-content-retrieval-issue-v4" >> "$status_log"
+printf 'model_fingerprint=%s\nprompt_version=%s\nmax_tokens=%s\n' \
+  "$QWEN_MODEL_FINGERPRINT_SHA256" "case-content-retrieval-issue-v4" \
+  "$RAG_EXTRACTION_MAX_TOKENS" >> "$status_log"
 printf 'pilot_sha256=%s\n' "$(sha256sum "$RAG_PILOT_PATH" | awk '{print $1}')" >> "$status_log"
 printf 'Request logging is disabled; prompts and source text are not written to job logs.\n'
 
@@ -167,6 +171,7 @@ conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
   --cache "$cache" \
   --limit "$limit" \
   --concurrency "$RAG_EXTRACTION_CONCURRENCY" \
+  --max-tokens "$RAG_EXTRACTION_MAX_TOKENS" \
   "${mode[@]}" >"$extraction_log" 2>&1
 extraction_status=$?
 set -e

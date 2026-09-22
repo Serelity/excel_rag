@@ -26,7 +26,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--checkpoint-every", type=int, default=25)
     parser.add_argument("--base-url", default="http://127.0.0.1:8000/v1")
     parser.add_argument("--model", default="Qwen3-30B-A3B")
-    parser.add_argument("--max-tokens", type=int, default=4096)
+    parser.add_argument("--max-tokens", type=int, default=6144)
     parser.add_argument("--timeout-seconds", type=float, default=180.0)
     parser.add_argument("--segment-chars", type=int, default=8000)
     parser.add_argument("--seed", type=int, default=42)

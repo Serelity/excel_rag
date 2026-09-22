@@ -109,7 +109,9 @@ bash deploy/prepare-qwen3-pilot.sh
 
 Then submit this single foreground command as one H100 task. The wrapper checks
 the local model structure, starts loopback-only vLLM, verifies the served model
-alias, extracts 20 new records, and always stops the vLLM process group:
+alias, extracts 20 new records, and always stops the vLLM process group. The
+default structured-output ceiling is 6,144 tokens and is recorded in the run
+contract; override it with `RAG_EXTRACTION_MAX_TOKENS` only for a controlled run:
 
 ```bash
 bash deploy/run-qwen3-pilot.sh --limit 20 --overwrite
