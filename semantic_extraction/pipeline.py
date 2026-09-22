@@ -44,6 +44,8 @@ class RunStats:
     rejected_evidence_quotes: int = 0
     trigger_fallbacks: int = 0
     dropped_events: int = 0
+    polarity_repairs: int = 0
+    merged_duplicate_events: int = 0
 
 
 def content_sha256(content: str) -> str:
@@ -289,6 +291,8 @@ async def _process_batch(
                     rejected_evidence_quotes=0,
                     trigger_fallbacks=0,
                     dropped_events=0,
+                    polarity_repairs=0,
+                    merged_duplicate_events=0,
                 ),
                 None,
                 0,
@@ -444,6 +448,8 @@ async def run_pipeline(
                         rejected_quotes = 0 if reused else document.rejected_evidence_quotes
                         trigger_fallbacks = 0 if reused else document.trigger_fallbacks
                         dropped_events = 0 if reused else document.dropped_events
+                        polarity_repairs = 0 if reused else document.polarity_repairs
+                        merged_duplicate_events = 0 if reused else document.merged_duplicate_events
                         value = {
                             "schema_version": SCHEMA_VERSION,
                             "source_id": record.source_id,
@@ -464,6 +470,8 @@ async def run_pipeline(
                                 "rejected_evidence_quotes": rejected_quotes,
                                 "trigger_fallbacks": trigger_fallbacks,
                                 "dropped_events": dropped_events,
+                                "polarity_repairs": polarity_repairs,
+                                "merged_duplicate_events": merged_duplicate_events,
                             },
                         }
                         output.write(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
@@ -478,6 +486,8 @@ async def run_pipeline(
                         stats.rejected_evidence_quotes += rejected_quotes
                         stats.trigger_fallbacks += trigger_fallbacks
                         stats.dropped_events += dropped_events
+                        stats.polarity_repairs += polarity_repairs
+                        stats.merged_duplicate_events += merged_duplicate_events
                         emitted_hashes.add(source_hash)
                     else:
                         assert error is not None

@@ -4,8 +4,9 @@ from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
-SCHEMA_VERSION = "semantic-extraction-v3"
-PROMPT_VERSION = "case-content-semantic-v3"
+SCHEMA_VERSION = "semantic-extraction-v4"
+PROMPT_VERSION = "case-content-retrieval-issue-v4"
+MAX_RETRIEVAL_ISSUES = 3
 
 ShortText = Annotated[
     str,
@@ -76,7 +77,7 @@ class ExtractedEvent(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
     normalized_event_type: EventTypeText = Field(
-        description="简短、通用、适合检索的事件类型；保留咨询、疑似等语义。"
+        description="简短、通用、适合检索的问题类型；保留咨询、疑似等语义。"
     )
     trigger: EvidenceSpan = Field(description="最能指示该事件的原文短语。")
     actors: list[EvidenceSpan] = Field(
@@ -128,9 +129,9 @@ class SemanticExtraction(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
     events: list[ExtractedEvent] = Field(
-        max_length=6,
+        max_length=MAX_RETRIEVAL_ISSUES,
         description=(
-            "case_content 中可独立检索的事件。没有足够信息时返回空数组；不得创建"
+            "case_content 中需要不同知识答案的检索问题单元。没有足够信息时返回空数组；不得创建"
             "“未知问题”占位事件。"
         ),
     )
@@ -164,7 +165,7 @@ class ModelExtractedEvent(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
     normalized_event_type: EventTypeText = Field(
-        description="简短、通用、适合检索的事件类型；保留咨询、疑似等语义。"
+        description="简短、通用、适合检索的问题类型；保留咨询、疑似等语义。"
     )
     trigger: EvidenceQuote = Field(description="最能指示该事件的最短原文短语。")
     actors: list[EvidenceQuote] = Field(
@@ -208,6 +209,6 @@ class ModelSemanticExtraction(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
     events: list[ModelExtractedEvent] = Field(
-        max_length=6,
-        description="可独立检索的事件；没有足够信息时必须返回空数组。",
+        max_length=MAX_RETRIEVAL_ISSUES,
+        description="需要不同知识答案的检索问题单元；没有足够信息时必须返回空数组。",
     )

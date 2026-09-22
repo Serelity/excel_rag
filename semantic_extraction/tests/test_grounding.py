@@ -46,6 +46,7 @@ def test_grounding_assigns_offsets_without_model_character_arithmetic() -> None:
     assert result.rejected_evidence_quotes == 0
     assert result.trigger_fallbacks == 0
     assert result.dropped_events == 0
+    assert result.polarity_repairs == 0
 
 
 def test_grounding_uses_unused_trigger_occurrences_in_event_order() -> None:
@@ -110,3 +111,16 @@ def test_grounding_quarantines_when_no_event_has_verbatim_evidence() -> None:
         "trigger_fallbacks": 0,
         "dropped_events": 1,
     }
+
+
+def test_grounding_repairs_possible_event_type_polarity() -> None:
+    value = model_value()
+    value["events"][0]["normalized_event_type"] = "疑似路灯损坏"
+
+    result = ground_extraction(
+        ModelSemanticExtraction.model_validate(value),
+        "汉江路路灯不亮，希望维修",
+    )
+
+    assert result.extraction.events[0].polarity == "possible"
+    assert result.polarity_repairs == 1

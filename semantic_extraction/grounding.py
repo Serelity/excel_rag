@@ -43,6 +43,7 @@ class GroundingResult:
     rejected_evidence_quotes: int
     trigger_fallbacks: int
     dropped_events: int
+    polarity_repairs: int
 
 
 def _occurrences(source: str, needle: str) -> list[int]:
@@ -131,6 +132,7 @@ def ground_extraction(
     rejected_quotes = 0
     trigger_fallbacks = 0
     dropped_events = 0
+    polarity_repairs = 0
     used_trigger_positions: dict[str, set[int]] = {}
 
     for event in model_result.events:
@@ -215,6 +217,13 @@ def ground_extraction(
                 )
                 seen_locations.add(key)
 
+        polarity = event.polarity
+        if polarity == "occurred" and event.normalized_event_type.lstrip().startswith(
+            ("疑似", "涉嫌", "可能")
+        ):
+            polarity = "possible"
+            polarity_repairs += 1
+
         events.append(
             ExtractedEvent(
                 normalized_event_type=event.normalized_event_type,
@@ -227,7 +236,7 @@ def ground_extraction(
                 locations=locations,
                 time_expressions=times,
                 search_terms=list(dict.fromkeys(event.search_terms)),
-                polarity=event.polarity,
+                polarity=polarity,
             )
         )
 
@@ -261,4 +270,5 @@ def ground_extraction(
         rejected_evidence_quotes=rejected_quotes,
         trigger_fallbacks=trigger_fallbacks,
         dropped_events=dropped_events,
+        polarity_repairs=polarity_repairs,
     )

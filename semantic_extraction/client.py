@@ -49,6 +49,8 @@ class DocumentExtraction:
     rejected_evidence_quotes: int
     trigger_fallbacks: int
     dropped_events: int
+    polarity_repairs: int
+    merged_duplicate_events: int
 
 
 def split_document(text: str, max_chars: int) -> list[tuple[int, str]]:
@@ -94,7 +96,7 @@ class Qwen3ExtractionClient:
         self.response_format = {
             "type": "json_schema",
             "json_schema": {
-                "name": "case_content_semantic_v3",
+                "name": "case_content_retrieval_issue_v4",
                 "strict": True,
                 "schema": schema,
             },
@@ -110,6 +112,7 @@ class Qwen3ExtractionClient:
                 rejected_evidence_quotes=0,
                 trigger_fallbacks=0,
                 dropped_events=0,
+                polarity_repairs=0,
             )
         response = await self.client.chat.completions.create(
             model=self.config.model,
@@ -147,7 +150,7 @@ class Qwen3ExtractionClient:
             grounded = ground_extraction(model_result, content)
         except ValidationError as exc:
             raise ExtractionError(
-                "model JSON does not match case-content-semantic-v3",
+                "model JSON does not match case-content-retrieval-issue-v4",
                 code="SCHEMA_VALIDATION_FAILED",
             ) from exc
         except EvidenceGroundingError as exc:
@@ -166,6 +169,7 @@ class Qwen3ExtractionClient:
         rejected_evidence_quotes = 0
         trigger_fallbacks = 0
         dropped_events = 0
+        polarity_repairs = 0
         for offset, segment in segments:
             grounded = await self.extract_segment(segment)
             parts.append(shift_extraction(grounded.extraction, offset))
@@ -175,6 +179,8 @@ class Qwen3ExtractionClient:
             rejected_evidence_quotes += grounded.rejected_evidence_quotes
             trigger_fallbacks += grounded.trigger_fallbacks
             dropped_events += grounded.dropped_events
+            polarity_repairs += grounded.polarity_repairs
+        event_count_before_merge = sum(len(part.events) for part in parts)
         try:
             merged = merge_extractions(parts)
         except EvidenceAlignmentError as exc:
@@ -189,4 +195,6 @@ class Qwen3ExtractionClient:
             rejected_evidence_quotes=rejected_evidence_quotes,
             trigger_fallbacks=trigger_fallbacks,
             dropped_events=dropped_events,
+            polarity_repairs=polarity_repairs,
+            merged_duplicate_events=event_count_before_merge - len(merged.events),
         )

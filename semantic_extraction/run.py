@@ -81,6 +81,8 @@ async def async_main() -> int:
                 f"rejected_evidence_quotes={stats.rejected_evidence_quotes}",
                 f"trigger_fallbacks={stats.trigger_fallbacks}",
                 f"dropped_events={stats.dropped_events}",
+                f"polarity_repairs={stats.polarity_repairs}",
+                f"merged_duplicate_events={stats.merged_duplicate_events}",
                 (
                     f"exact_evidence_quote_rate={exact_quote_rate:.6f}"
                     if exact_quote_rate is not None

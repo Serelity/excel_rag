@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
-from semantic_extraction.alignment import EvidenceAlignmentError, align_extraction
-from semantic_extraction.schema import SemanticExtraction
+from semantic_extraction.alignment import (
+    EvidenceAlignmentError,
+    align_extraction,
+    merge_extractions,
+)
+from semantic_extraction.schema import ModelSemanticExtraction, SemanticExtraction
 from semantic_extraction.views import build_retrieval_views
 
 
@@ -62,9 +67,60 @@ def test_retrieval_core_keeps_location_as_separate_ablation() -> None:
     views = build_retrieval_views(extraction)
 
     assert "道路积水" in views["evidence_core"]
-    assert "事件：道路积水" not in views["evidence_core"]
-    assert "事件：道路积水" in views["semantic_terms"]
+    assert "问题：道路积水" not in views["evidence_core"]
+    assert "问题：道路积水" in views["semantic_terms"]
     assert "汉江路" not in views["semantic_core"]
     assert "希望排水" not in views["semantic_core"]
     assert "希望排水" in views["semantic_with_request"]
     assert "汉江路" in views["semantic_with_location"]
+
+
+def test_merge_extractions_combines_same_retrieval_issue() -> None:
+    first = SemanticExtraction.model_validate(extraction_value())
+    second_value = extraction_value(start=14, end=18)
+    second_event = second_value["events"][0]
+    second_event["trigger"] = {"text": "道路积水", "start": 14, "end": 18}
+    second_event["objects"] = [{"text": "道路", "start": 14, "end": 16}]
+    second_event["behaviors"] = [{"text": "积水", "start": 16, "end": 18}]
+    second_event["requests"] = [{"text": "要求处理", "start": 19, "end": 23}]
+    second_event["locations"] = []
+    second = SemanticExtraction.model_validate(second_value)
+
+    result = merge_extractions([first, second])
+
+    assert len(result.events) == 1
+    assert [span.text for span in result.events[0].requests] == ["希望排水", "要求处理"]
+    assert len(result.events[0].behaviors) == 2
+
+
+def test_merge_extractions_keeps_different_retrieval_issues() -> None:
+    first = SemanticExtraction.model_validate(extraction_value())
+    second_value = extraction_value()
+    second_value["events"][0]["normalized_event_type"] = "路灯故障"
+    second = SemanticExtraction.model_validate(second_value)
+
+    result = merge_extractions([first, second])
+
+    assert [event.normalized_event_type for event in result.events] == [
+        "道路积水",
+        "路灯故障",
+    ]
+
+
+def test_model_schema_rejects_more_than_three_retrieval_issues() -> None:
+    event = {
+        "normalized_event_type": "道路积水",
+        "trigger": {"text": "道路积水"},
+        "actors": [],
+        "objects": [],
+        "behaviors": [],
+        "impacts": [],
+        "requests": [],
+        "locations": [],
+        "time_expressions": [],
+        "search_terms": [],
+        "polarity": "occurred",
+    }
+
+    with pytest.raises(ValidationError):
+        ModelSemanticExtraction.model_validate({"events": [event.copy() for _ in range(4)]})

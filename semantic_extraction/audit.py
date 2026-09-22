@@ -10,6 +10,8 @@ GROUNDING_COUNTERS = (
     "rejected_evidence_quotes",
     "trigger_fallbacks",
     "dropped_events",
+    "polarity_repairs",
+    "merged_duplicate_events",
 )
 
 

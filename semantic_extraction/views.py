@@ -39,13 +39,13 @@ def build_retrieval_views(extraction: SemanticExtraction) -> dict[str, str]:
                 evidence_lines.append(value)
         evidence_blocks.append("\n".join(evidence_lines))
 
-        term_lines = [f"事件：{event.normalized_event_type}"]
+        term_lines = [f"问题：{event.normalized_event_type}"]
         terms_line = _line("检索词", event.search_terms)
         if terms_line:
             term_lines.append(terms_line)
         term_blocks.append("\n".join(term_lines))
 
-        factual = [f"事件：{event.normalized_event_type}"]
+        factual = [f"问题：{event.normalized_event_type}"]
         for label, values in (
             ("原文触发", [event.trigger.text]),
             ("主体", _span_text(event.actors)),

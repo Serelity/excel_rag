@@ -61,7 +61,7 @@ async def test_client_sends_only_case_content_and_disables_thinking() -> None:
     assert json.loads(call["messages"][1]["content"]) == {"case_content": "夜间施工噪声"}
     assert call["extra_body"] == {"chat_template_kwargs": {"enable_thinking": False}}
     assert call["response_format"]["json_schema"]["strict"] is True
-    assert call["response_format"]["json_schema"]["name"] == "case_content_semantic_v3"
+    assert call["response_format"]["json_schema"]["name"] == "case_content_retrieval_issue_v4"
     required = call["response_format"]["json_schema"]["schema"]["$defs"]["ModelExtractedEvent"][
         "required"
     ]
@@ -69,6 +69,7 @@ async def test_client_sends_only_case_content_and_disables_thinking() -> None:
     assert "locations" in required
     quote_schema = call["response_format"]["json_schema"]["schema"]["$defs"]["EvidenceQuote"]
     assert set(quote_schema["properties"]) == {"text"}
+    assert call["response_format"]["json_schema"]["schema"]["properties"]["events"]["maxItems"] == 3
 
 
 def test_long_document_splits_on_sentence_boundary_without_loss() -> None:

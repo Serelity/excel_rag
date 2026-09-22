@@ -17,6 +17,8 @@ def test_audit_computes_exact_evidence_quote_rate(tmp_path) -> None:
                     "rejected_evidence_quotes": 2,
                     "trigger_fallbacks": 1,
                     "dropped_events": 1,
+                    "polarity_repairs": 2,
+                    "merged_duplicate_events": 3,
                 },
             }
         )
@@ -44,3 +46,5 @@ def test_audit_computes_exact_evidence_quote_rate(tmp_path) -> None:
     assert result["rates"]["exact_evidence_quote_rate"] == 8 / 12
     assert result["counts"]["trigger_fallbacks"] == 1
     assert result["counts"]["dropped_events"] == 2
+    assert result["counts"]["polarity_repairs"] == 2
+    assert result["counts"]["merged_duplicate_events"] == 3

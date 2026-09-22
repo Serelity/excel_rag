@@ -25,6 +25,8 @@ class FakeExtractionClient:
             rejected_evidence_quotes=0,
             trigger_fallbacks=0,
             dropped_events=0,
+            polarity_repairs=1,
+            merged_duplicate_events=2,
         )
 
 
@@ -100,6 +102,11 @@ async def test_pipeline_deduplicates_content_and_resumes(tmp_path) -> None:
     assert fake.calls == ["相同正文", "另一正文"]
     assert rows[0]["processing"]["cache_hit"] is False
     assert rows[1]["processing"]["cache_hit"] is True
+    assert rows[0]["processing"]["polarity_repairs"] == 1
+    assert rows[0]["processing"]["merged_duplicate_events"] == 2
+    assert rows[1]["processing"]["polarity_repairs"] == 0
+    assert first.polarity_repairs == 1
+    assert first.merged_duplicate_events == 2
     assert errors.read_text(encoding="utf-8") == ""
 
 

@@ -2,7 +2,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .schema import EvidenceSpan, ExtractedEvent, LocationMention, SemanticExtraction
+from .schema import (
+    MAX_RETRIEVAL_ISSUES,
+    EvidenceSpan,
+    ExtractedEvent,
+    LocationMention,
+    SemanticExtraction,
+)
 
 
 class EvidenceAlignmentError(ValueError):
@@ -136,22 +142,65 @@ def shift_extraction(extraction: SemanticExtraction, offset: int) -> SemanticExt
 
 
 def merge_extractions(parts: list[SemanticExtraction]) -> SemanticExtraction:
-    events: list[ExtractedEvent] = []
-    seen: set[tuple[str, int, int, str]] = set()
+    grouped: dict[tuple[str, str], list[ExtractedEvent]] = {}
     for part in parts:
         for event in part.events:
+            grouped.setdefault((event.normalized_event_type, event.polarity), []).append(event)
+
+    events = [_merge_event_group(group) for group in grouped.values()]
+    if len(events) > MAX_RETRIEVAL_ISSUES:
+        raise EvidenceAlignmentError(
+            f"merged document contains more than {MAX_RETRIEVAL_ISSUES} distinct issues"
+        )
+    return SemanticExtraction(events=events)
+
+
+def _unique_spans(events: list[ExtractedEvent], field: str, limit: int) -> list[EvidenceSpan]:
+    spans: list[EvidenceSpan] = []
+    seen: set[tuple[int, int, str]] = set()
+    for event in events:
+        for span in getattr(event, field):
+            key = (span.start, span.end, span.text)
+            if key not in seen:
+                spans.append(span)
+                seen.add(key)
+    return spans[:limit]
+
+
+def _unique_locations(events: list[ExtractedEvent]) -> list[LocationMention]:
+    locations: list[LocationMention] = []
+    seen: set[tuple[int, int, str, str | None]] = set()
+    for event in events:
+        for location in event.locations:
             key = (
-                event.normalized_event_type,
-                event.trigger.start,
-                event.trigger.end,
-                event.polarity,
+                location.evidence.start,
+                location.evidence.end,
+                location.kind,
+                location.normalized_name,
             )
             if key not in seen:
-                events.append(event)
+                locations.append(location)
                 seen.add(key)
-    if len(events) > 6:
-        raise EvidenceAlignmentError("merged document contains more than six distinct events")
-    return SemanticExtraction(events=events)
+    return locations[:5]
+
+
+def _merge_event_group(events: list[ExtractedEvent]) -> ExtractedEvent:
+    first = events[0]
+    trigger = min((event.trigger for event in events), key=lambda span: (span.start, span.end))
+    search_terms = list(dict.fromkeys(term for event in events for term in event.search_terms))[:8]
+    return ExtractedEvent(
+        normalized_event_type=first.normalized_event_type,
+        trigger=trigger,
+        actors=_unique_spans(events, "actors", 4),
+        objects=_unique_spans(events, "objects", 5),
+        behaviors=_unique_spans(events, "behaviors", 5),
+        impacts=_unique_spans(events, "impacts", 4),
+        requests=_unique_spans(events, "requests", 4),
+        locations=_unique_locations(events),
+        time_expressions=_unique_spans(events, "time_expressions", 4),
+        search_terms=search_terms,
+        polarity=first.polarity,
+    )
 
 
 def validate_aligned_extraction(extraction: SemanticExtraction, source: str) -> None:
