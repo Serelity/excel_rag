@@ -143,6 +143,7 @@ def write_pilot(path: Path, records: list[Candidate], *, seed: int) -> None:
         with tempfile.NamedTemporaryFile(
             mode="w",
             encoding="utf-8",
+            newline="\n",
             dir=path.parent,
             prefix=f".{path.name}.",
             suffix=".tmp",

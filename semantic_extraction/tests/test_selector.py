@@ -7,7 +7,7 @@ import pytest
 
 from semantic_extraction.loader import load_records
 from semantic_extraction.quality import TABULAR_CONTAMINATION
-from semantic_extraction.selector import select_pilot
+from semantic_extraction.selector import select_pilot, write_pilot
 
 
 def write_tsv(path) -> None:
@@ -38,6 +38,10 @@ def test_selector_is_deterministic_and_uses_unique_content(tmp_path) -> None:
     assert [item.source_id for item in first] == [item.source_id for item in second]
     assert len({item.content_sha256 for item in first}) == 12
     assert len({(item.category1, item.length_bucket) for item in first}) > 2
+
+    output = tmp_path / "pilot.jsonl"
+    write_pilot(output, first, seed=7)
+    assert b"\r\n" not in output.read_bytes()
 
 
 def test_selector_excludes_tabular_contamination(tmp_path) -> None:
