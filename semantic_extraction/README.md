@@ -147,13 +147,13 @@ conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
   --errors data/processed/qwen3-semantic-v4/pilot-2000.errors.jsonl
 ```
 
-Proceed only if quarantine is zero and a manual evidence review is acceptable.
-The next task processes the remaining 1,980 records; `--limit` means new
-records, and `--resume` validates the prior manifest before appending:
-
-```bash
-bash deploy/run-qwen3-pilot.sh --limit 1980 --resume
-```
+Do not process the remaining 1,980 records yet. Freeze this 20-record v4 run as
+the first baseline and build the reviewed gold set described in
+[`EVALUATION.md`](EVALUATION.md). The current sample has already exposed two
+failure modes that aggregate audit counters cannot measure: historical issues
+leaking into a resolved/withdrawn case, and independent issues being lost at
+the three-event ceiling. Those require issue-level human judgments before a v5
+schema or prompt change can be evaluated honestly.
 
 Runtime logs live under `run-records/qwen3-semantic-v4/`. Request and access
 logging are disabled, and exception messages or source text are not written to
@@ -163,8 +163,8 @@ settings are ignored by Git.
 ## What this stage can establish
 
 The extraction pilot measures schema validity, evidence grounding, empty-event
-rate, multi-event rate, quarantine rate, and manual field precision/recall. It
-does not by itself establish retrieval improvement. That claim requires the
+rate, multi-event rate, quarantine rate, and reviewed issue precision/recall.
+It does not by itself establish retrieval improvement. That claim requires the
 same query set, corpus, embedder/BM25 settings, and relevance judgments across
 raw, semantic, raw-plus-semantic, and dual-route retrieval, with Observed
 Recall@10 as the primary metric.

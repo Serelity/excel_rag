@@ -9,3 +9,8 @@ The repository currently contains two deliberately separate stages:
 Start with [`semantic_extraction/README.md`](semantic_extraction/README.md) for
 the Conda and H100 pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.
+
+After the 20-record Qwen3 v4 pilot, use
+[`semantic_extraction/EVALUATION.md`](semantic_extraction/EVALUATION.md) to build
+the private human gold set and score extraction errors before changing the
+schema or running the remaining pilot records.
