@@ -12,6 +12,8 @@ GROUNDING_COUNTERS = (
     "dropped_events",
     "polarity_repairs",
     "merged_duplicate_events",
+    "truncation_retries",
+    "truncation_recoveries",
 )
 
 
@@ -80,7 +82,10 @@ def audit(output: Path, errors: Path) -> dict:
     for record in _records(errors):
         summary["quarantine_records"] += 1
         error_codes[str(record.get("error_code", "missing"))] += 1
-        _add_grounding_counts(summary, record.get("processing", {}))
+        processing = record.get("processing", {})
+        if isinstance(processing, dict):
+            summary["model_calls"] += int(processing.get("model_calls", 0))
+        _add_grounding_counts(summary, processing)
 
     proposed_quotes = summary["proposed_evidence_quotes"]
     exact_quote_rate = (

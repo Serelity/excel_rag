@@ -91,9 +91,9 @@ printf 'job_id=%s\n' "$job_id" | tee "$status_log"
 printf 'pilot_input=%s\noutput=%s\nerrors=%s\n' \
   "$RAG_PILOT_PATH" "$output" "$errors" | tee -a "$status_log"
 printf 'vllm_log=%s\nextraction_log=%s\n' "$vllm_log" "$extraction_log" | tee -a "$status_log"
-printf 'model_fingerprint=%s\nprompt_version=%s\nmax_tokens=%s\n' \
+printf 'model_fingerprint=%s\nprompt_version=%s\nmax_tokens=%s\ntruncation_recovery=%s\n' \
   "$QWEN_MODEL_FINGERPRINT_SHA256" "case-content-retrieval-issue-v4" \
-  "$RAG_EXTRACTION_MAX_TOKENS" >> "$status_log"
+  "$RAG_EXTRACTION_MAX_TOKENS" "compact-json-v1" >> "$status_log"
 printf 'pilot_sha256=%s\n' "$(sha256sum "$RAG_PILOT_PATH" | awk '{print $1}')" >> "$status_log"
 printf 'Request logging is disabled; prompts and source text are not written to job logs.\n'
 

@@ -55,10 +55,30 @@ SYSTEM_PROMPT = """\
 - “咨询异地医保如何报销”：polarity=consultation，不能虚构报销失败。
 """
 
+TRUNCATION_RECOVERY_VERSION = "compact-json-v1"
+
+TRUNCATION_RECOVERY_PROMPT = (
+    SYSTEM_PROMPT
+    + """
+
+精简恢复模式：上一次结构化回答因过长而被截断。重新分析同一份 case_content，并严格精简：
+- 仍按“需要不同知识答案”划分问题，不因精简而遗漏独立问题，也不要增加新问题。
+- 每个问题的每类可选证据最多保留 2 项，只选最关键、最短的连续原文片段。
+- 每条证据不超过 48 个字符；search_terms 最多 4 个。
+- 不解释精简过程，不提及上一次回答，只返回符合恢复 JSON Schema 的完整对象。
+"""
+)
+
 
 def user_message(case_content: str) -> str:
     """Serialize the sole model input without interpolating it into instructions."""
     return json.dumps({"case_content": case_content}, ensure_ascii=False, separators=(",", ":"))
 
 
-__all__ = ["PROMPT_VERSION", "SYSTEM_PROMPT", "user_message"]
+__all__ = [
+    "PROMPT_VERSION",
+    "SYSTEM_PROMPT",
+    "TRUNCATION_RECOVERY_PROMPT",
+    "TRUNCATION_RECOVERY_VERSION",
+    "user_message",
+]

@@ -27,6 +27,8 @@ class FakeExtractionClient:
             dropped_events=0,
             polarity_repairs=1,
             merged_duplicate_events=2,
+            truncation_retries=1,
+            truncation_recoveries=1,
         )
 
 
@@ -36,7 +38,15 @@ class NonRetryableFailureClient:
 
     async def extract_document(self, content: str) -> DocumentExtraction:
         self.calls += 1
-        raise ExtractionError("ungrounded", code="NO_GROUNDED_EVENTS")
+        raise ExtractionError(
+            "ungrounded",
+            code="NO_GROUNDED_EVENTS",
+            processing={
+                "model_calls": 2,
+                "truncation_retries": 1,
+                "truncation_recoveries": 0,
+            },
+        )
 
 
 def write_input(path, rows: list[dict]) -> None:
@@ -101,12 +111,17 @@ async def test_pipeline_deduplicates_content_and_resumes(tmp_path) -> None:
     assert second.succeeded == 1
     assert fake.calls == ["相同正文", "另一正文"]
     assert rows[0]["processing"]["cache_hit"] is False
+    assert rows[0]["provenance"]["truncation_recovery"] == "compact-json-v1"
     assert rows[1]["processing"]["cache_hit"] is True
     assert rows[0]["processing"]["polarity_repairs"] == 1
     assert rows[0]["processing"]["merged_duplicate_events"] == 2
+    assert rows[0]["processing"]["truncation_retries"] == 1
+    assert rows[0]["processing"]["truncation_recoveries"] == 1
     assert rows[1]["processing"]["polarity_repairs"] == 0
     assert first.polarity_repairs == 1
     assert first.merged_duplicate_events == 2
+    assert first.truncation_retries == 1
+    assert first.truncation_recoveries == 1
     assert errors.read_text(encoding="utf-8") == ""
 
 
@@ -139,3 +154,7 @@ async def test_pipeline_reports_actual_attempts_for_non_retryable_error(tmp_path
     assert fake.calls == 1
     assert row["attempts"] == 1
     assert row["error_code"] == "NO_GROUNDED_EVENTS"
+    assert row["processing"]["truncation_retries"] == 1
+    assert stats.model_calls == 2
+    assert stats.truncation_retries == 1
+    assert stats.truncation_recoveries == 0

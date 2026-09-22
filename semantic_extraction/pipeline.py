@@ -17,6 +17,7 @@ from typing import Any, TextIO
 from .cache import ExtractionCache, contract_key
 from .client import ClientConfig, DocumentExtraction, ExtractionError, Qwen3ExtractionClient
 from .loader import SourceRecord, load_records
+from .prompt import TRUNCATION_RECOVERY_VERSION
 from .schema import PROMPT_VERSION, SCHEMA_VERSION, SemanticExtraction
 from .views import build_retrieval_views
 
@@ -46,6 +47,8 @@ class RunStats:
     dropped_events: int = 0
     polarity_repairs: int = 0
     merged_duplicate_events: int = 0
+    truncation_retries: int = 0
+    truncation_recoveries: int = 0
 
 
 def content_sha256(content: str) -> str:
@@ -175,6 +178,7 @@ def _contract(config: ClientConfig, model_fingerprint: str | None) -> dict[str, 
         "max_tokens": config.max_tokens,
         "segment_chars": config.segment_chars,
         "thinking": False,
+        "truncation_recovery": TRUNCATION_RECOVERY_VERSION,
     }
 
 
@@ -293,6 +297,8 @@ async def _process_batch(
                     dropped_events=0,
                     polarity_repairs=0,
                     merged_duplicate_events=0,
+                    truncation_retries=0,
+                    truncation_recoveries=0,
                 ),
                 None,
                 0,
@@ -450,6 +456,8 @@ async def run_pipeline(
                         dropped_events = 0 if reused else document.dropped_events
                         polarity_repairs = 0 if reused else document.polarity_repairs
                         merged_duplicate_events = 0 if reused else document.merged_duplicate_events
+                        truncation_retries = 0 if reused else document.truncation_retries
+                        truncation_recoveries = 0 if reused else document.truncation_recoveries
                         value = {
                             "schema_version": SCHEMA_VERSION,
                             "source_id": record.source_id,
@@ -472,6 +480,8 @@ async def run_pipeline(
                                 "dropped_events": dropped_events,
                                 "polarity_repairs": polarity_repairs,
                                 "merged_duplicate_events": merged_duplicate_events,
+                                "truncation_retries": truncation_retries,
+                                "truncation_recoveries": truncation_recoveries,
                             },
                         }
                         output.write(json.dumps(value, ensure_ascii=False, separators=(",", ":")))
@@ -488,6 +498,8 @@ async def run_pipeline(
                         stats.dropped_events += dropped_events
                         stats.polarity_repairs += polarity_repairs
                         stats.merged_duplicate_events += merged_duplicate_events
+                        stats.truncation_retries += truncation_retries
+                        stats.truncation_recoveries += truncation_recoveries
                         emitted_hashes.add(source_hash)
                     else:
                         assert error is not None
@@ -511,6 +523,7 @@ async def run_pipeline(
                         errors.write("\n")
                         failed[record.source_id] = source_hash
                         stats.failed += 1
+                        stats.model_calls += int(error_processing.get("model_calls", 0))
                         stats.proposed_evidence_quotes += int(
                             error_processing.get("proposed_evidence_quotes", 0)
                         )
@@ -519,6 +532,12 @@ async def run_pipeline(
                         )
                         stats.trigger_fallbacks += int(error_processing.get("trigger_fallbacks", 0))
                         stats.dropped_events += int(error_processing.get("dropped_events", 0))
+                        stats.truncation_retries += int(
+                            error_processing.get("truncation_retries", 0)
+                        )
+                        stats.truncation_recoveries += int(
+                            error_processing.get("truncation_recoveries", 0)
+                        )
                     writes_since_checkpoint += 1
                     if writes_since_checkpoint >= checkpoint_every:
                         output.flush()

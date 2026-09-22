@@ -117,6 +117,12 @@ contract; override it with `RAG_EXTRACTION_MAX_TOKENS` only for a controlled run
 bash deploy/run-qwen3-pilot.sh --limit 20 --overwrite
 ```
 
+If the standard structured response reaches the output ceiling, the client makes
+one deterministic compact recovery request for that segment. The recovery schema
+limits each evidence category to two quotes, each quote to 48 characters, and
+search terms to four. Output processing metadata reports `truncation_retries` and
+`truncation_recoveries`; normal records never use the recovery prompt.
+
 The model path and previously verified content fingerprint in the supplied
 example are:
 

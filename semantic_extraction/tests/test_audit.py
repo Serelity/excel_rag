@@ -19,6 +19,8 @@ def test_audit_computes_exact_evidence_quote_rate(tmp_path) -> None:
                     "dropped_events": 1,
                     "polarity_repairs": 2,
                     "merged_duplicate_events": 3,
+                    "truncation_retries": 1,
+                    "truncation_recoveries": 1,
                 },
             }
         )
@@ -30,10 +32,13 @@ def test_audit_computes_exact_evidence_quote_rate(tmp_path) -> None:
             {
                 "error_code": "NO_GROUNDED_EVENTS",
                 "processing": {
+                    "model_calls": 2,
                     "proposed_evidence_quotes": 2,
                     "rejected_evidence_quotes": 2,
                     "trigger_fallbacks": 0,
                     "dropped_events": 1,
+                    "truncation_retries": 1,
+                    "truncation_recoveries": 0,
                 },
             }
         )
@@ -48,3 +53,6 @@ def test_audit_computes_exact_evidence_quote_rate(tmp_path) -> None:
     assert result["counts"]["dropped_events"] == 2
     assert result["counts"]["polarity_repairs"] == 2
     assert result["counts"]["merged_duplicate_events"] == 3
+    assert result["counts"]["model_calls"] == 2
+    assert result["counts"]["truncation_retries"] == 2
+    assert result["counts"]["truncation_recoveries"] == 1
