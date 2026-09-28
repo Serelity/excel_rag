@@ -14,3 +14,6 @@ After the 20-record Qwen3 v4 pilot, use
 [`semantic_extraction/EVALUATION.md`](semantic_extraction/EVALUATION.md) to build
 the private human gold set and score extraction errors before changing the
 schema or running the remaining pilot records.
+
+Use the [offline annotation page](semantic_extraction/ANNOTATION.md) to read,
+annotate, and export the 20-record worksheet in a browser.

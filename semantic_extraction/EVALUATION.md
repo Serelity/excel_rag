@@ -15,6 +15,10 @@ validates the alignment and computes all metrics deterministically.
 All worksheet, gold, and adjudication files below live under `data/evaluation/`.
 They can contain sensitive source excerpts and are excluded from Git.
 
+Use the [offline browser annotation page](ANNOTATION.md) to fill in the gold
+worksheet without editing JSONL directly. The 20 records already used for prompt
+development are a development set, not an independent final test set.
+
 ## 1. Prepare the 20-record gold worksheet
 
 Run this on a CPU/login task after the v4 20-record result exists. Use the

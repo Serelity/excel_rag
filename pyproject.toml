@@ -27,6 +27,9 @@ dev = [
 [tool.setuptools.packages.find]
 include = ["semantic_extraction*"]
 
+[tool.setuptools.package-data]
+semantic_extraction = ["annotation_assets/*.html", "annotation_assets/*.js"]
+
 [tool.pytest.ini_options]
 testpaths = ["semantic_extraction/tests", "data_analysis"]
 asyncio_mode = "auto"
