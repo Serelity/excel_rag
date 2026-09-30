@@ -9,6 +9,9 @@
 
 ## 第一步：单独创建 Conda 环境
 
+环境与模型准备已拆为独立流程，完整说明见 [RETRIEVAL_SETUP.md](../deploy/RETRIEVAL_SETUP.md)。
+先完成这两步，到文件检查通过即可；后续 GPU 检查和实验另行运行。
+
 服务器已有的 `civic-rag-extract` 环境继续用于 Qwen3 抽取。
 新增 `civic-rag-retrieval`，避免检索依赖影响 vLLM。
 
@@ -29,14 +32,14 @@ Transformers 4.51.3、Sentence Transformers 3.4.1、NumPy 1.26.4、FAISS CPU 1.1
 已核对 ModelScope 的 `Xorbits/bge-m3` 仓库含权重、tokenizer、modules 和 CLS pooling 配置。
 
 ```bash
-conda activate civic-rag-retrieval
-python -m pip install "modelscope==1.25.0"
-python -c 'from modelscope import snapshot_download; snapshot_download("Xorbits/bge-m3", local_dir="models/bge-m3")'
+bash deploy/download-retrieval-model.sh
 ```
 
 完整下载可能包含两种权重格式，需预留数 GB 磁盘。运行只读取本地模型，
 不自动下载、不允许远程模型代码。下载目录已有完整模型时可跳过下载。
 每次运行记录模型配置、tokenizer 和权重的内容 SHA256，下载源的浮动版本不作为唯一身份。
+下载脚本成功时出现 `"model_files_check": "passed"`；此处只检查文件和配置，不加载模型。
+已经准备过模型时，使用 `bash deploy/download-retrieval-model.sh --verify-only` 离线检查。
 
 ## 第三步：检查历史库，然后在 GPU 节点做小检查
 
