@@ -25,13 +25,13 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["semantic_extraction*"]
+include = ["semantic_extraction*", "retrieval_baseline*"]
 
 [tool.setuptools.package-data]
 semantic_extraction = ["annotation_assets/*.html", "annotation_assets/*.js"]
 
 [tool.pytest.ini_options]
-testpaths = ["semantic_extraction/tests", "data_analysis"]
+testpaths = ["semantic_extraction/tests", "data_analysis", "retrieval_baseline/tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 

@@ -1,13 +1,17 @@
 # Civic RAG rebuild
 
-The repository currently contains two deliberately separate stages:
+The repository contains three stages:
 
 - [`data_analysis/`](data_analysis/): privacy-aware source profiling and field semantics;
+- [`retrieval_baseline/`](retrieval_baseline/): time-isolated raw-text BM25 baselines for
+  historical cases and observed knowledge-entry recommendation;
 - [`semantic_extraction/`](semantic_extraction/): evidence-grounded Qwen3 extraction from
   `case_content` for controlled retrieval experiments.
 
-Start with [`semantic_extraction/README.md`](semantic_extraction/README.md) for
-the Conda and H100 pilot procedure. Source data, derived samples, model files,
+Start with [`retrieval_baseline/README.md`](retrieval_baseline/README.md) for the current
+CPU-only dataset and development baseline. It does not require LLM annotations.
+Use [`semantic_extraction/README.md`](semantic_extraction/README.md) for the separate
+Conda and H100 extraction pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.
 
 After the 20-record Qwen3 v4 pilot, use
