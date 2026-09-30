@@ -10,6 +10,8 @@ The repository contains three stages:
 
 Start with [`retrieval_baseline/README.md`](retrieval_baseline/README.md) for the current
 CPU-only dataset and development baseline. It does not require LLM annotations.
+Continue with [`retrieval_baseline/DENSE.md`](retrieval_baseline/DENSE.md) for local
+BGE-M3 encoding, resumable vector indexing and paired BM25/dense evaluation.
 Use [`semantic_extraction/README.md`](semantic_extraction/README.md) for the separate
 Conda and H100 extraction pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.

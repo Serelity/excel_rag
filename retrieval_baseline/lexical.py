@@ -124,6 +124,21 @@ def recommend(db: sqlite3.Connection, text: str, *, case_k: int, top_k: int, max
             "JOIN cases c ON c.docid=case_fts.rowid WHERE case_fts MATCH ? "
             "ORDER BY bm25(case_fts),c.source_id LIMIT ?", (query, case_k),
         ).fetchall()
+    case_ids, case_hits, supporting = vote_cases(db, cases, top_k=top_k)
+    combined = defaultdict(float)
+    for ranking in (title_ids, case_ids):
+        for rank, key in enumerate(ranking, 1):
+            combined[key] += 1 / (60 + rank)
+    fused_ids = sorted(combined, key=lambda k: (-combined[k], k))[:top_k]
+    return {
+        "title_bm25": title_ids,
+        "case_bm25_vote": case_ids,
+        "title_case_rrf": fused_ids,
+    }, case_hits, supporting
+
+
+def vote_cases(db: sqlite3.Connection, cases: list[tuple], *, top_k: int):
+    """Shared post-retrieval stage for lexical and dense candidates, in rank order."""
     # A correlated association group contributes at most once per knowledge ID.
     # Divide a case vote among its references, so long citation lists do not dominate.
     contributions: dict[tuple[int, str], float] = {}
@@ -140,16 +155,7 @@ def recommend(db: sqlite3.Connection, text: str, *, case_k: int, top_k: int, max
     for (_, key), vote in contributions.items():
         scores[key] += vote
     case_ids = sorted(scores, key=lambda k: (-scores[k], k))[:top_k]
-    combined = defaultdict(float)
-    for ranking in (title_ids, case_ids):
-        for rank, key in enumerate(ranking, 1):
-            combined[key] += 1 / (60 + rank)
-    fused_ids = sorted(combined, key=lambda k: (-combined[k], k))[:top_k]
-    return {
-        "title_bm25": title_ids,
-        "case_bm25_vote": case_ids,
-        "title_case_rrf": fused_ids,
-    }, case_hits, {key: supporting[key] for key in case_ids}
+    return case_ids, case_hits, {key: supporting[key] for key in case_ids}
 
 
 def observed_metrics(
