@@ -17,6 +17,10 @@ Then continue with [`retrieval_baseline/DENSE.md`](retrieval_baseline/DENSE.md) 
 BGE-M3 encoding, resumable vector indexing and paired BM25/dense evaluation.
 After both runs, use the [case-level hybrid procedure](retrieval_baseline/README.md#案例级混合检索)
 to fuse their saved candidates and compare all three methods without new model calls.
+For arbitrary new complaints, addresses, or problem descriptions, use
+[`retrieval_baseline/CASE_SEARCH.md`](retrieval_baseline/CASE_SEARCH.md). This entry
+returns historical complaint cases directly, without knowledge-reference voting.
+It reuses the existing raw-text indexes and adds a separate address-name index.
 Use [`semantic_extraction/README.md`](semantic_extraction/README.md) for the separate
 Conda and H100 extraction pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.
