@@ -114,6 +114,58 @@ python -m json.tool data/retrieval-baseline-v1/dev-bm25/report.json
 本阶段没有接入完整开源 RAG 平台；先冻结数据和评价接口，之后可用
 Elasticsearch/OpenSearch 等后端替换检索实现并作同协议比较。
 
+## 案例级混合检索
+
+完成同一开发集的 BM25 和 BGE-M3 评估后，复用两路已经保存的历史案例候选：
+
+1. 每路取已有 Top 50 案例，按案例 `source_id` 去重，最多得到 100 个候选。
+2. 用等权 RRF 计算 `1 / (60 + BM25 排名) + 1 / (60 + dense 排名)`；
+   某路没有该案例时，该路贡献为零。同分按 `source_id` 固定排序。
+3. 截取统一的 Top 50 案例，再使用与单路基线相同的引用投票，推荐 Top 10 知识条目。
+
+因此混合方案不是把 100 个案例直接送入投票，也不是融合已有知识 Top 10。
+下游案例预算仍为 50，但上游需要两路检索，成本不能视为与单路相同。
+整个过程不使用查询标签选候选，不增加 LLM、reranker 或新的 embedding。
+输入报告、候选与数据集必须来自同一数据协议，程序会校验来源和查询一致性。
+当前脚本只运行 `dev`，不评估保留测试集。
+
+服务器已完成两路评估后执行：
+
+```bash
+cd /seu_share/home/huangkai/220243809/12345/excel_rag
+git pull --ff-only origin main
+bash deploy/run-hybrid-baseline.sh
+conda run --no-capture-output -n civic-rag-retrieval python -m json.tool data/retrieval-hybrid-v1/dev-hybrid/report.json
+```
+
+脚本使用已有 `civic-rag-retrieval` 环境，不依赖 `$CONDA_EXTRACT_ENV`，也不调用 Git。
+更新代码的 `git pull` 是单独的终端操作。无需重新下载模型、编码 400,120 条正文或启动 GPU；
+只需要现成的数据集、BM25 元数据索引和两路报告/候选文件。它可在 CPU 计算任务中运行。
+`deploy/.env.retrieval` 可覆盖默认路径，新增的 `RETRIEVAL_HYBRID_REPORT` 指定输出目录。
+目录已存在时拒绝覆盖；重跑可在环境配置中指定新的输出目录。
+
+默认读取以下目录：
+
+| 目录 | 用途 |
+| --- | --- |
+| `data/retrieval-baseline-v1/dataset` | 冻结的语料、开发查询与观察引用 |
+| `data/retrieval-baseline-v1/index` | 历史案例元数据与引用投票索引 |
+| `data/retrieval-baseline-v1/dev-bm25` | BM25 报告与 Top 50 案例 |
+| `data/retrieval-bge-m3-v1/dev-dense` | BGE-M3 报告与 Top 50 案例 |
+
+输出保存在 `data/retrieval-hybrid-v1/dev-hybrid/`：
+
+| 文件 | 用途 |
+| --- | --- |
+| `report.json` | 三种方法的指标、混合减单路的配对区间及输入指纹 |
+| `rankings.jsonl` | 混合后的案例、原两路排名、RRF 分数和知识推荐 |
+| `diagnosis.jsonl` | 逐查询检查候选并集、最终 Top 50 和引用投票的漏召回位置 |
+
+先看两路候选并集是否覆盖目标，再看是否因融合 Top 50 截断丢失，最后检查引用投票。
+并集覆盖高不等于最终 Top 10 召回一定提高；需要实际运行后的配对结果。
+新报告中的耗时仅代表读取缓存候选后的融合与投票，不包含在线 BM25、query embedding
+和 dense 搜索，不能与单路在线延迟直接比较，也不是生产 SLA。
+
 ## 指标及解释
 
 对有观察引用的查询，设引用集合为 G、历史目录为 C、前 K 推荐为 R：
@@ -142,7 +194,7 @@ Elasticsearch/OpenSearch 等后端替换检索实现并作同协议比较。
 | `index/index.sqlite3`、`manifest.json` | 两类 FTS5 索引及数据来源 |
 | `dev-bm25/report.json`、`rankings.jsonl` | 开发指标及可回溯候选结果 |
 
-接下来先审查开发集漏召回和目录外目标，再在同一数据协议下增加原文 dense/hybrid 基线。
+原文 BM25、dense 与案例级 hybrid 实现已具备；先运行混合评估，再审查开发集漏召回和目录外目标。
 随后比较“原文”“仅 LLM 抽取”“原文 + 抽取”三种表示，固定 embedding、候选数和重排器，
 才有条件把差异归因于抽取。已有 20 条抽取样本继续用作开发/回归，不能直接充当独立测试集。
 最终需要从多个检索器的候选池抽取案例/条目做盲审标注，分别评价案例相关性与条目相关性，
