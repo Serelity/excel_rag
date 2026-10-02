@@ -21,6 +21,9 @@ For arbitrary new complaints, addresses, or problem descriptions, use
 [`retrieval_baseline/CASE_SEARCH.md`](retrieval_baseline/CASE_SEARCH.md). This entry
 returns historical complaint cases directly, without knowledge-reference voting.
 It reuses the existing raw-text indexes and adds a separate address-name index.
+Continue with [`retrieval_baseline/RERANKING.md`](retrieval_baseline/RERANKING.md) for
+local BGE reranking, blind human case judgments, held-out comparisons and calibrated
+relevance filtering. Reranker download and environment checks are separate steps.
 Use [`semantic_extraction/README.md`](semantic_extraction/README.md) for the separate
 Conda and H100 extraction pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.

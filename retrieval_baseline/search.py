@@ -37,12 +37,14 @@ class CaseSearcher:
     def __init__(
         self, dataset: Path, lexical_index: Path, *, dense_index: Path | None = None,
         encoder=None, encoder_factory=None, address_index: Path | None = None, threads: int = 4,
+        reranker=None, reranker_factory=None,
     ):
         if type(threads) is not int or threads < 1:
             raise ValueError("threads must be positive")
         self.dataset, self.lexical_index = dataset, lexical_index
         self.dense_index, self.encoder, self.threads = dense_index, encoder, threads
         self.encoder_factory = encoder_factory
+        self.reranker, self.reranker_factory = reranker, reranker_factory
         manifest = verified_manifest(dataset, ("dataset.sqlite3",))
         self.corpus_count = manifest["counts"]["corpus_unique_texts"]
         self.dataset_hash = file_hash(dataset / "manifest.json")
@@ -193,9 +195,12 @@ class CaseSearcher:
 
         from .encoder import normalized_vectors
 
+        started = time.perf_counter()
         self._load_dense()
+        loaded = time.perf_counter()
         vectors, stats = self.encoder.encode([query])
         vector = normalized_vectors(vectors, 1, self.index.d)
+        encoded = time.perf_counter()
         if allowed is None:
             scores, ids = self.index.search(vector, min(case_k, self.index.ntotal))
             metadata = self._metadata(docids=[int(rid) for rid in ids[0]])
@@ -213,6 +218,11 @@ class CaseSearcher:
                 scored.extend(zip(batch, map(float, scores), strict=True))
                 scored = heapq.nsmallest(case_k, scored, key=lambda item: (-item[1], item[0][1]))
         ranked = sorted(scored, key=lambda item: (-item[1], item[0][1]))
+        self._dense_timing = {
+            "dense_model_index_load_and_validation": loaded - started,
+            "query_encoding": encoded - loaded,
+            "dense_search_and_metadata": time.perf_counter() - encoded,
+        }
         return ([{"source_id": row[1], "source_row": row[2], "rank": rank, "score": score}
                  for rank, (row, score) in enumerate(ranked[:case_k], 1)], stats)
 
@@ -246,6 +256,7 @@ class CaseSearcher:
         self, query: str, *, mode: str = "problem", retriever: str = "hybrid",
         address: str | None = None, top_k: int = 10, case_k: int = 50,
         max_terms: int = 32, allow_broader: bool = False,
+        rerank: bool = False, relevance_policy: dict | None = None,
     ) -> dict:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("Query must be nonempty text")
@@ -262,6 +273,10 @@ class CaseSearcher:
             raise ValueError("--address is a constraint for combined mode only")
         if mode == "problem" and allow_broader:
             raise ValueError("--allow-broader applies only to address matching")
+        if rerank and mode == "address":
+            raise ValueError("Address-only queries do not use problem reranking")
+        if relevance_policy is not None and not rerank:
+            raise ValueError("A relevance policy requires reranking")
         query = query.strip()
         address_query = None
         if mode == "address":
@@ -271,6 +286,7 @@ class CaseSearcher:
             if not address_query or not parse_address(address_query):
                 raise ValueError("Combined mode needs a named address; specify --address")
         started = time.perf_counter()
+        self._dense_timing = {}
         allowed, address_hits = None, {}
         if address_query is not None:
             found = self._address().search(
@@ -297,13 +313,13 @@ class CaseSearcher:
                 hits = fuse_cases(routes["bm25"], routes["dense"], case_k=case_k)
             else:
                 hits = routes[retriever]
-        results = self._records(hits[:top_k], traces, address_hits)
+        results = self._records(hits if rerank else hits[:top_k], traces, address_hits)
         if mode != "address":
             for result in results:
                 result["matching"]["shared_keywords"] = sorted(
                     set(tokens(query)) & set(tokens(result["case_content"]))
                 )[:10]
-        return {
+        report = {
             "version": SEARCH_VERSION, "mode": mode,
             "retriever": "address_surface" if mode == "address" else retriever,
             "query": query, "address_query": address_query,
@@ -324,6 +340,8 @@ class CaseSearcher:
             ),
             "implementation_sha256": self.implementation,
             "seconds_search_this_query": time.perf_counter() - started,
+            "timing_seconds": {**self._dense_timing,
+                               "retrieval_total": time.perf_counter() - started},
             "limitations": [
                 "Results are historical complaint cases, not knowledge IDs or verified answers.",
                 "Scores/ranks are retrieval signals, not calibrated relevance probabilities.",
@@ -335,14 +353,71 @@ class CaseSearcher:
                 "Dense equal scores at a global candidate cutoff can have ambiguous membership.",
             ],
         }
+        if rerank:
+            from .reranker import rerank_report, select_results
+
+            load_started = time.perf_counter()
+            if results:
+                if self.reranker is None:
+                    if self.reranker_factory is None:
+                        raise ValueError("Reranking requires a local reranker model")
+                    self.reranker = self.reranker_factory()
+                load_seconds = time.perf_counter() - load_started
+                report = rerank_report(report, self.reranker, top_k=top_k,
+                                       policy=relevance_policy)
+                report["timing_seconds"]["reranker_model_load"] = load_seconds
+                report["timing_seconds"]["reranker_scoring"] = report["reranking"][
+                    "seconds_scoring"
+                ]
+            else:
+                report = select_results(report, top_k=top_k, policy=relevance_policy)
+                report["reranking"] = {"skipped_reason": "no_candidates"}
+            report["seconds_search_this_query"] = time.perf_counter() - started
+        return report
+
+
+def add_runtime_arguments(parser: argparse.ArgumentParser) -> None:
+    for name in ("dataset", "index"):
+        parser.add_argument("--" + name, type=Path, required=True)
+    for name in ("dense-index", "address-index", "model", "reranker-model"):
+        parser.add_argument("--" + name, type=Path)
+    for name, default in (("threads", 4), ("max-length", 8192), ("batch-size", 8),
+                          ("reranker-max-length", 1024), ("reranker-batch-size", 4)):
+        parser.add_argument("--" + name, type=int, default=default)
+    parser.add_argument("--device", default="cuda")
+    parser.add_argument("--dtype", choices=("float32", "float16", "bfloat16"), default="float16")
+
+
+def make_reranker(args):
+    from .reranker import BGEReranker
+
+    if args.reranker_model is None:
+        raise ValueError("Provide --reranker-model for local reranking")
+    return BGEReranker(args.reranker_model, max_length=args.reranker_max_length,
+                      batch_size=args.reranker_batch_size, device=args.device, dtype=args.dtype)
+
+
+def make_searcher(args) -> CaseSearcher:
+    def encoder_factory():
+        from .encoder import BGEEncoder
+
+        if args.model is None:
+            raise ValueError("Dense/hybrid retrieval requires --model")
+        return BGEEncoder(args.model, max_length=args.max_length, batch_size=args.batch_size,
+                          device=args.device, dtype=args.dtype)
+
+    return CaseSearcher(args.dataset, args.index, dense_index=args.dense_index,
+                        encoder_factory=encoder_factory,
+                        address_index=args.address_index, threads=args.threads,
+                        reranker_factory=lambda: make_reranker(args))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("dataset", "index"):
-        parser.add_argument("--" + name, type=Path, required=True)
-    for name in ("dense-index", "address-index", "model", "output"):
-        parser.add_argument("--" + name, type=Path)
+    add_runtime_arguments(parser)
+    parser.add_argument("--output", type=Path)
+    parser.add_argument("--rerank", action="store_true")
+    parser.add_argument("--relevance-policy", type=Path)
     parser.add_argument("--mode", choices=("problem", "address", "combined"), default="problem")
     parser.add_argument("--retriever", choices=("bm25", "dense", "hybrid"), default="hybrid")
     inputs = parser.add_mutually_exclusive_group(required=True)
@@ -351,31 +426,24 @@ def main() -> None:
     inputs.add_argument("--interactive", action="store_true")
     parser.add_argument("--address")
     parser.add_argument("--allow-broader", action="store_true")
-    for name, default in (("top-k", 10), ("case-k", 50), ("max-terms", 32), ("threads", 4),
-                          ("max-length", 8192), ("batch-size", 8)):
+    for name, default in (("top-k", 10), ("case-k", 50), ("max-terms", 32)):
         parser.add_argument("--" + name, type=int, default=default)
-    parser.add_argument("--device", default="cuda")
-    parser.add_argument("--dtype", choices=("float32", "float16", "bfloat16"), default="float16")
     args = parser.parse_args()
     if args.interactive and args.output:
         parser.error("--output is for a single query, not --interactive")
     if args.output and args.output.exists():
         parser.error("Output already exists; choose a new private output file")
-    encoder_factory = None
     if args.mode != "address" and args.retriever in {"dense", "hybrid"}:
         if args.model is None or args.dense_index is None:
             parser.error("Dense/hybrid needs --model and --dense-index")
-        def encoder_factory():
-            from .encoder import BGEEncoder
-
-            return BGEEncoder(args.model, max_length=args.max_length, batch_size=args.batch_size,
-                              device=args.device, dtype=args.dtype)
+    if args.rerank and args.reranker_model is None:
+        parser.error("--rerank needs --reranker-model")
     settings = {name: getattr(args, name) for name in (
-        "mode", "retriever", "address", "top_k", "case_k", "max_terms", "allow_broader",
+        "mode", "retriever", "address", "top_k", "case_k", "max_terms", "allow_broader", "rerank",
     )}
-    with CaseSearcher(args.dataset, args.index, dense_index=args.dense_index,
-                      encoder_factory=encoder_factory,
-                      address_index=args.address_index, threads=args.threads) as searcher:
+    if args.relevance_policy:
+        settings["relevance_policy"] = json.loads(args.relevance_policy.read_text(encoding="utf-8"))
+    with make_searcher(args) as searcher:
         if args.interactive:
             for line in sys.stdin:
                 if not line.strip():

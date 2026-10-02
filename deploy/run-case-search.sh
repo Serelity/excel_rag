@@ -19,6 +19,9 @@ fi
 : "${RETRIEVAL_MAX_LENGTH:=8192}"
 : "${RETRIEVAL_BATCH_SIZE:=8}"
 : "${RETRIEVAL_FAISS_THREADS:=4}"
+: "${RERANKER_MODEL_PATH:=models/bge-reranker-v2-m3}"
+: "${RERANKER_MAX_LENGTH:=1024}"
+: "${RERANKER_BATCH_SIZE:=4}"
 
 stage=${1:-}
 case "$stage" in
@@ -41,4 +44,6 @@ exec "${runner[@]}" -m retrieval_baseline.search \
   --model "$RETRIEVAL_MODEL_PATH" --device "$RETRIEVAL_DEVICE" \
   --dtype "$RETRIEVAL_DTYPE" --max-length "$RETRIEVAL_MAX_LENGTH" \
   --batch-size "$RETRIEVAL_BATCH_SIZE" --threads "$RETRIEVAL_FAISS_THREADS" \
+  --reranker-model "$RERANKER_MODEL_PATH" --reranker-max-length "$RERANKER_MAX_LENGTH" \
+  --reranker-batch-size "$RERANKER_BATCH_SIZE" \
   "$@"
