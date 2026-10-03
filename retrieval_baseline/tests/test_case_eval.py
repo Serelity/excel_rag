@@ -303,6 +303,7 @@ def test_collect_calls_retrieval_once_per_query_and_reuses_reranker(bundle, tmp_
         case_k=50,
         retriever="hybrid",
         reranker_model=tmp_path / "model",
+        drill=True,
     )
     case_eval.collect(args)
     assert len(calls) == 3

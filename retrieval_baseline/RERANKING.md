@@ -10,15 +10,20 @@
 重排分数是原始 logit，不是相关概率。首次试跑只改变排序，不自动过滤；人工标注完成后，
 可以校准门槛并允许返回少于 K 条，甚至返回空列表。不能根据两条示例自行认定有效门槛。
 
+正式第一阶段按[校园网 H100 执行手册](../deploy/PHASE1_RUNBOOK.md)运行：复用已有环境/权重，
+完成同进程联合预检、来源审核与冻结、正式收集、标签复核与冻结，再校准并查看留出指标。
+下文的示例查询演练使用显式 `--drill`，不能直接作为正式实验凭据。
+
 ## 1. 独立检查环境、下载模型
 
 已有 `civic-rag-retrieval` 环境可以直接复用，无需新增 Python 包，也无需重新编码历史向量。
 环境检查脚本不升级现有依赖，以免改变旧向量索引的编码配置。新机器按
 [检索环境配置](../deploy/RETRIEVAL_SETUP.md) 创建环境后再检查。
+已有权重按执行手册做只读验证；下面的下载命令仅适用于首次缺失权重的情况。
+正式开发分支的拉取步骤也以执行手册为准。
 
 ```bash
 cd /seu_share/home/huangkai/220243809/12345/excel_rag
-git pull --ff-only origin main
 bash deploy/check-reranker-env.sh
 bash deploy/download-reranker-model.sh
 ```
@@ -62,15 +67,22 @@ bash deploy/run-case-search.sh search --mode problem --retriever hybrid --rerank
 
 不要用单次冷启动耗时当作稳定查询延迟。真实业务文本可用 `--query-file`，避免进入 shell 历史。
 
-## 3. 准备并冻结查询草稿
+## 3. 正式查询冻结与演练草稿
+
+正式查询由 `run-phase1.sh prepare-queries` 导出候选，经人工按固定顺序审核后，
+使用 `finalize-queries` 生成 10 场景、30 查询及来源/抽样/编号记录。再由 `run-phase1.sh freeze`
+绑定已通过的联合预检、协议、配置、人工审核和源码。完整参数见[执行手册第 3–4 节](../deploy/PHASE1_RUNBOOK.md#3-来源排除顺序审核和正式查询)。
+旧 test 查询和 qrels 不参与本次选样；不能仅修改下面的示例文件来取得正式来源凭据。
+
+以下 `init-queries` 只生成隔离的演练草稿：
 
 ```bash
-bash deploy/run-case-evaluation.sh init-queries --output data/case-relevance-v1/queries.json
+bash deploy/run-case-evaluation.sh init-queries --output data/case-relevance-drill-v1/queries.json
 ```
 
 该文件是可编辑的 **30 条人工编写示例**：10 个场景，每个场景有问题、地址、综合三种查询。
 地点只是示例，不保证库存充分。这些查询不是从原测试集抽取的，也不是代表性业务抽样。
-请在收集候选前检查意图、地点和语句，优先用真实新投诉中的用户表达替换示例。
+请在演练收集候选前检查意图、地点和语句。正式来源需走上述人工审核与冻结流程。
 
 字段是 `query_id`、`scenario_id`、`partition`、`mode`、`query`，综合查询另有 `address`。
 默认前 6 个场景共 18 条属于 `calibration`，后 4 个场景共 12 条属于 `evaluation`。
@@ -79,16 +91,34 @@ bash deploy/run-case-evaluation.sh init-queries --output data/case-relevance-v1/
 
 ## 4. H100 收集共同候选，CPU 导出标注表
 
+已按执行手册完成正式查询冻结后，正式收集必须显式提供冻结清单：
+
 ```bash
-bash deploy/run-case-evaluation.sh collect --queries data/case-relevance-v1/queries.json --output data/case-relevance-v1/run-001
-bash deploy/run-case-evaluation.sh export --run data/case-relevance-v1/run-001 --output data/case-relevance-v1/labels-001 --depth 10
+PHASE1_ROOT=data/case-relevance-phase1-v1
+bash deploy/run-case-evaluation.sh collect \
+  --queries "$PHASE1_ROOT/query-freeze-001/queries.json" \
+  --freeze-manifest "$PHASE1_ROOT/freeze-manifest-001.json" \
+  --retriever hybrid --case-k 50 --output "$PHASE1_ROOT/run-001"
+bash deploy/run-case-evaluation.sh export \
+  --run "$PHASE1_ROOT/run-001" --output "$PHASE1_ROOT/labels-v1" --depth 10
+```
+
+上节旧示例只允许显式演练；演练产物与正式目录分开：
+
+```bash
+bash deploy/run-case-evaluation.sh collect --drill \
+  --queries data/case-relevance-drill-v1/queries.json \
+  --output data/case-relevance-drill-v1/run-001
+bash deploy/run-case-evaluation.sh export --drill \
+  --run data/case-relevance-drill-v1/run-001 \
+  --output data/case-relevance-drill-v1/labels-001 --depth 10
 ```
 
 每条查询只检索一次，保存原始与重排后的完整候选排名。随后从两种排名各取前 10 条，
 去重后导出共同标注池。因此是 30 条查询、最多 600 对“查询—案例”，并非只填 30 个格子。
 纯地址查询两种排名相同，不重复导出。默认模型/索引在整个批次内复用。
 
-标注文件是 **`data/case-relevance-v1/labels-001/judgments.tsv`**，可在 Excel 中作为 UTF-8、
+正式标注文件是 **`data/case-relevance-phase1-v1/labels-v1/judgments.tsv`**，可在 Excel 中作为 UTF-8、
 制表符分隔文件打开。表中隐藏路线、分数、排名以及分区；以 `pair_...` 标识每一对，
 避免 Excel 把 19 位工单 ID 四舍五入。长文、换行和 Unicode 分隔符保留在同一个单元格内。
 保存时仍使用 UTF-8 制表符文本，保持列名及查询、原文字段不变，不要删除行。
@@ -120,15 +150,74 @@ bash deploy/run-case-evaluation.sh export --run data/case-relevance-v1/run-001 -
 
 默认门槛目标是开发标注上的 `returned_precision >= 0.9`，在满足它的阈值中尽量多保留结果。
 每种模式至少要求 5 个已返回候选、覆盖 3 个查询；纯地址模式不校准语义阈值。
-样本不足或达不到目标会报错，不会用“全部返回空”伪装成功。这只是开发集经验目标，不是性能保证。
+样本不足或达不到目标会记录失败，不会用“全部返回空”伪装成功。这只是开发集经验目标，不是性能保证。
+
+正式标签完成后，人工登记至少 20% 候选对的复核并覆盖所有非空模式，随后冻结标签。
+`review-log.jsonl` 包含初标/复核/最终分项评分、复核人、带时区时间和裁决依据；
+独立复核与延迟自复核的要求见[执行手册第 5 节](../deploy/PHASE1_RUNBOOK.md#5-导出人标复核和标签冻结)。
+程序不代填人工结论，正式校准拒绝未冻结或被原地修改的标签。
 
 ```bash
-bash deploy/run-case-evaluation.sh calibrate --run data/case-relevance-v1/run-001 --labels data/case-relevance-v1/labels-001 --output data/case-relevance-v1/policy-001.json --k 5 --target-precision 0.9
-bash deploy/run-case-evaluation.sh evaluate --run data/case-relevance-v1/run-001 --labels data/case-relevance-v1/labels-001 --policy data/case-relevance-v1/policy-001.json --output data/case-relevance-v1/evaluation-001.json
+read -r -p '实际标注人员代号: ' ANNOTATOR_NAME
+bash deploy/run-case-evaluation.sh freeze-labels \
+  --run "$PHASE1_ROOT/run-001" --labels "$PHASE1_ROOT/labels-v1" \
+  --annotator "$ANNOTATOR_NAME"
+cal_status=0
+bash deploy/run-case-evaluation.sh calibrate \
+  --run "$PHASE1_ROOT/run-001" --labels "$PHASE1_ROOT/labels-v1" \
+  --output "$PHASE1_ROOT/calibration-001" --k 5 \
+  --target-precision 0.9 --min-results 5 --min-queries 3 || cal_status=$?
+printf 'calibration_exit_code=%s\n' "$cal_status"
 ```
 
-校准只读取 `calibration` 的标签。`evaluate` 默认只评 `evaluation`，同时报告原始排名、重排、
-重排加筛选三组结果，并按查询模式分组。不要根据 evaluation 的结果反复调门槛后仍称其为独立测试；
+`calibrate --output` 必须是新的尝试目录，不能是 `policy.json` 文件。
+正式校准目录与 run 目录同级；目录中保存 `status.json`、`threshold-search.json`，
+只有问题与综合两种模式均成功，才发布 `policy.json`。
+先完成校准并冻结策略或无法发布策略的失败结论，再查看任何留出指标；
+`input_error`、`execution_error`、`interrupted` 或 `running` 需要先排查，不能当成有效校准结论。
+
+输入有效且校准尝试已完成后，无论是否找到合格阈值，都可报告未过滤的留出评价；
+只有校准成功才运行过滤评价：
+
+```bash
+bash deploy/run-case-evaluation.sh evaluate \
+  --run "$PHASE1_ROOT/run-001" --labels "$PHASE1_ROOT/labels-v1" \
+  --partition evaluation --k 5 --ndcg-k 5 \
+  --output "$PHASE1_ROOT/evaluation-unfiltered-001.json"
+if (( cal_status == 0 )); then
+  bash deploy/run-case-evaluation.sh evaluate \
+    --run "$PHASE1_ROOT/run-001" --labels "$PHASE1_ROOT/labels-v1" \
+    --partition evaluation --k 5 --ndcg-k 5 \
+    --policy "$PHASE1_ROOT/calibration-001/policy.json" \
+    --output "$PHASE1_ROOT/evaluation-filtered-001.json"
+fi
+```
+
+旧示例的校准/评价也必须显式 `--drill`，输出仍为尝试目录：
+
+```bash
+drill_cal_status=0
+bash deploy/run-case-evaluation.sh calibrate --drill \
+  --run data/case-relevance-drill-v1/run-001 \
+  --labels data/case-relevance-drill-v1/labels-001 \
+  --output data/case-relevance-drill-v1/calibration-001 \
+  --k 5 --target-precision 0.9 || drill_cal_status=$?
+if (( drill_cal_status == 0 )); then
+  bash deploy/run-case-evaluation.sh evaluate --drill \
+    --run data/case-relevance-drill-v1/run-001 \
+    --labels data/case-relevance-drill-v1/labels-001 \
+    --policy data/case-relevance-drill-v1/calibration-001/policy.json \
+    --output data/case-relevance-drill-v1/evaluation-001.json
+fi
+```
+
+正式聚合报告与私有逐场景诊断使用 `run-phase1.sh report` 生成。
+标签修订通过 `revise-labels` 创建新版本；校准有效标签变化必须重校准，只有留出有效标签变化时保留原阈值重算。
+完整命令、校准失败分支和可移植离线评测见[执行手册第 6–7 节](../deploy/PHASE1_RUNBOOK.md#6-校准未过滤评价过滤评价与报告)。
+
+阈值搜索只使用 `calibration` 的有效标签；正式快照完整性检查会验证两个分区的标签。
+`evaluate` 默认只评 `evaluation`，不传策略时比较原始与重排两组，传 `--policy` 时增加重排加筛选组，
+并按查询模式分组。不要根据 evaluation 的结果反复调门槛后仍称其为独立测试；
 更大实验需要新的未见查询。基线和模型改变时，应扩充共同标注池再比较。
 
 | 指标 | 本项目定义 |
@@ -141,17 +230,18 @@ bash deploy/run-case-evaluation.sh evaluate --run data/case-relevance-v1/run-001
 
 综合查询的最终 grade 取 `min(problem_grade, address_grade)`；只有两项都直接相关才算正例。
 标注池无非零增益的查询，nDCG 为 null 并单独报告有效分母。未标注的相关案例不可视为负例，
-本阶段不报告全库 Recall，30 条示例也不足以证明总体提升。
+本阶段不报告全库 Recall，10 场景的 30 条查询也不足以证明总体提升。
 含筛选策略时，nDCG 截止位置不能超过实际返回预算 K，避免把重排前 10 条与筛选后最多 5 条
 混为同一预算比较。仅比较未筛选两组排名时，可不传 `--policy`，另设 `--ndcg-k 10`。
 
 ## 6. 应用已经验证的门槛
 
 ```bash
-bash deploy/run-case-search.sh search --mode combined --retriever hybrid --address '花语馨苑' --query '楼道长期没人打扫' --rerank --relevance-policy data/case-relevance-v1/policy-001.json --top-k 5 --output data/case-relevance-v1/filtered-example-001.json
+bash deploy/run-case-search.sh search --mode combined --retriever hybrid --address '花语馨苑' --query '楼道长期没人打扫' --rerank --relevance-policy data/case-relevance-phase1-v1/calibration-001/policy.json --top-k 5 --output data/case-relevance-v1/filtered-example-001.json
 ```
 
 策略绑定模型、索引、查询模式、候选预算、打分参数和实现指纹；不匹配时明确拒绝应用。
+正式离线评测还核对完整 run、标签冻结及同级校准目录中的成功状态和策略哈希。
 按 K=5 校准后不能用同一策略请求 K=10。空候选不加载 reranker；所有分数低于门槛时，
 `result_status=below_relevance_threshold`，不从其他地址补齐、不保底返回不相关案例。
 
