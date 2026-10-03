@@ -24,6 +24,9 @@ It reuses the existing raw-text indexes and adds a separate address-name index.
 Continue with [`retrieval_baseline/RERANKING.md`](retrieval_baseline/RERANKING.md) for
 local BGE reranking, blind human case judgments, held-out comparisons and calibrated
 relevance filtering. Reranker download and environment checks are separate steps.
+For the formal phase-one workflow, follow the [campus H100 runbook](deploy/PHASE1_RUNBOOK.md):
+verify existing assets, freeze reviewed query sources and labels, calibrate before inspecting
+held-out metrics, and copy complete run/label/calibration bundles for offline reporting.
 Use [`semantic_extraction/README.md`](semantic_extraction/README.md) for the separate
 Conda and H100 extraction pilot procedure. Source data, derived samples, model files,
 runtime logs, caches, and private deployment settings are excluded from Git.
