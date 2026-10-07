@@ -45,6 +45,7 @@ source deploy/.env.retrieval
 export CONDA_RETRIEVAL_ENV
 PHASE1_ROOT=data/case-relevance-phase1-v1
 mkdir -p "$PHASE1_ROOT"
+bash deploy/inspect-retrieval-env.sh
 conda run --no-capture-output -n "$CONDA_RETRIEVAL_ENV" python -c 'import sys; print(sys.executable); print(sys.version)'
 bash deploy/check-reranker-env.sh
 conda run --no-capture-output -n "$CONDA_RETRIEVAL_ENV" python -m retrieval_baseline.prepare_model \
@@ -55,7 +56,8 @@ bash deploy/run-case-search.sh prepare-address
 ```
 
 `prepare-address` 需要输出目录尚不存在。如果已有该版本的完整索引，不重复运行；预检将核对其内容与源码。
-单独模型文件检查不等于模型能够联合推理。环境检查失败时保留现有资源，定位缺失项后再决定修复方式。
+`inspect-retrieval-env.sh` 会生成只读诊断文本到私有 `data/` 目录，列出指定环境的包版本和关键导入结果。
+如果环境检查失败，先根据诊断定位，不要直接升级或卸载现有包。单独模型文件检查不等于模型能够联合推理。
 
 ## 2. 静态预检和真实联合推理
 
