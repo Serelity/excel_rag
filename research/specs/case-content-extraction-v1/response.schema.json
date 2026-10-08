@@ -1,0 +1,321 @@
+{
+  "$defs": {
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "fact_id": {
+          "pattern": "^F[1-9][0-9]*$",
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "topic",
+            "intent",
+            "actor",
+            "object",
+            "problem",
+            "request",
+            "impact",
+            "place",
+            "condition",
+            "time",
+            "status"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "role": {
+          "description": "角色须符合字段类型；不明用 unspecified，不按距离猜。",
+          "enum": [
+            "subject",
+            "consultation",
+            "complaint",
+            "report",
+            "service_request",
+            "suggestion",
+            "followup",
+            "withdrawal",
+            "supplement",
+            "employer",
+            "merchant",
+            "affected_person",
+            "respondent",
+            "service_provider",
+            "target_institution",
+            "handler",
+            "facility",
+            "product",
+            "service",
+            "account",
+            "document",
+            "benefit",
+            "transaction",
+            "phenomenon",
+            "behavior",
+            "obstacle",
+            "dispute",
+            "desired_action",
+            "desired_state",
+            "information",
+            "experienced",
+            "risk",
+            "avoided",
+            "incident",
+            "residence",
+            "registration",
+            "insurance",
+            "treatment",
+            "origin",
+            "destination",
+            "policy_area",
+            "landmark",
+            "organization_location",
+            "identity",
+            "eligibility",
+            "amount",
+            "quantity",
+            "prerequisite",
+            "event_time",
+            "action_time",
+            "period",
+            "frequency",
+            "relative",
+            "issue_state",
+            "ticket_state",
+            "action_state",
+            "other",
+            "unspecified"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "evidence": {
+          "description": "共同支持该字段的原文片段。",
+          "items": {
+            "$ref": "#/$defs/Quote"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "modality": {
+          "description": "原文陈述方式，asserted仅指有人这样陈述，不表示外部核实。",
+          "enum": [
+            "asserted",
+            "possible",
+            "negated",
+            "hypothetical",
+            "unresolved",
+            "not_applicable"
+          ],
+          "title": "Modality",
+          "type": "string"
+        },
+        "phase": {
+          "enum": [
+            "current",
+            "background",
+            "followup",
+            "unspecified"
+          ],
+          "title": "Phase",
+          "type": "string"
+        },
+        "attribution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quote"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "原文明示的信息来源/说话者；没说明填null。"
+        },
+        "time_context": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quote"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "原文明示且适用于本字段的时间；否则null。"
+        }
+      },
+      "required": [
+        "fact_id",
+        "kind",
+        "role",
+        "evidence",
+        "modality",
+        "phase",
+        "attribution",
+        "time_context"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "Issue": {
+      "additionalProperties": false,
+      "properties": {
+        "issue_id": {
+          "pattern": "^I[1-9][0-9]*$",
+          "title": "Issue Id",
+          "type": "string"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/Fact"
+          },
+          "minItems": 1,
+          "title": "Facts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "issue_id",
+        "facts"
+      ],
+      "title": "Issue",
+      "type": "object"
+    },
+    "Quote": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "description": "原文连续片段，不改字、不去空白、不补地址或年份。",
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "occurrence": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "唯一出现填 null；重复时填从0开始的出现序号，或扩大引文至唯一。",
+          "title": "Occurrence"
+        }
+      },
+      "required": [
+        "text",
+        "occurrence"
+      ],
+      "title": "Quote",
+      "type": "object"
+    },
+    "ReviewFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "missing_context",
+            "ambiguous_reference",
+            "uncertain_grouping",
+            "conflicting_claims",
+            "ambiguous_role",
+            "insufficient_content"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "issue_ids": {
+          "items": {
+            "pattern": "^I[1-9][0-9]*$",
+            "type": "string"
+          },
+          "title": "Issue Ids",
+          "type": "array"
+        },
+        "fact_ids": {
+          "items": {
+            "pattern": "^F[1-9][0-9]*$",
+            "type": "string"
+          },
+          "title": "Fact Ids",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Quote"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "note": {
+          "description": "说明待核对之处，不补造缺失的业务信息。",
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "issue_ids",
+        "fact_ids",
+        "evidence",
+        "note"
+      ],
+      "title": "ReviewFlag",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "spec_version": {
+      "const": "case-content-extraction-v1",
+      "title": "Spec Version",
+      "type": "string"
+    },
+    "route": {
+      "enum": [
+        "substantive",
+        "substantive_with_followup",
+        "procedure_only",
+        "insufficient_content"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "issues": {
+      "description": "按可区分的问题目标组织，不设三项截断。",
+      "items": {
+        "$ref": "#/$defs/Issue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "procedure": {
+      "description": "热线受理、催办、撤单、转接等流程；不是原问题状态。",
+      "items": {
+        "$ref": "#/$defs/Fact"
+      },
+      "title": "Procedure",
+      "type": "array"
+    },
+    "review_flags": {
+      "items": {
+        "$ref": "#/$defs/ReviewFlag"
+      },
+      "title": "Review Flags",
+      "type": "array"
+    }
+  },
+  "required": [
+    "spec_version",
+    "route",
+    "issues",
+    "procedure",
+    "review_flags"
+  ],
+  "title": "CaseExtraction",
+  "type": "object"
+}

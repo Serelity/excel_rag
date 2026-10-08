@@ -1,0 +1,444 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-10-08",
+  "selection": "Purposive sample of original annotation guidelines with accessible and verified passages; not a systematic review or a survey of latest standards.",
+  "source_count": 5,
+  "source_family_count": 3,
+  "source_count_note": "Three ACE documents belong to one source family and are not three independent studies.",
+  "guidelines": [
+    {
+      "id": "G01",
+      "title": "ACE (Automatic Content Extraction) English Annotation Guidelines for Events",
+      "institution": "Linguistic Data Consortium",
+      "authors": [],
+      "version": "5.4.3",
+      "document_date": "2005-07-01",
+      "url": "https://www.ldc.upenn.edu/sites/www.ldc.upenn.edu/files/english-events-guidelines-v5.4.3.pdf",
+      "source_family": "ACE",
+      "read_scope": "Full PDF acquired; cover and selected sections read, not an end-to-end full-document review",
+      "sections": [
+        {
+          "locator": "6.1 Introduction to Event Arguments",
+          "pdf_pages": [
+            48,
+            49
+          ],
+          "source_observation_zh": "事件参与者与属性统称论元；PLACE 是事件发生地，运动事件的 ORIGIN 和 DESTINATION 也是地点但具有不同专门角色。",
+          "project_implication_zh": "地点种类与对事项的语义角色需要分别研究。"
+        },
+        {
+          "locator": "6.1.1 Basic Rules for Event Argument Taggability / Shared Arguments",
+          "pdf_pages": [
+            50
+          ],
+          "source_observation_zh": "在句内作用域及合理语义解释的限制下，同一实体或值可作为两个事件的共享论元；采用最近句法关系而非简单字符距离。",
+          "project_implication_zh": "边界设计可考虑共享关联，但没有直接决定本项目现象、诉求的证据是否复用。"
+        },
+        {
+          "locator": "3 Polarity, Tense, Genericity and Modality",
+          "pdf_pages": [
+            18,
+            19,
+            20,
+            21
+          ],
+          "source_observation_zh": "否定、时态、泛指性和模态分别标注；请求、命令与愿望列入 OTHER 模态的例子。",
+          "project_implication_zh": "诉求不能直接升级为已发生事实；一个综合状态枚举是否足够需另作样例判断。"
+        },
+        {
+          "locator": "4 Coreference",
+          "pdf_pages": [
+            22
+          ],
+          "source_observation_zh": "事件同指以事件身份为准，不将整体与部分事件自动视为同指。",
+          "project_implication_zh": "外部事件身份规则提供对照，但投诉检索事项的粒度须另定。"
+        }
+      ],
+      "limitations_zh": [
+        "经典英语 ACE 新闻事件规范，不是中文投诉或案例检索实验。",
+        "论元范围限定在同句，不能直接证明跨句指代能力。",
+        "共享论元并不直接回答同一事项下的不同字段能否复用同一片段。",
+        "未核验该版本是否为所有 ACE 任务的最新规范。"
+      ],
+      "source_type": "annotation_guideline",
+      "language": "en",
+      "access_date": "2026-10-08",
+      "verified_date": "2026-10-08",
+      "verification_status": "identity and cited sections verified from downloaded PDF text",
+      "pdf_pages_read": [
+        1,
+        18,
+        19,
+        20,
+        21,
+        22,
+        48,
+        49,
+        50
+      ],
+      "pdf_page_count": 77,
+      "pdf_sha256": "a06f2057543d8600f4b5f0679fe89e0754eadafc44d776cbbecac2c424322577",
+      "cached_pdf": ".cache/boundaries/ace-events.pdf",
+      "cached_text": ".cache/boundaries/ace-events.txt",
+      "cached_text_sha256": "f6d8c46f50f550a4537ff1d8a1fd9cd9410299e45c79382f3bec625ea3e46a82",
+      "provides_project_accuracy_evidence": false
+    },
+    {
+      "id": "G02",
+      "title": "ACE (Automatic Content Extraction) English Annotation Guidelines for Entities",
+      "institution": "Linguistic Data Consortium",
+      "authors": [],
+      "version": "6.6",
+      "document_date": "2008-06-13",
+      "url": "https://www.ldc.upenn.edu/sites/www.ldc.upenn.edu/files/english-entities-guidelines-v6.6.pdf",
+      "source_family": "ACE",
+      "read_scope": "Full PDF acquired; cover and selected sections read, not an end-to-end full-document review",
+      "sections": [
+        {
+          "locator": "3.3.3 Formulaic GPE Constructions: Nested Region Names; 3.3.4 GPE Mention Roles",
+          "pdf_pages": [
+            16,
+            17,
+            18
+          ],
+          "source_observation_zh": "地域名称可嵌套；同一 GPE 提及的语义角色依赖语境关系，可呈现政府、人口或地点等不同侧面。",
+          "project_implication_zh": "地名识别与地点对事项的角色不是同一问题，需分开评价。"
+        },
+        {
+          "locator": "5 Mention Types/Mention Levels; 5.1.1 Mention Extent; 5.1.2 Mention Head",
+          "pdf_pages": [
+            26,
+            27,
+            28
+          ],
+          "source_observation_zh": "实体提及允许嵌套；完整范围和中心词分别记录，完整名词短语含修饰信息。",
+          "project_implication_zh": "应明确证据片段的粒度与重叠规则，避免所有人凭直觉选片段。"
+        }
+      ],
+      "limitations_zh": [
+        "GPE 提及角色不能直接替换为投诉中的居住地或事发地。",
+        "英文短语边界和分词规则不能原样转成中文地址规则。",
+        "中文 ACE 指南的尝试 URL 返回 404，未取得中文正文。"
+      ],
+      "source_type": "annotation_guideline",
+      "language": "en",
+      "access_date": "2026-10-08",
+      "verified_date": "2026-10-08",
+      "verification_status": "identity and cited sections verified from downloaded PDF text",
+      "pdf_pages_read": [
+        1,
+        16,
+        17,
+        18,
+        26,
+        27,
+        28
+      ],
+      "pdf_page_count": 72,
+      "pdf_sha256": "af817322c3ce90bf374cefcc62727dbc200384585b62df727e3e9e58564a6901",
+      "cached_pdf": ".cache/boundaries/ace-entities-en.pdf",
+      "cached_text": ".cache/boundaries/ace-entities-en.txt",
+      "cached_text_sha256": "c4a977795fe60aae69106ecae380385a97287e0e599e7d7b8b9c642bee218c8b",
+      "provides_project_accuracy_evidence": false
+    },
+    {
+      "id": "G03",
+      "title": "ACE (Automatic Content Extraction) English Annotation Guidelines for Relations",
+      "institution": "Linguistic Data Consortium",
+      "authors": [],
+      "version": "6.2",
+      "document_date": "2008-04-28",
+      "url": "https://www.ldc.upenn.edu/sites/www.ldc.upenn.edu/files/english-relations-guidelines-v6.2.pdf",
+      "source_family": "ACE",
+      "read_scope": "Full PDF acquired; cover and selected sections read, not an end-to-end full-document review",
+      "sections": [
+        {
+          "locator": "2.1 Preliminary Definitions / Tagging for Meaning / Tag for Explicit Meaning / Reasonable Reader Rule",
+          "pdf_pages": [
+            3,
+            4,
+            5
+          ],
+          "source_observation_zh": "句内关系需要局部文本证据；外部世界或文档其他位置存在的关系不能自动作为该句关系；语义解释限制可标关系。",
+          "project_implication_zh": "实体正确出现并不能证实角色归属，需对关系本身给出证据。"
+        },
+        {
+          "locator": "Modality and Tense / Modality",
+          "pdf_pages": [
+            6,
+            7
+          ],
+          "source_observation_zh": "关系模态区分 ASSERTED 与 OTHER；本任务不标否定关系。",
+          "project_implication_zh": "与 ACE Events 的否定属性处理不同，不能直接拼接规范标签。"
+        },
+        {
+          "locator": "3.1.1 Located",
+          "pdf_pages": [
+            13,
+            14
+          ],
+          "source_observation_zh": "PHYS.Located 的第一个论元限于人；设施等空间关系采用其他类型。",
+          "project_implication_zh": "关系定义必须写清参与端与适用范围，不能只凭一个通用地址字段。"
+        }
+      ],
+      "limitations_zh": [
+        "句内 ACE 实体关系规范，不能直接覆盖中文投诉的跨句事项关联。",
+        "规范中有与具体评测任务有关的排除与传播规则，不宜机械套用。",
+        "PDF 部分节编号与上层标题存在不一致，定位同时提供标题和实际页序。"
+      ],
+      "source_type": "annotation_guideline",
+      "language": "en",
+      "access_date": "2026-10-08",
+      "verified_date": "2026-10-08",
+      "verification_status": "identity and cited sections verified from downloaded PDF text",
+      "pdf_pages_read": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        13,
+        14
+      ],
+      "pdf_page_count": 33,
+      "pdf_sha256": "a78266c69c4bc6f75f45223611a1ca07121c15cfa3b8fb5ce936701f6f509f07",
+      "cached_pdf": ".cache/boundaries/ace-relations-en.pdf",
+      "cached_text": ".cache/boundaries/ace-relations-en.txt",
+      "cached_text_sha256": "7fff47cb7e07e6bf18b64e1f7702e68b228fdf44ddaa9ed5e948d87f593e9918",
+      "provides_project_accuracy_evidence": false
+    },
+    {
+      "id": "G04",
+      "title": "English PropBank Annotation Guidelines",
+      "institution": "University of Colorado at Boulder, Center for Computational Language and Education Research, Institute of Cognitive Science",
+      "authors": [
+        "Claire Bonial",
+        "Julia Bonn",
+        "Kathryn Conger",
+        "Jena Hwang",
+        "Martha Palmer",
+        "Nicholas Reese"
+      ],
+      "version": "Cover date 2015-07-14; no numbered version asserted",
+      "document_date": "2015-07-14",
+      "url": "https://verbs.colorado.edu/propbank/EPB-Annotation-Guidelines.pdf",
+      "supporting_urls": [
+        "https://propbank.github.io/"
+      ],
+      "source_family": "PropBank",
+      "read_scope": "Full PDF acquired; cover and selected sections read, not an end-to-end full-document review",
+      "sections": [
+        {
+          "locator": "1.1 PropBank Annotation Goals",
+          "pdf_pages": [
+            4,
+            5
+          ],
+          "source_observation_zh": "论元语义角色相对于具体谓词及其词义定义；编号角色的具体含义因谓词而异。",
+          "project_implication_zh": "识别主体或对象需要考虑它参与什么行为关系。",
+          "printed_pages": [
+            3,
+            4
+          ]
+        },
+        {
+          "locator": "1.4.2 Locatives; 1.4.3 Directional; 1.4.4 Goal",
+          "pdf_pages": [
+            13,
+            14
+          ],
+          "source_observation_zh": "位置、方向和目标有不同定义及正反例。",
+          "project_implication_zh": "地点表面类型不足以覆盖地点作用。",
+          "printed_pages": [
+            12,
+            13
+          ]
+        },
+        {
+          "locator": "1.4.10 Purpose Clauses through 1.4.14 Negation",
+          "pdf_pages": [
+            17,
+            18,
+            19,
+            20
+          ],
+          "source_observation_zh": "目的和原因有专门歧义裁决；模态与否定分开；not only 不能自动视为否定。",
+          "project_implication_zh": "关键词只能作为候选，字段角色与作用域仍需要上下文判断。",
+          "printed_pages": [
+            16,
+            17,
+            18,
+            19
+          ]
+        },
+        {
+          "locator": "1.5 Span of Annotation",
+          "pdf_pages": [
+            23
+          ],
+          "source_observation_zh": "依照语法结构限制谓词周围可标的论元范围，语义上相关但在范围之外者不自动标注。",
+          "project_implication_zh": "每种抽取任务应明示上下文范围，不能默认无限推断。",
+          "printed_pages": [
+            22
+          ]
+        }
+      ],
+      "limitations_zh": [
+        "所读为英语且基于 Penn TreeBank 的标注指南；未核验中文指南或中文 SRL 模型。",
+        "主页 current guidelines 的 GitHub 下载失败，仅以已取得的 2015 版本作为证据。",
+        "谓词论元与投诉检索事项粒度不同，不能一谓词一事项。"
+      ],
+      "source_type": "annotation_guideline",
+      "language": "en",
+      "access_date": "2026-10-08",
+      "verified_date": "2026-10-08",
+      "verification_status": "identity and cited sections verified from downloaded PDF text",
+      "pdf_pages_read": [
+        1,
+        4,
+        5,
+        13,
+        14,
+        17,
+        18,
+        19,
+        20,
+        23
+      ],
+      "pdf_page_count": 66,
+      "pdf_sha256": "6cd244bdf085726b6787150aa4d8b07bffbc6ed974d6ec7f9bd2a5c0f7b439e3",
+      "cached_pdf": ".cache/boundaries/propbank-guideline-colorado.pdf",
+      "cached_text": ".cache/boundaries/propbank-guideline-colorado.txt",
+      "cached_text_sha256": "aa03e8fcf39fd8956bc9aa6c78de22b9e05f71fc0f0898a6a527004076b510c8",
+      "provides_project_accuracy_evidence": false
+    },
+    {
+      "id": "G05",
+      "title": "TimeML Annotation Guidelines",
+      "institution": "TimeML project; introduction attributes the work to TERQAS annotation working group and TANGO workshop",
+      "authors": [
+        "Roser Saurí",
+        "Jessica Littman",
+        "Bob Knippen",
+        "Robert Gaizauskas",
+        "Andrea Setzer",
+        "James Pustejovsky"
+      ],
+      "version": "1.2.1",
+      "document_date": "2006-01-31",
+      "date_note": "PDF cover says January 31, 2006; linked specifications index labels the guidelines October 2005. PDF cover date retained.",
+      "url": "https://timeml.github.io/site/publications/timeMLdocs/annguide_1.2.1.pdf",
+      "supporting_urls": [
+        "https://timeml.github.io/site/publications/specs.html"
+      ],
+      "source_family": "TimeML",
+      "read_scope": "Full PDF acquired; cover, introduction and selected sections read, not an end-to-end full-document review",
+      "sections": [
+        {
+          "locator": "2.2.2 BNF for TIMEX3; 2.2.3 Attributes for TIMEX3",
+          "pdf_pages": [
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29
+          ],
+          "source_observation_zh": "区分 DATE、TIME、DURATION、SET；标准值、时间函数、锚点与原文时间表达分别表示。",
+          "project_implication_zh": "原文时间提取与相对时间解析需分别确定要求和评价。"
+        },
+        {
+          "locator": "2.4 MAKEINSTANCE; 2.4.3 Polarity and Modality; 3.1 TLINK",
+          "pdf_pages": [
+            33,
+            34,
+            35,
+            44
+          ],
+          "source_observation_zh": "模态和否定属于事件实例，时间关系由 TLINK 表达；重复事件可采用基数或多个实例并考虑后文是否单独引用。",
+          "project_implication_zh": "既不能把所有重复事件都拆为投诉事项，也不能让一个状态覆盖全部不同命题。"
+        },
+        {
+          "locator": "3.2 SLINK",
+          "pdf_pages": [
+            51,
+            52,
+            53
+          ],
+          "source_observation_zh": "愿望、承诺、报告、否定报告、条件等引入的事件关系区别处理。",
+          "project_implication_zh": "希望发生的动作与转述事实需要保留各自上下文和作用对象。"
+        }
+      ],
+      "limitations_zh": [
+        "这是旧版项目指南，未作为当前 ISO 标准或最新规范状态核验。",
+        "允许部分隐式时间对象和推导；本项目是否允许及使用什么锚点需另定。",
+        "事件实例粒度不能直接决定投诉检索事项粒度。",
+        "以项目镜像获取正文；原域名发生 SSL 或 404 问题。"
+      ],
+      "source_type": "annotation_guideline",
+      "language": "en",
+      "access_date": "2026-10-08",
+      "verified_date": "2026-10-08",
+      "verification_status": "identity and cited sections verified from downloaded PDF text",
+      "pdf_pages_read": [
+        1,
+        2,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        33,
+        34,
+        35,
+        44,
+        51,
+        52,
+        53
+      ],
+      "pdf_page_count": 71,
+      "pdf_sha256": "cb21b85fbd7058cbc0fc2ef13e131fe5735f23c4114ce4eb488bb268ee8275cd",
+      "cached_pdf": ".cache/boundaries/timeml-guideline-mirror.pdf",
+      "cached_text": ".cache/boundaries/timeml-guideline-mirror.txt",
+      "cached_text_sha256": "23e48a30964b1b64ac4cb6550be2ac46ab484951d617322585ceb776ff46a4bc",
+      "provides_project_accuracy_evidence": false
+    }
+  ],
+  "not_included": [
+    {
+      "name": "FrameNet documentation and book",
+      "reason": "The new .pdf URL, about page and WhatIsFrameNet page returned the same 678-byte HTML app shell; older book URL timed out. No guideline body was read.",
+      "attempted_urls": [
+        "https://framenet2.icsi.berkeley.edu/docs/r1.7/book.pdf",
+        "https://framenet.icsi.berkeley.edu/docs/r1.7/book.pdf",
+        "https://framenet.icsi.berkeley.edu/fndrupal/WhatIsFrameNet",
+        "https://framenet.icsi.berkeley.edu/about"
+      ]
+    },
+    {
+      "name": "ACE Chinese Entities guideline at attempted URL",
+      "reason": "Attempted URL returned HTTP 404; not evidence that no Chinese guideline exists.",
+      "attempted_urls": [
+        "https://www.ldc.upenn.edu/sites/www.ldc.upenn.edu/files/chinese-entities-guidelines-v6.6.pdf"
+      ]
+    },
+    {
+      "name": "PropBank current GitHub guidelines",
+      "reason": "Requested download paths timed out; G04 is the verified university-hosted 2015 version, not a claim about the current GitHub version.",
+      "attempted_urls": [
+        "https://raw.githubusercontent.com/propbank/propbank-documentation/master/annotation-guidelines/Propbank-Annotation-Guidelines.pdf",
+        "https://github.com/propbank/propbank-documentation/raw/refs/heads/master/annotation-guidelines/Propbank-Annotation-Guidelines.pdf"
+      ]
+    }
+  ]
+}

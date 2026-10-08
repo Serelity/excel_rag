@@ -1,0 +1,121 @@
+{
+  "schema_version": 2,
+  "research_date": "2026-10-08",
+  "checked_at": "2026-10-08T10:45:00+08:00",
+  "status": "passed",
+  "scope": "Practice-case additions, source registries, local links, cached source fingerprints, expanded paper metadata validation, and claim-scope review. Does not validate external organizations beyond cited public material and does not measure this project.",
+  "inventory": {
+    "expanded_papers": 5,
+    "total_papers_with_first_round": 20,
+    "new_practice_cases": 9,
+    "new_repositories": 2,
+    "new_repository_files": 6,
+    "practice_source_logs": 4
+  },
+  "checks": {
+    "json:enterprise-practice.json": "passed",
+    "json:civic-practice.json": "passed",
+    "json:applied-practice.json": "passed",
+    "json:opensource-practice.json": "passed",
+    "json:practice-repositories.json": "passed",
+    "json:papers-expanded.json": "passed",
+    "json:papers-expanded-validation.json": "passed",
+    "json:papers-expanded-deduplicated.json": "passed",
+    "jsonl:enterprise-practice-search-log.jsonl": {
+      "status": "passed",
+      "lines": 25
+    },
+    "jsonl:civic-practice-search-log.jsonl": {
+      "status": "passed",
+      "lines": 50
+    },
+    "jsonl:applied-practice-search-log.jsonl": {
+      "status": "passed",
+      "lines": 19
+    },
+    "jsonl:opensource-practice-search-log.jsonl": {
+      "status": "passed",
+      "lines": 23
+    },
+    "case_count": {
+      "status": "passed",
+      "count": 9,
+      "ids": [
+        "C01",
+        "C02",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C10",
+        "C11"
+      ]
+    },
+    "case_source_hashes": {
+      "status": "passed",
+      "matched": 23,
+      "total": 23
+    },
+    "repository_file_hashes": {
+      "status": "passed",
+      "matched": 6,
+      "total": 6
+    },
+    "local_markdown_links": {
+      "status": "passed",
+      "checked": 68
+    },
+    "expanded_papers": {
+      "status": "passed",
+      "count": 5,
+      "ids": [
+        "P16",
+        "P17",
+        "P18",
+        "P19",
+        "P20"
+      ],
+      "validation_summary": {
+        "total_records": 5,
+        "valid_records": 5,
+        "invalid_records": 0,
+        "errors": 0,
+        "warnings": 0
+      }
+    },
+    "cache_gitignore": "passed",
+    "scope_notes": {
+      "status": "recorded",
+      "production_or_offline_or_prototype_separated": true,
+      "no_project_extraction_or_retrieval_benchmark": true
+    }
+  },
+  "independent_claim_review": {
+    "status": "passed_with_minor_wording_fixes",
+    "reviewers": [
+      "applied-evidence-review",
+      "enterprise-practice-review",
+      "civic-practice-review"
+    ],
+    "scope": [
+      "production vs offline vs prototype labels",
+      "metric denominator and attribution",
+      "open-source implementation vs customer deployment",
+      "government case workflow vs project inference"
+    ],
+    "findings_resolved": [
+      "Clarified QJE resolved chats/hour, total observation sample vs AI observation sample, and non-random staggered rollout.",
+      "Clarified COTA English-ticket and multi-agent production A/B scope; did not attribute the 10% time effect to v2 alone.",
+      "Clarified AliMe Scenario-1 to 3 author-reported session-resolution gains and lack of a disclosed randomized protocol.",
+      "Changed Airbus wording to a text-route coverage gap and engineering validation context; preserved absence of a systematic user study.",
+      "Changed civic workflow wording from an unsupported original workbench claim to existing business system/workflow; marked project interpretation as such.",
+      "Kept Rasa/Haystack source mechanisms separate from customer deployments and version details."
+    ],
+    "remaining_limitations": [
+      "Independent review checked claim attribution against the saved public source material; it does not validate the external organizations or measure this project."
+    ]
+  },
+  "errors": [],
+  "warnings": []
+}

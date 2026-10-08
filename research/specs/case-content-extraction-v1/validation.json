@@ -1,0 +1,42 @@
+{
+  "spec_version": "case-content-extraction-v1",
+  "date": "2026-10-08",
+  "environment": {
+    "python": "3.12.14",
+    "pydantic": "2.11.4",
+    "pytest": "8.3.5"
+  },
+  "tests": {
+    "new_contract_passed": 43,
+    "synchronous_extraction_suite_passed": 65,
+    "legacy_synchronous_included": 22,
+    "legacy_async_not_completed": 5,
+    "full_suite": "interrupted_at_windows_event_loop_initialization",
+    "async_diagnostic": "socket._fallback_socketpair -> accept during asyncio._make_self_pipe; mock client not reached"
+  },
+  "ruff": "passed",
+  "synthetic_examples_validated": 9,
+  "review_basis": {
+    "sample_count": 80,
+    "evidence_count": 246,
+    "feedback_case_count": 13,
+    "independent_field_gold": false,
+    "prepared_manifest_sha256": "8cb866fb21c0ce9d941c4371e2a9287fb4d67d8f8aae3519c90839d4380b7b5d"
+  },
+  "contract_manifest_sha256": "89c2ac23aaae7c16b6aad1bb258f9f1de72c5decce3fc0fb6f5af4564c86a169",
+  "source_sha256": {
+    "semantic_extraction/case_contract/__init__.py": "87de465a24f39007118cf26ff47df1aada4db466ffd366481ecb60911d316f6f",
+    "semantic_extraction/case_contract/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "semantic_extraction/case_contract/cli.py": "57f1be1297c22ebc40e7830f2ef9372615005f88e004e68e10328b7a2d38aeac",
+    "semantic_extraction/case_contract/examples.py": "72fe93f48c63971056d98f5c3ec5769e976e59309331552e743b103da065c765",
+    "semantic_extraction/case_contract/prompt.py": "3b9303c41d4437cc4418d19a690b0d1ffa48aed8e68cdbcd17ee59a63d4bf273",
+    "semantic_extraction/case_contract/schema.py": "e596f5d86b5e201cd0c1698a66a510204d23438fd96424a76afaca3381f0f314",
+    "semantic_extraction/case_contract/validation.py": "fcc2525bed5b6d591fa1e6a77b1d3b39a7b1bc5e2ac7403c0ceff1818fb2a1b1",
+    "semantic_extraction/tests/test_case_contract.py": "972bb4441f5e5df6480a46bed2cd9f308adca86a76afdd88470acfca19c84284",
+    "research/scripts/prepare_extraction_contract_review.py": "a15f530d88acaf7f784ed232a44b3b4f5e28f3e2465f3dabc36e583c3621cbcb",
+    "research/topics/case-content-extraction/12-extraction-spec-v1.md": "b406b968d2990a0a8a5bf17a94a26fe90e17ae24edd4bf96f7a693d9cc5a6351"
+  },
+  "model_inference": "not_run",
+  "semantic_accuracy": "not_evaluated",
+  "retrieval_effect": "not_evaluated"
+}

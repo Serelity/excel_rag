@@ -1,0 +1,43 @@
+{
+  "run_version": "case-contract-run-v1",
+  "date": "2026-10-08",
+  "required_conda_environment": "civic-rag-retrieval",
+  "tests": {
+    "new_adapter_and_environment_tests_passed": 28,
+    "all_synchronous_extraction_tests_passed": 93,
+    "legacy_async_not_run": 5,
+    "transport": "mocked_no_model"
+  },
+  "ruff": "passed",
+  "bash_syntax": {
+    "deploy/run-case-contract.sh": "passed",
+    "deploy/run-qwen3-vllm.sh": "passed"
+  },
+  "source_sha256": {
+    "deploy/inspect-case-contract-env.py": "412b57b90f3d12d1493708acc0dabbff59493eafdff88af57799730f449e8a41",
+    "deploy/run-case-contract.sh": "18bd3472dec6da4e03debc84badef23cc30d4251a0cbe9ddd7526a1ea6b3d424",
+    "deploy/run-qwen3-vllm.sh": "47837ce8eef62d0ba0acdbe7e88fdcdd54416bd746eb996698c034d1187d4fb1",
+    "semantic_extraction/case_contract/__init__.py": "87de465a24f39007118cf26ff47df1aada4db466ffd366481ecb60911d316f6f",
+    "semantic_extraction/case_contract/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+    "semantic_extraction/case_contract/cli.py": "57f1be1297c22ebc40e7830f2ef9372615005f88e004e68e10328b7a2d38aeac",
+    "semantic_extraction/case_contract/examples.py": "72fe93f48c63971056d98f5c3ec5769e976e59309331552e743b103da065c765",
+    "semantic_extraction/case_contract/prompt.py": "3b9303c41d4437cc4418d19a690b0d1ffa48aed8e68cdbcd17ee59a63d4bf273",
+    "semantic_extraction/case_contract/runner.py": "92f237b65ea6c7bc7c98482454206369ae9cadf5a72e965d66348acdd68a7aa5",
+    "semantic_extraction/case_contract/schema.py": "e596f5d86b5e201cd0c1698a66a510204d23438fd96424a76afaca3381f0f314",
+    "semantic_extraction/case_contract/transport.py": "ec4f5e2dbb8af567d50082c6ad0a00d3a82a992c73e0a01961e494f1858b7359",
+    "semantic_extraction/case_contract/validation.py": "fcc2525bed5b6d591fa1e6a77b1d3b39a7b1bc5e2ac7403c0ceff1818fb2a1b1",
+    "semantic_extraction/validate_model.py": "97457070c46a8ba6c71007e30352ff5d0bd05d78cac24d98bd508dd643602092",
+    "semantic_extraction/validate_runtime.py": "e2d5eb550b9106f95a9686c87ded4715a13a632ee057eb632907971151cd5cfb"
+  },
+  "test_file_sha256": "2287dc2a96f5b2d5b567537db6f267d0e93f93ed24dc45bb76d9b4b568993a9c",
+  "runbook_sha256": "b6ff26084c17dc04fcb06ac7c5d717c9acb9def633fdf03ca9978177271e54c5",
+  "real_input_preparation": {
+    "sample_count": 10,
+    "status": "prepared",
+    "model_run": false
+  },
+  "server_environment_verified": false,
+  "h100_inference": "not_run",
+  "semantic_accuracy": "not_evaluated",
+  "git_publication": "not_committed_or_pushed"
+}

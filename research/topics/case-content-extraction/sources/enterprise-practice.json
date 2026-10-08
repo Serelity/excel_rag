@@ -1,0 +1,410 @@
+[
+  {
+    "case_id": "C01",
+    "name": "Uber COTA v1→v2",
+    "organization": "Uber",
+    "case_period": "2018 paper; production period not precisely dated",
+    "outcome_evidence": [
+      "production_reported_agent_randomized_ab",
+      "offline_comparison"
+    ],
+    "paper_ids": [
+      "P18"
+    ],
+    "task": "工单类型和回复模板推荐，由客服人员选择。",
+    "input": "工单原文、工单元数据、用户信息、行程信息。",
+    "representation_and_boundaries": "工单类别来自业务树，回复模板是另一个目标；原文仍直接进入模型，不要求先提完通用投诉字段。用户/行程元数据是业务系统提供，不是从原文猜测补全。",
+    "workflow": [
+      "新工单汇集四类特征并预计算预测",
+      "v1清洗/分词/TF-IDF和LSA表示→工单与类别/模板相似度→随机森林逐点排序",
+      "v2分类型编码输入→合并表示→类别路径解码及依赖类别的回复解码",
+      "客服打开时检查工单是否更新；更新则重算",
+      "展示Top3类型和模板，客服选择并完成处理"
+    ],
+    "human_role": "客服是最后选择者；训练来自历史处理记录。",
+    "outcomes": [
+      {
+        "metric": "average ticket handling time",
+        "result": "approximately 10% relative reduction",
+        "baseline": "original workflow without suggestions",
+        "population": "English-language tickets; thousands of agents randomly assigned; tickets solved solely by one arm retained",
+        "location": "P18 PDF p.8 §5.8",
+        "limitations": "Exact arm sizes, test duration, absolute times, confidence interval and v1/v2-specific effect not provided. Customer satisfaction described as same or slightly higher, without a single precise aggregate effect."
+      },
+      {
+        "metric": "reply-template Hits@3",
+        "baseline": 0.7207,
+        "result": 0.7521,
+        "difference_percentage_points": 3.14,
+        "population": "offline historical dataset comparison; paper reports random train/validation/test split with about94K test tickets; Table5 does not restate split in its caption",
+        "location": "P18 PDF p.7 Table5"
+      },
+      {
+        "metric": "both contact-type and reply-template correct",
+        "baseline": 0.4552,
+        "result": 0.5312,
+        "difference_percentage_points": 7.6,
+        "location": "P18 PDF p.7 Table5"
+      }
+    ],
+    "failure_and_iteration": [
+      "长尾类别表现差，过时/低频类型和模板增加数据稀疏；论文提出清理不用的类别和补充元数据。",
+      "字符C-RNN离线略好，但WordCNN评估全验证集2分钟而前者17.5分钟；选择更快模型。",
+      "两个目标各自预测不足以保证一致性；类别→回复依赖改善联合正确率。"
+    ],
+    "transferable_lessons": [
+      {
+        "lesson": "先做可供工作人员选用的历史候选，再评价找案时间与相关性。",
+        "condition": "COTA候选是类别/模板，本项目候选是历史案件；相关性评价仍需本项目定义。"
+      },
+      {
+        "lesson": "保留原文检索基线，让结构信息作为可评估的增量信号。",
+        "condition": "历史案件可靠元数据可用时直接使用；本轮不要求新增外部数据。"
+      },
+      {
+        "lesson": "标签层级和输出之间的依赖是业务设计问题。",
+        "condition": "当前80条可用于观察边界和长尾，不能复制约300万条训练规模。"
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "C01-S1",
+        "url": "https://arxiv.org/pdf/1807.01337",
+        "title": "COTA: Improving the Speed and Accuracy of Customer Support through Ranking and Deep Networks",
+        "publisher": "arXiv (author manuscript)",
+        "date": "2018-07-03",
+        "checked_at": "2026-10-08T02:13:33.997119+00:00",
+        "read_scope": "Selected methods/results: PDF pp.2–8, §§2–5.8; tables1–5",
+        "cache_file": ".cache/practice-enterprise/cota_pdf.pdf",
+        "sha256": "1f4b7bdf2b411390004f2266f02ca00944d23ed553c5b82263dff5d18426cf4f",
+        "evidence_locations": [
+          {
+            "location": "PDF p.2, §§2.1–2.2",
+            "claim": "Four input families; agents see Top-3 suggestions and choose.",
+            "quote": "The top three ranked predictions are suggested to agents"
+          },
+          {
+            "location": "PDF p.3, §§3.2–3.3",
+            "claim": "TF-IDF/LSA candidate-class similarities and Random Forest pointwise ranking; template text also used.",
+            "quote": "Historical tickets associated with each contact type and reply template are collected"
+          },
+          {
+            "location": "PDF pp.4–5, §§4.1–4.2",
+            "claim": "ECD combines heterogeneous inputs; contact-type hierarchy and decoder dependency encode task knowledge."
+          },
+          {
+            "location": "PDF p.6, §5.2",
+            "claim": "About 3M tickets, random train 2.8M/validation94K/test94K split; classes have long tail.",
+            "quote": "About 3M tickets were collected and split randomly"
+          },
+          {
+            "location": "PDF p.6, Table 1; p.7, Tables 2–5",
+            "claim": "Offline metrics and architecture comparisons, including Word CNN speed/accuracy choice.",
+            "table_5": {
+              "COTA_v1": {
+                "contact_type_accuracy": 0.4913,
+                "contact_type_hits_at_3": 0.6716,
+                "reply_accuracy": 0.4753,
+                "reply_hits_at_3": 0.7207,
+                "combined_accuracy": 0.4552
+              },
+              "COTA_v2": {
+                "contact_type_accuracy": 0.6568,
+                "contact_type_hits_at_3": 0.7258,
+                "reply_accuracy": 0.5471,
+                "reply_hits_at_3": 0.7521,
+                "combined_accuracy": 0.5312
+              }
+            }
+          },
+          {
+            "location": "PDF pp.7–8, §5.7",
+            "claim": "Rare categories do worse; authors propose relevant metadata and consolidation of unused classes.",
+            "quote": "the model performs much better on frequent classes than rare ones"
+          },
+          {
+            "location": "PDF p.8, §5.8",
+            "claim": "Production agent-randomized A/B on English tickets, thousands of agents; handling time ~10% reduction; p~1e-8; no exact arm counts/duration or raw means.",
+            "quote": "reduced ticket handling time by ~10%",
+            "qualifier": "Mathematical formatting normalized; paper does not isolate this online effect by v1 versus v2."
+          }
+        ]
+      },
+      {
+        "source_id": "C01-S2",
+        "url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+        "title": "Crossref record for COTA",
+        "publisher": "Crossref (publisher metadata)",
+        "date": "2018-07-19",
+        "checked_at": "2026-10-08T02:18:33.128605+00:00",
+        "read_scope": "Metadata only",
+        "cache_file": ".cache/practice-enterprise/cota_doi_metadata.json",
+        "sha256": "a2e6a39fa087c549798db28aeb2a22d4f789d47541796366d5c96eaa2acb47e2",
+        "evidence_locations": [
+          {
+            "location": "message.title/subtitle/author/container-title/published/DOI/page",
+            "claim": "ACM KDD2018; DOI10.1145/3219819.3219851; pp586–595; metadata only."
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "case_id": "C02",
+    "name": "Alibaba AliMe Assist→AliMe KBQA",
+    "organization": "Alibaba Group",
+    "case_period": "2017 Assist; 2018 Double11 KBQA deployment reported in2019 paper",
+    "outcome_evidence": [
+      "production_reported",
+      "offline_comparison"
+    ],
+    "paper_ids": [
+      "P19",
+      "P20"
+    ],
+    "task": "中文为主电商问答、任务服务及商家促销规则查询；同一产品家族的两次系统设计。",
+    "input": "用户问题文本、上一轮问题、已有知识项/实体/属性/规则；语音可经输入层进入。",
+    "representation_and_boundaries": "不同服务任务使用不同schema。Assist区分任务槽位、意图、知识实体与闲聊；KBQA区分实体、属性、约束及答案列，并维护知识的层级和适用条件。",
+    "workflow": [
+      "Assist规则匹配/意图识别区分任务服务、业务问答和闲聊",
+      "任务型先定义必填/选填槽位，再字典/模式提取，缺必填时澄清",
+      "知识问答将用户不同说法归一到知识实体，查询KG；缺答时一次拼接上一轮，仍缺则检索补充，失败后转人工",
+      "KBQA由人工构造属性层级、键值文本和CVT条件表",
+      "Trie识别实体、实体遮盖后CNN预测属性；规则/相似度识别并绑定约束",
+      "LambdaRank排序候选查询图，Top1回答或Top3推荐，需要时按已建模规则推理"
+    ],
+    "human_role": "业务分析师复核实体、定义关系与schema、配置知识，用户补齐必需槽位；客服承接未匹配问题。",
+    "outcomes": [
+      {
+        "metric": "intent precision",
+        "baseline": 82.71,
+        "baseline_model": "SVM+MaxEnt ensemble",
+        "without_semantic_tags": 89.0,
+        "result": 89.91,
+        "unit": "percent",
+        "population": "40 intents;67,797 examples;47,455train/20,342test",
+        "location": "P19 PDF p.2 §3.1",
+        "limitations": "Paper calls this precision but does not specify macro/micro averaging; not slot-extraction accuracy."
+      },
+      {
+        "metric": "KBQA resolution rate",
+        "result": "90%+",
+        "population": "2018 Double11 marketing-promotion deployment; >1M customer questions",
+        "denominator": "sessions: rr=1-U/T; U includes disliked/no-answer/explicit staff-request sessions",
+        "comparison": "Authors say 10-percent higher than QA-style representation and question-question matching; precise relative-vs-absolute interpretation not supplied",
+        "location": "P20 PDF pp.7–8 §4 and footnote5",
+        "limitations": "Operational authors report; no randomized test, raw means, arm sizes or independent factual audit given."
+      },
+      {
+        "metric": "resolution-rate absolute gain in further scenarios",
+        "values_percentage_points": [
+          7.88,
+          4.9,
+          3.24
+        ],
+        "population": "three anonymized further scenarios, Table2",
+        "location": "P20 PDF p.8 Table2 and preceding paragraph"
+      },
+      {
+        "metric": "knowledge representation counts",
+        "qa_pair_counts": [
+          232,
+          776,
+          870
+        ],
+        "property_counts": [
+          78,
+          73,
+          72
+        ],
+        "location": "P20 PDF p.8 Table2",
+        "interpretation": "Fewer matching/training targets; not same-unit storage reduction and not a measured latency gain."
+      },
+      {
+        "metric": "analogous promotion launch effort",
+        "result": "one working day",
+        "population": "Double12 following Double11 deployment of same schema family",
+        "location": "P20 PDF p.6 §2 final paragraph",
+        "limitations": "Author-reported incremental reuse case, not complete initial system build time."
+      }
+    ],
+    "failure_and_iteration": [
+      "Assist知识图谱仅覆盖常问子集，所以保留检索提高召回。",
+      "单纯QA对枚举在商家复杂场景中冗余；相同词项间的修饰关系与条件决定答案。",
+      "KBQA人工schema成本仍未解决；当时场景无需实体消歧，并不能据此省去政务地址消歧。",
+      "Assist闲聊A/B的Top1可接受率不支持业务问答或投诉抽取的准确率。",
+      "KBQA解决率是基于会话行为的操作指标，安静退出可能不等于事实正确。"
+    ],
+    "transferable_lessons": [
+      {
+        "lesson": "先把原文片段、规范概念、事项角色和查询条件分清，各自对应不同方法与判错方式。",
+        "condition": "规则、同义词映射、分类/LLM可分工，具体本地模型未定。"
+      },
+      {
+        "lesson": "历史表述可以帮助积累同义表达和边界反例，归一结果应保留原文证据。",
+        "condition": "历史答复相似只提供候选，同义关系仍需复核；投诉中的同一办理结果不保证同一问题。"
+      },
+      {
+        "lesson": "结构路线服务于高约束场景，原文检索补充长尾覆盖。",
+        "condition": "是否需要知识图谱由错误分布和成本决定，不因AliMe成功就新增图谱。"
+      },
+      {
+        "lesson": "字段应附带对下游的作用：影响召回、排序、同案关联、规则限制还是仅展示。",
+        "condition": "没有原文依据的地点/属性不自动补齐；不照搬电商任务的默认槽位。"
+      }
+    ],
+    "sources": [
+      {
+        "source_id": "C02-S1",
+        "url": "https://arxiv.org/pdf/1801.05032",
+        "title": "AliMe Assist: An Intelligent Assistant for Creating an Innovative E-commerce Experience",
+        "publisher": "arXiv (author manuscript)",
+        "date": "2018-01-12 (preprint of2017 CIKM paper)",
+        "checked_at": "2026-10-08T02:15:56.178382+00:00",
+        "read_scope": "Selected text: PDF pp.1–3 §§1–4; p.4 conclusion; bibliography not fully read",
+        "cache_file": ".cache/practice-enterprise/alime_assist_pdf.pdf",
+        "sha256": "23db5643b05a89727e2cd2313104af2d61d43d180d9a494528b221c251a0e3a6",
+        "evidence_locations": [
+          {
+            "location": "PDF pp.1–2, §2 and Fig.2",
+            "claim": "Business rules, intent classification, semantic parsing, graph query, context use, retrieval fallback and human transfer."
+          },
+          {
+            "location": "PDF p.2, §3.1",
+            "claim": "40 intentions, 67,797 instances (47,455 train / 20,342 test); precision 89.91% with tags, 89% without, SVM/MaxEnt82.71%.",
+            "quote": "With semantic tags, our CNN model is able to achieve a precision of 89.91%"
+          },
+          {
+            "location": "PDF p.2, §3.2",
+            "claim": "Define mandatory and optional slots for each task; dictionary/pattern slot filling; ask for missing mandatory values.",
+            "quote": "define a schema that specifies the mandatory and optional slots for a task"
+          },
+          {
+            "location": "PDF p.3, §3.3",
+            "claim": "Analysts review mined entity candidates and define relations; semantic normalization mines phrasing from historical chats; retrieval complements frequent-item graph.",
+            "quote": "retrieval model is used as a complement to improve recall"
+          },
+          {
+            "location": "PDF p.3, §3.4",
+            "claim": "Reported chat A/B: Top1 acceptable response60.36% vs IR40.86%, 2,136 questions. This is chatting, not complaint extraction or knowledge QA."
+          },
+          {
+            "location": "PDF p.3, §4",
+            "claim": "Authors report millions of daily questions,85% addressed; no precise addressed denominator/window or audited accuracy provided."
+          }
+        ]
+      },
+      {
+        "source_id": "C02-S2",
+        "url": "https://arxiv.org/pdf/1912.05728",
+        "title": "AliMe KBQA: Question Answering over Structured Knowledge for E-commerce Customer Service",
+        "publisher": "arXiv (author manuscript)",
+        "date": "2019-12-12 (preprint); formal year2019",
+        "checked_at": "2026-10-08T02:15:56.178602+00:00",
+        "read_scope": "Selected text: PDF pp.1–9 §§1–5 and p.11 §6; tables1–2; Fig7 image onp10 not independently transcribed",
+        "cache_file": ".cache/practice-enterprise/alime_kbqa_pdf.pdf",
+        "sha256": "ced6a7e1657498bf9708d8b03939a574fca7bbf8254644a6ba6ef2f13ea17a54",
+        "evidence_locations": [
+          {
+            "location": "PDF pp.1–3, §§1–2, Table1",
+            "claim": "QA pair redundancy and entity-modifier relationships motivate richer representation."
+          },
+          {
+            "location": "PDF pp.3–5, §2 and Figs1–3",
+            "claim": "Property hierarchies, key-value text, CVT tables whose columns separate answers and constraints.",
+            "quote": "take the other columns as conditions or constraints"
+          },
+          {
+            "location": "PDF p.6, §2 final paragraph",
+            "claim": "After Double11 deployment, analogous Double12 deployment took one working day, according to authors.",
+            "quote": "only took us one working day"
+          },
+          {
+            "location": "PDF pp.6–7, §3, Figs4–6",
+            "claim": "Trie entities→mask mentions→CNN candidate properties→constraint linking→LambdaRank query graphs→Top1 answer/Top3 recommendation; no entity disambiguation in their scenario."
+          },
+          {
+            "location": "PDF pp.7–8, §4 and footnote5",
+            "claim": "2018 Double11 marketing promotion: >1M customer questions;121 properties/73CVTs covering320 originalQA; resolution90%+; reported comparison and satisfaction improvements lack full test setup.",
+            "quote": "rr = 1 - U/T",
+            "definition": "U=unsolved sessions including disliked sessions, no-answer sessions, and explicit requests for staff; T=all sessions."
+          },
+          {
+            "location": "PDF p.8, Table2 and preceding paragraph",
+            "claim": "Three anonymized further scenarios, absolute resolution-rate increases; not independent randomized studies.",
+            "quote": "the resolution rate gains an absolute increase of 5% on average",
+            "table_2": [
+              {
+                "scenario": 1,
+                "qa_pairs": 232,
+                "entities": 35,
+                "properties": 78,
+                "cvt": 9,
+                "reported_resolution_increase_percentage_points": 7.88
+              },
+              {
+                "scenario": 2,
+                "qa_pairs": 776,
+                "entities": 111,
+                "properties": 73,
+                "cvt": 27,
+                "reported_resolution_increase_percentage_points": 4.9
+              },
+              {
+                "scenario": 3,
+                "qa_pairs": 870,
+                "entities": 367,
+                "properties": 72,
+                "cvt": 45,
+                "reported_resolution_increase_percentage_points": 3.24
+              }
+            ]
+          },
+          {
+            "location": "PDF p.11, §6",
+            "claim": "Manual schema construction cost and constraint identification remain future work.",
+            "quote": "how to lower the cost of manual schema construction"
+          },
+          {
+            "location": "PDF p.7 last paragraph vs p.8 after Table2",
+            "claim": "Text gives inconsistent NO/usable descriptions for a coupon/SKU-Bao example; report does not treat its example policy answer as verified business truth."
+          }
+        ]
+      },
+      {
+        "source_id": "C02-S3",
+        "url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+        "title": "Crossref record for AliMe Assist",
+        "publisher": "Crossref (publisher metadata)",
+        "date": "2017-11-06",
+        "checked_at": "2026-10-08T02:18:33.128987+00:00",
+        "read_scope": "Metadata only",
+        "cache_file": ".cache/practice-enterprise/alime_assist_doi_metadata.json",
+        "sha256": "471734a391aea6d14283e6ea9867450bd0ec0376f3e55ce8c7ef9766c7c3ef6b",
+        "evidence_locations": [
+          {
+            "location": "message.title/subtitle/author/container-title/published/DOI/page",
+            "claim": "CIKM2017; DOI10.1145/3132847.3133169; pp2495–2498."
+          }
+        ]
+      },
+      {
+        "source_id": "C02-S4",
+        "url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+        "title": "Crossref record for AliMe KBQA",
+        "publisher": "Crossref (publisher metadata)",
+        "date": "2019",
+        "checked_at": "2026-10-08T02:18:33.129185+00:00",
+        "read_scope": "Metadata only",
+        "cache_file": ".cache/practice-enterprise/alime_kbqa_doi_metadata.json",
+        "sha256": "615b221f6a02c2589111b2ca56062a169361b2ecddbd7e335ca46e0ccc016053",
+        "evidence_locations": [
+          {
+            "location": "message.title/author/container-title/published/DOI/page/type",
+            "claim": "2019 Springer book chapter; DOI10.1007/978-981-15-1956-7_12; pp136–148. Do not label it a journal article."
+          }
+        ]
+      }
+    ]
+  }
+]

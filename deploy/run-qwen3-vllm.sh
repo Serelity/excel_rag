@@ -44,12 +44,20 @@ gpu_visibility=${CUDA_VISIBLE_DEVICES:-$GPU_ID}
 [[ -n $gpu_visibility && $gpu_visibility != *,* ]] || \
   { printf 'ERROR: exactly one GPU must be visible\n' >&2; exit 2; }
 command -v conda >/dev/null 2>&1 || { printf 'ERROR: conda is not on PATH\n' >&2; exit 2; }
+conda_runner=(conda run --no-capture-output)
+if [[ -n ${CONDA_EXTRACT_PREFIX:-} ]]; then
+  [[ $CONDA_EXTRACT_PREFIX == /* && -d $CONDA_EXTRACT_PREFIX ]] || \
+    { printf 'ERROR: CONDA_EXTRACT_PREFIX must be an existing absolute directory\n' >&2; exit 2; }
+  conda_runner+=(-p "$CONDA_EXTRACT_PREFIX")
+else
+  conda_runner+=(-n "$CONDA_EXTRACT_ENV")
+fi
 
 mkdir -p "$VLLM_CACHE_PATH"/{huggingface,vllm,torchinductor,triton}
 cd "$PROJECT_ROOT"
-env CUDA_VISIBLE_DEVICES="$gpu_visibility" conda run --no-capture-output \
-  -n "$CONDA_EXTRACT_ENV" python -m semantic_extraction.validate_runtime
-conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
+env CUDA_VISIBLE_DEVICES="$gpu_visibility" "${conda_runner[@]}" \
+  python -m semantic_extraction.validate_runtime
+"${conda_runner[@]}" \
   python -m semantic_extraction.validate_model --model-dir "$QWEN_MODEL_PATH"
 
 unset HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
@@ -87,5 +95,5 @@ exec env \
   TRITON_CACHE_DIR="$VLLM_CACHE_PATH/triton" \
   DO_NOT_TRACK=1 \
   TOKENIZERS_PARALLELISM=false \
-  conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
+  "${conda_runner[@]}" \
   python -m vllm.entrypoints.openai.api_server "${args[@]}"

@@ -4,6 +4,9 @@
 
 data/
 
+# Private exported field-boundary review records.
+/人工复核结果/
+
 
 # ======================
 # Models

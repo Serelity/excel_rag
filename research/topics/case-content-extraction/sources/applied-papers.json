@@ -1,0 +1,354 @@
+[
+  {
+    "paper_id": "P16",
+    "title": "Generative AI at Work",
+    "authors": [
+      "Erik Brynjolfsson",
+      "Danielle Li",
+      "Lindsey Raymond"
+    ],
+    "year": 2025,
+    "publication_date": "2025-02-04",
+    "publication_date_type": "online-first",
+    "publication_type": "journal-article",
+    "venue": "The Quarterly Journal of Economics",
+    "volume": "140",
+    "issue": "2",
+    "pages": "889-942",
+    "doi": "10.1093/qje/qjae044",
+    "abstract": null,
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "abstract": "本轮按正文选读，不另复制摘要。",
+      "citation_count": "本轮不采集引用量；未知不记为0。"
+    },
+    "source_url": "https://doi.org/10.1093/qje/qjae044",
+    "source_platforms": [
+      "Crossref",
+      "Danielle Li author website"
+    ],
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Danielle Li author website",
+          "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+          "checked_at": "2026-10-08T02:19:23.400083+00:00",
+          "evidence_type": "pdf_text",
+          "note": "采用PDF首页卷期年；Crossref online-first日期另存。"
+        }
+      ],
+      "publication_date": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Danielle Li author website",
+          "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+          "checked_at": "2026-10-08T02:19:23.400083+00:00",
+          "evidence_type": "download_response",
+          "note": "实际取得PDF并解析全文；阅读范围仅为指定正文片段。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "Danielle Li author website",
+          "source_url": "http://danielle.li/research/",
+          "checked_at": "2026-10-08T02:16:50.962758+00:00",
+          "evidence_type": "page_text",
+          "note": "作者研究页将该公开PDF列为QJE 2025正式论文。"
+        }
+      ],
+      "open_access_status": [
+        {
+          "platform": "OpenAlex",
+          "source_url": "https://api.openalex.org/works/https://doi.org/10.1093/qje/qjae044",
+          "checked_at": "2026-10-08T02:15:23.234049+00:00",
+          "evidence_type": "source_metadata",
+          "note": "open_access.oa_status=hybrid；开放许可另由Crossref和PDF首页核对。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "Danielle Li author website",
+          "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+          "checked_at": "2026-10-08T02:19:23.400083+00:00",
+          "evidence_type": "pdf_text",
+          "note": "核对PDF首页标题、作者、期刊和DOI。"
+        }
+      ],
+      "read_scope": [
+        {
+          "platform": "Danielle Li author website",
+          "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+          "checked_at": "2026-10-08T02:19:23.400083+00:00",
+          "evidence_type": "pdf_text",
+          "note": "III.A–C pp.898–901; IV.A–C pp.901–906; V.A pp.907–910; V.B pp.911–914; VI.A pp.917–919; VI.C pp.924–927; VIII pp.934–936; Tables I–III, Figures III, VI and VIII captions"
+        }
+      ],
+      "license": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+          "checked_at": "2026-10-08T02:12:10.570646+00:00",
+          "evidence_type": "source_metadata",
+          "note": "Crossref许可记录；PDF首页亦有开放许可。"
+        }
+      ]
+    },
+    "full_text_status": "open_pdf",
+    "open_access_status": "hybrid",
+    "license": "CC-BY-NC-4.0",
+    "pdf_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+    "download_status": "downloaded",
+    "download_source": "danielle.li",
+    "final_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+    "checked_at": "2026-10-08T02:19:23.400083+00:00",
+    "local_pdf_path": ".cache/practice-applied/qje-author-pdf-https.pdf",
+    "byte_length": 2053024,
+    "sha256": "b59b45b650ad75640735e4a44bc58dae8aa1133f7886c820fb4e815f08a4df9f",
+    "content_type": "application/pdf",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "pdf_page_count": 54,
+    "read_scope": "selected_full_text_sections",
+    "evidence_location": "III.A–C pp.898–901; IV.A–C pp.901–906; V.A pp.907–910; V.B pp.911–914; VI.A pp.917–919; VI.C pp.924–927; VIII pp.934–936; Tables I–III, Figures III, VI and VIII captions",
+    "relevance": "生产客服助手的历史优质会话学习、人工接管和异质收益。",
+    "fetched_at": "2026-10-08",
+    "bibtex": "@article{brynjolfsson2025generative,\n  title = {Generative AI at Work},\n  author = {Erik Brynjolfsson and Danielle Li and Lindsey Raymond},\n  year = {2025},\n  journal = {The Quarterly Journal of Economics},\n  volume = {140},\n  number = {2},\n  pages = {889--942},\n  doi = {10.1093/qje/qjae044},\n  url = {https://doi.org/10.1093/qje/qjae044}\n}",
+    "citation_key": "brynjolfsson2025generative",
+    "bibtex_origin": "由Crossref及PDF首页核验字段生成；卷期年份以正式PDF为准。",
+    "version_note": "正式发表PDF：2025年，5,172名客服、摘要约15%。NBER网页早版为5,179名、14%，不混用。OpenAlex日期为2024-12-29，与正式PDF和Crossref在线发表日2025-02-04不同；采用后两者。",
+    "related_versions": [
+      {
+        "doi": "10.3386/w31161",
+        "role": "earlier_working_paper_not_used_for_final_effect_estimates"
+      }
+    ],
+    "limitations": "单家公司、非随机分批推广的主要样本；本文测整套客服助手，未独立评估字段抽取或检索排序，也未公开模型权重和全套私有数据。"
+  },
+  {
+    "paper_id": "P17",
+    "title": "Snorkel: rapid training data creation with weak supervision",
+    "authors": [
+      "Alexander Ratner",
+      "Stephen H. Bach",
+      "Henry Ehrenberg",
+      "Jason Fries",
+      "Sen Wu",
+      "Christopher Ré"
+    ],
+    "year": 2020,
+    "publication_date": "2019-07-15",
+    "publication_date_type": "online-first",
+    "publication_type": "journal-article",
+    "venue": "The VLDB Journal",
+    "volume": "29",
+    "issue": "2-3",
+    "pages": "709-730",
+    "doi": "10.1007/s00778-019-00552-1",
+    "abstract": null,
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "abstract": "本轮按正文选读，不另复制摘要。",
+      "citation_count": "本轮不采集引用量；未知不记为0。"
+    },
+    "source_url": "https://doi.org/10.1007/s00778-019-00552-1",
+    "source_platforms": [
+      "Crossref",
+      "Springer Nature"
+    ],
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Springer Nature",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+          "checked_at": "2026-10-08T02:13:56.521544+00:00",
+          "evidence_type": "pdf_text",
+          "note": "采用PDF首页卷期年；Crossref online-first日期另存。"
+        }
+      ],
+      "publication_date": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Springer Nature",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+          "checked_at": "2026-10-08T02:13:56.521544+00:00",
+          "evidence_type": "download_response",
+          "note": "实际取得PDF并解析全文；阅读范围仅为指定正文片段。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata",
+          "note": "Crossref公开许可与出版商PDF入口。"
+        }
+      ],
+      "open_access_status": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata",
+          "note": "已确认本文开放许可和可读全文，未独立分类期刊整体的OA模式。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "Springer Nature",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+          "checked_at": "2026-10-08T02:13:56.521544+00:00",
+          "evidence_type": "pdf_text",
+          "note": "核对PDF首页标题、作者、期刊和DOI。"
+        }
+      ],
+      "read_scope": [
+        {
+          "platform": "Springer Nature",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+          "checked_at": "2026-10-08T02:13:56.521544+00:00",
+          "evidence_type": "pdf_text",
+          "note": "§2 and §2.1 pp.712–713; §4.1 pp.720–724 (Tables 2–7); §4.2 pp.724–725 (Figures 12–14)"
+        }
+      ],
+      "license": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+          "checked_at": "2026-10-08T02:12:10.571048+00:00",
+          "evidence_type": "source_metadata",
+          "note": "Crossref许可记录；PDF首页亦有开放许可。"
+        }
+      ]
+    },
+    "full_text_status": "open_pdf",
+    "open_access_status": "unknown",
+    "license": "CC-BY-4.0",
+    "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+    "download_status": "downloaded",
+    "download_source": "link.springer.com",
+    "final_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+    "checked_at": "2026-10-08T02:13:56.521544+00:00",
+    "local_pdf_path": ".cache/practice-applied/snorkel-journal-pdf.pdf",
+    "byte_length": 2320080,
+    "sha256": "9c611b904d4e2ad2af11d1fe497120706fb4763d1657dba70fb08426baa456c6",
+    "content_type": "application/pdf",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "pdf_page_count": 22,
+    "read_scope": "selected_full_text_sections",
+    "evidence_location": "§2 and §2.1 pp.712–713; §4.1 pp.720–724 (Tables 2–7); §4.2 pp.724–725 (Figures 12–14)",
+    "relevance": "弱监督关联抽取的候选定义、规则冲突、独立验证、负例覆盖与专家时间。",
+    "fetched_at": "2026-10-08",
+    "bibtex": "@article{ratner2020snorkel,\n  title = {Snorkel: rapid training data creation with weak supervision},\n  author = {Alexander Ratner and Stephen H. Bach and Henry Ehrenberg and Jason Fries and Sen Wu and Christopher Ré},\n  year = {2020},\n  journal = {The VLDB Journal},\n  volume = {29},\n  number = {2-3},\n  pages = {709--730},\n  doi = {10.1007/s00778-019-00552-1},\n  url = {https://doi.org/10.1007/s00778-019-00552-1}\n}",
+    "citation_key": "ratner2020snorkel",
+    "bibtex_origin": "由Crossref及PDF首页核验字段生成；卷期年份以正式PDF为准。",
+    "version_note": "使用The VLDB Journal卷期2020年扩展版（online-first 2019-07-15），没有把2017 PVLDB或arXiv版当作本文字节或数值来源。",
+    "related_versions": [
+      {
+        "doi": "10.14778/3157794.3157797",
+        "arxiv_id": "1711.10160",
+        "role": "earlier_PVLDB_2017_version_metadata_checked_only"
+      }
+    ],
+    "limitations": "合作应用的离线抽取指标及受控用户研究；不是投诉领域、不是无人工验证，也不等于在线业务收益。"
+  }
+]

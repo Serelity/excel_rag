@@ -1,0 +1,106 @@
+# 抽取规范 v1：H100 试抽执行手册
+
+2026-10-08 用户确认：涉及GPU的模型运行沿用服务器H100，环境固定使用 **`civic-rag-retrieval`**。本手册承接[校园网执行手册](PHASE1_RUNBOOK.md)及[既有Qwen抽取部署](../semantic_extraction/README.md)。本机尚未获得服务器实际环境检查或模型试抽结果。
+
+## 执行分工
+
+| 工作 | 执行位置 |
+| --- | --- |
+| 大模型字段抽取、小批量试抽及后续批处理 | 服务器分配的H100 |
+| BGE-M3向量编码、需要模型推理的dense/hybrid检索 | 服务器H100，复用现有环境、权重及索引 |
+| BGE reranker重排 | 服务器H100 |
+| 规范与代码开发、输入准备、逐字证据校验、人工审阅、离线统计 | 本地CPU；需要时也可在服务器CPU环境执行 |
+
+沿用服务器终端Git拉取代码、提交H100任务的流程。服务器现有Conda环境和权重以实际配置为准，不因本轮规范开发另建环境或下载同一模型。本地无需具备GPU或模型权重，模型试抽不以本地GPU检查通过为前提。
+
+## 已有入口与本轮接入
+
+- 服务器私有`deploy/.env.semantic`继续提供已有Qwen3-30B-A3B权重路径、指纹及服务参数。旧示例中的`CONDA_EXTRACT_ENV=civic-rag-extract`属于v4约定；本轮入口以实际查到的`civic-rag-retrieval`绝对环境路径为准，服务和客户端均使用它。
+- [run-qwen3-vllm.sh](run-qwen3-vllm.sh)已有H100模型服务启动逻辑：复用本地权重、单张可见GPU、服务器回环地址服务及环境检查。
+- [run-qwen3-pilot.sh](run-qwen3-pilot.sh)仍调用旧`semantic_extraction.run`及v4提示词/schema。它不能直接作为新规范的80条试抽命令。
+- 新增 [run-case-contract.sh](run-case-contract.sh) 提供`inspect / smoke / all`三个阶段；[批量适配器](../semantic_extraction/case_contract/runner.py)使用v1提示词和输出结构，保存请求/回复与逐字校验结果。
+- [环境检查](inspect-case-contract-env.py)只检查指定名称，缺失或依赖不兼容时保存诊断后退出；不自动改名、切换环境、安装依赖或升级现有检索环境。
+
+## 1. 同步代码和私有输入
+
+代码沿用既有Git流程：本地完成提交并推送到`origin/codex/case-relevance-phase1`，服务器再拉取。服务器在已有仓库根目录执行：
+
+```bash
+git status --short
+git fetch origin codex/case-relevance-phase1
+git switch codex/case-relevance-phase1
+git pull --ff-only origin codex/case-relevance-phase1
+git rev-parse --short HEAD
+```
+
+若服务器有未提交修改或分支分叉，先保留并处理，不用强制重置覆盖。核对服务器HEAD与本次交付提交一致，并确认新入口及整个`semantic_extraction/case_contract/`目录已到位，再执行环境检查。未推送的本地文件不能通过服务器`git pull`获得。
+
+本次准备的80条输入与验收材料位于`data/case-relevance-phase1-v1/extraction-contract-v1-001/`。通过既有可信传输方式复制完整目录，保留`inputs.jsonl`、`acceptance-matrix.jsonl`、`summary.json`和`manifest.json`，不能只传输入文件。规范包`research/specs/case-content-extraction-v1/`也需随代码同步。
+
+## 2. 在服务器做只读环境检查
+
+在服务器仓库根目录执行，检查不需要分配GPU：
+
+```bash
+conda env list
+bash deploy/run-case-contract.sh inspect \
+  --output data/case-relevance-phase1-v1/contract-env-001
+```
+
+脚本从Conda实际清单查找`civic-rag-retrieval`，用对应绝对路径运行检查；不会凭拼写猜中后直接开始抽取。同名环境存在于多个位置时也会停止，避免选错。`environment.json`记录实际解释器、版本和选中路径。
+
+现有Qwen服务部署要求Python3.11、openai1.75.0、pydantic2.11.4、torch2.6.0、transformers4.51.3、vllm0.8.5。检查沿用这些已定义的版本约定。`ready_for_gpu_preflight`只表示包记录及Pydantic导入适合继续；不表示CUDA、权重加载或新schema推理已通过。若检索环境缺vLLM或版本不同，先查看诊断，再制定明确的环境处理方案。
+
+## 3. 申请H100后先跑10条
+
+复用已有`deploy/.env.semantic`中的真实权重路径。新入口不覆盖该文件；只在本次运行目录写入有效的非密钥配置。密钥从进程环境传递，不写入请求文件。
+
+```bash
+bash deploy/run-case-contract.sh smoke \
+  --output data/case-relevance-phase1-v1/contract-smoke-001
+```
+
+默认输入目录即上述80条开发包。需要使用其他已准备目录时用`--input-dir`，私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
+
+首批固定选取B001、B015、B032、B040、B013、B016、B019、B026、B053、B069，按原输入顺序执行。这是有意覆盖规则边界的开发集合，不能当随机准确率样本。请求串行，temperature=0、seed=42、关闭thinking；默认最大输出8192 tokens，可通过私有配置中的`CASE_CONTRACT_MAX_TOKENS`明确改变。
+
+脚本核对输入和代码指纹，检查H100及权重，启动已有vLLM服务，核对模型别名，试抽并校验，最后回收本次启动的进程。已占用端口会停止任务，不终止已有服务。实际可见GPU沿用平台分配的`CUDA_VISIBLE_DEVICES`。
+
+## 4. 检查结果，再运行80条
+
+在`contract-smoke-001/`内：
+
+| 路径 | 内容 |
+| --- | --- |
+| environment.json | 环境名称、绝对路径、包检查结果 |
+| runtime.env、vllm.log、job.status | 非密钥有效配置、服务启动/运行日志、任务退出状态 |
+| job-manifest.json | 任务回收服务后绑定完整环境、配置、日志和抽取产物；同时记录退出码 |
+| extraction/plan.json、config.json、inputs.json | 实际输入、参数和代码指纹 |
+| extraction/attempts/ | 每次实际请求、原始响应、HTTP/校验状态、耗时；属于私有业务材料 |
+| extraction/records/、results.jsonl | 逐样例校验结果，包含拒收记录 |
+| extraction/summary.json、manifest.json | 聚合状态、各文件哈希；完整完成后才生成 |
+
+`status=completed`仅表示所有选中输出通过结构及逐字校验；`semantic_review_status`仍为not_run。`completed_with_errors`会以非零退出码结束，保留拒收及错误类型。没有有效manifest、任务failed/interrupted或尚在running时不能视为完成。
+
+回传整个运行目录，包含外层job清单与内层extraction清单。只有退出码为0且两份清单所绑定文件齐全一致，才说明服务器试抽完整结束；它仍不代替语义验收。环境检查或输入准备阶段失败可能只有诊断文件，不会伪造完整任务清单。
+
+仅超时/连接异常及HTTP408、429、500、502、503、504重试一次，所有尝试都留档。JSON/字段/证据错误或截断回复直接拒收；不复用旧版压缩恢复提示词，不静默删字段。根据失败原因另开新运行，不能覆盖旧目录或改写完成状态。
+
+核对10条字段语义与明确反馈后，可以继续完整80条开发抽取：
+
+```bash
+bash deploy/run-case-contract.sh all \
+  --output data/case-relevance-phase1-v1/contract-full-001
+```
+
+这一步仍需对新模型输出做语义验收；原80条人工审阅通过不能直接转写为模型输出通过。不同模型/参数/提示词需另存运行，不与前轮合并当同一实验。
+
+## 输入与结果交接
+
+本轮私有开发输入位于`data/case-relevance-phase1-v1/extraction-contract-v1-001/inputs.jsonl`。sample_id只作传输匹配，模型用户消息仅取每行`input.case_content`。准备清单及原文指纹与输入一起保留。
+
+代码通过既有Git流程交接；真实投诉、复核资料及模型输出通过既有可信文件传输方式交接，继续保存在Git忽略的数据目录。服务器结果回本地后，可以运行v1证据校验和人工审阅，不需要复制GPU权重。
+
+先前5项旧版异步测试的阻塞发生在本地Windows事件循环初始化，尚未进入模拟客户端；这些是CPU测试，不是GPU推理失败。可在服务器正常的Python测试环境补跑，结果另行记录，不将“安排在H100服务器运行”写成“已经运行通过”。
+
+当前适配器交付见[H100试抽入口开发记录](../research/topics/case-content-extraction/14-h100-adapter-delivery.md)，规范本身的历史记录见[规范交付记录](../research/topics/case-content-extraction/13-extraction-spec-v1-delivery.md)。

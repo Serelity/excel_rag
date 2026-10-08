@@ -1,0 +1,903 @@
+{
+  "schema_version": 2,
+  "research_date": "2026-10-08",
+  "selection": "purposive sample of extraction, structured decoding and annotation projects; not exhaustive or ranked by stars",
+  "execution": "only read public metadata and source; no third party repository code installed or run",
+  "repositories": [
+    {
+      "full_name": "google/langextract",
+      "html_url": "https://github.com/google/langextract",
+      "description": "A Python library for extracting structured information from unstructured text using LLMs with precise source grounding and interactive visualization.",
+      "default_branch": "main",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-10-06T20:31:54Z",
+      "updated_at": "2026-10-07T14:47:34Z",
+      "stargazers_count": 38923,
+      "forks_count": 2720,
+      "open_issues_count": 118,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "requested_repo": "google/langextract",
+      "owner": "google",
+      "pin_commit": "24298305d6998061fadd01080def4288c653d243",
+      "pin_commit_date": "2026-10-06T20:31:53Z",
+      "latest_release": {
+        "tag_name": "v1.7.0",
+        "html_url": "https://github.com/google/langextract/releases/tag/v1.7.0",
+        "published_at": "2026-09-13T18:57:37Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/README.md",
+          "cache_path": ".cache/repositories/google__langextract/README.md",
+          "sha256": "2843b5f84b153f4b0885b69d2a43431ad7a380737a61016d2b3f13dbafecedcb",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:40.478869+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "langextract/core/data.py",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/langextract/core/data.py",
+          "cache_path": ".cache/repositories/google__langextract/langextract/core/data.py",
+          "sha256": "1bdd05d75387858d38b0bb6975a7b7753e957b855ce4e694dabe2985cf0fc8a3",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.770908+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "langextract/resolver.py",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/langextract/resolver.py",
+          "cache_path": ".cache/repositories/google__langextract/langextract/resolver.py",
+          "sha256": "e4497403381f4ed0434f9e91e12354b668962b771297bed831ed1ea22205903e",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.771437+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "tests/tokenizer_test.py",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/tests/tokenizer_test.py",
+          "cache_path": ".cache/repositories/google__langextract/tests/tokenizer_test.py",
+          "sha256": "bb5732a37c437cb2f1ee6b473bf128e97a016ea1b83f9649ebda538ab9d89a8c",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.772000+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "tests/fuzzy_alignment_cases_test.py",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/tests/fuzzy_alignment_cases_test.py",
+          "cache_path": ".cache/repositories/google__langextract/tests/fuzzy_alignment_cases_test.py",
+          "sha256": "1fb97bbf8db65689defd668d7d387060263b54fb925a32083301d9120f372454",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.772421+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "examples/ollama/README.md",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/examples/ollama/README.md",
+          "cache_path": ".cache/repositories/google__langextract/examples/ollama/README.md",
+          "sha256": "672ca5d3e190e677688c0f8fd9789f9b0c5daaae32129ed4c1b9c58a41248791",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.772990+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/google/langextract/blob/24298305d6998061fadd01080def4288c653d243/LICENSE",
+          "cache_path": ".cache/repositories/google__langextract/LICENSE",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:20:03.701267+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "id": "O01",
+      "role": "LLM extraction orchestration, source alignment and review visualization",
+      "selection_reason": "Grounded extraction provides directly inspectable evidence for field boundaries.",
+      "capabilities": [
+        {
+          "claim": "Extraction stores source intervals, alignment status, attributes and group index. An unaligned extraction can have char_interval=None.",
+          "paths": [
+            "langextract/core/data.py",
+            "langextract/resolver.py",
+            "README.md"
+          ]
+        },
+        {
+          "claim": "Prompt instructions and examples control extraction; local Ollama integration is documented.",
+          "paths": [
+            "README.md",
+            "examples/ollama/README.md"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Unicode/CJK tokenization is covered by source tests; tests were read, not executed.",
+        "specific_weights": "No selected weight or Chinese complaint model card was verified.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "A found span does not prove the assigned field or role is correct.",
+        "Fuzzy alignment and partial matches require explicit downstream policy.",
+        "Framework grouping and attributes do not supply a civic issue ontology."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "PaddlePaddle/PaddleNLP",
+      "html_url": "https://github.com/PaddlePaddle/PaddleNLP",
+      "description": "Easy-to-use and powerful LLM and SLM library with awesome model zoo.",
+      "default_branch": "develop",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-05-23T02:54:28Z",
+      "updated_at": "2026-10-06T06:23:09Z",
+      "stargazers_count": 12979,
+      "forks_count": 3023,
+      "open_issues_count": 324,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "requested_repo": "PaddlePaddle/PaddleNLP",
+      "owner": "PaddlePaddle",
+      "pin_commit": "3f87dac9b719f75399f92f8bf634ae2ef0611832",
+      "pin_commit_date": "2026-05-23T02:54:28Z",
+      "latest_release": {
+        "tag_name": "v3.0.0-beta3",
+        "html_url": "https://github.com/PaddlePaddle/PaddleNLP/releases/tag/v3.0.0-beta3",
+        "published_at": "2024-12-16T09:35:00Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/README.md",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/README.md",
+          "sha256": "205bcc2d9acb050743935376dd462312f01d82c6f996645e509d282ea598f4f0",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:41.338036+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "slm/applications/information_extraction/text/README.md",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/slm/applications/information_extraction/text/README.md",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/slm/applications/information_extraction/text/README.md",
+          "sha256": "e3099df443a947c6d38431ead3158c9fc8f295990913750ce855857fe62f1877",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:51.773374+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "paddlenlp/taskflow/information_extraction.py",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/paddlenlp/taskflow/information_extraction.py",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/paddlenlp/taskflow/information_extraction.py",
+          "sha256": "8e4784dfdb2e824f0a28560430a6cf5f89a5b2ad10f8755fba4148b762880cc1",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.256794+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "llm/application/information_extraction/README.md",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/llm/application/information_extraction/README.md",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/llm/application/information_extraction/README.md",
+          "sha256": "e4d62db12597f3f3b9ee084ae60c64ac522f99b68581186fa0eb68b67ba577de",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.287855+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "llm/application/information_extraction/doccano.md",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/llm/application/information_extraction/doccano.md",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/llm/application/information_extraction/doccano.md",
+          "sha256": "0c86224f1311d007c7a4a4af6f8c96ae4d802f90d625b711c4b3e9c5d6647f09",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.344070+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/LICENSE",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/LICENSE",
+          "sha256": "02fc5269d3a15ee057dab70a9040576f5d7b8f1b1ea31a7768a5b9d54834c139",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:55.990715+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "slm/applications/information_extraction/taskflow_text.md",
+          "url": "https://github.com/PaddlePaddle/PaddleNLP/blob/3f87dac9b719f75399f92f8bf634ae2ef0611832/slm/applications/information_extraction/taskflow_text.md",
+          "cache_path": ".cache/repositories/PaddlePaddle__PaddleNLP/slm/applications/information_extraction/taskflow_text.md",
+          "sha256": "186a746ed11522e9b33879261c75e7e0c98bdef6908759d0d51cf6035c7925c8",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:58.182636+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "model_check": {
+        "queried_model": "PaddlePaddle/PP-UIE-0.5B",
+        "status": "unavailable"
+      },
+      "id": "O02",
+      "role": "Schema-prompted span extraction, nested relations, and a distinct PP-UIE generative route",
+      "selection_reason": "Official Chinese examples and annotation/training/evaluation workflows cover several extraction methods.",
+      "capabilities": [
+        {
+          "claim": "UIE Taskflow uses natural-language schemas, supports nested relations and returns start/end/probability for span extraction.",
+          "paths": [
+            "slm/applications/information_extraction/taskflow_text.md",
+            "paddlenlp/taskflow/information_extraction.py"
+          ]
+        },
+        {
+          "claim": "PP-UIE documentation lists Chinese/English 0.5B, 1.5B, 7B and 14B models, with text outputs and a separate generative route.",
+          "paths": [
+            "llm/application/information_extraction/README.md"
+          ]
+        },
+        {
+          "claim": "Annotation conversion, fine tuning and stage-level evaluation are documented.",
+          "paths": [
+            "slm/applications/information_extraction/text/README.md",
+            "llm/application/information_extraction/doccano.md"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Official Chinese examples and Chinese schema conventions were reviewed.",
+        "specific_weights": "Documentation names uie-base/uie-m and paddlenlp/PP-UIE variants; weights, model-specific licenses, loading and performance were not verified. One model-card network probe failed.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "The ACL 2022 UIE paper, PaddleNLP Taskflow implementation and specific weights are different evidence objects.",
+        "Nested schemas express relationships but do not establish issue boundaries or event-specific address roles.",
+        "PP-UIE text outputs do not inherit every span-offset guarantee of the older Taskflow route.",
+        "Paddle dependencies require separate compatibility assessment against the existing retrieval environment."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "urchade/GLiNER",
+      "html_url": "https://github.com/urchade/GLiNER",
+      "description": "Generalist and Lightweight Model for Named Entity Recognition (Extract any entity types from texts)",
+      "default_branch": "main",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-10-05T09:06:36Z",
+      "updated_at": "2026-10-07T09:44:59Z",
+      "stargazers_count": 4052,
+      "forks_count": 318,
+      "open_issues_count": 54,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "requested_repo": "urchade/GLiNER",
+      "owner": "urchade",
+      "pin_commit": "f3c945702b9b5cde381c27b95310c47909bcfd80",
+      "pin_commit_date": "2026-10-05T09:04:18Z",
+      "latest_release": {
+        "tag_name": "v0.2.29",
+        "html_url": "https://github.com/urchade/GLiNER/releases/tag/v0.2.29",
+        "published_at": "2026-09-08T12:40:52Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/README.md",
+          "cache_path": ".cache/repositories/urchade__GLiNER/README.md",
+          "sha256": "537e4ec0cfd5975ca367494e8592fa276c006fb3064b9f07105b189a85e8e583",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:40.600581+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/architectures.md",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/docs/architectures.md",
+          "cache_path": ".cache/repositories/urchade__GLiNER/docs/architectures.md",
+          "sha256": "688c2002af7f0ea2f1d0b95c9951fc8a3c6646a600585baf1fcb688ede70518a",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.366677+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/usage.md",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/docs/usage.md",
+          "cache_path": ".cache/repositories/urchade__GLiNER/docs/usage.md",
+          "sha256": "fb0a4e0088b2c5e1b175255efa3ed5d3df54543f04776debea7029ae0fc8487a",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.627767+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "gliner/data_processing/tokenizer.py",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/gliner/data_processing/tokenizer.py",
+          "cache_path": ".cache/repositories/urchade__GLiNER/gliner/data_processing/tokenizer.py",
+          "sha256": "2dd8c7762ae6cd8fcd8dbf062e16f5441d44814373611d7b6be3a87ed08c5d9a",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.859626+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "tests/test_tokenizer_stanza.py",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/tests/test_tokenizer_stanza.py",
+          "cache_path": ".cache/repositories/urchade__GLiNER/tests/test_tokenizer_stanza.py",
+          "sha256": "eb0dcc181e4211a9d70c39775374cc17e32498a43ce1af4fe03e615781c938a8",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.878577+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "gliner/multitask/relation_extraction.py",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/gliner/multitask/relation_extraction.py",
+          "cache_path": ".cache/repositories/urchade__GLiNER/gliner/multitask/relation_extraction.py",
+          "sha256": "83573cc4a361cc3d7b567e0a6885da251c4cd00300d8613a221673bed2cfdf37",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:52.906948+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/LICENSE",
+          "cache_path": ".cache/repositories/urchade__GLiNER/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:55.992440+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "configs/config_relex.yaml",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/configs/config_relex.yaml",
+          "cache_path": ".cache/repositories/urchade__GLiNER/configs/config_relex.yaml",
+          "sha256": "1976b0ac781f2426443e6ef0c471e2339edf762d1ba25ebfa5554ed41a9679cc",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:57.505790+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "gliner/modeling/multitask/relations_layers.py",
+          "url": "https://github.com/urchade/GLiNER/blob/f3c945702b9b5cde381c27b95310c47909bcfd80/gliner/modeling/multitask/relations_layers.py",
+          "cache_path": ".cache/repositories/urchade__GLiNER/gliner/modeling/multitask/relations_layers.py",
+          "sha256": "0eed8c33d2e2092cbfb8239628c014dff92c3605bb97a119c1ccbf5cce83c0cc",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:58.088051+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "model_check": {
+        "queried_model": "urchade/gliner_multi_pii-v1",
+        "status": "unavailable"
+      },
+      "id": "O03",
+      "role": "Open-label span extraction; current repository also documents and implements relation extraction components",
+      "selection_reason": "A discriminative extraction family allows comparison against generative LLM extraction.",
+      "capabilities": [
+        {
+          "claim": "Current repository describes joint RelEx and includes relation-layer source; the multitask relation pipeline is a separate two-stage path.",
+          "paths": [
+            "README.md",
+            "docs/architectures.md",
+            "docs/usage.md",
+            "gliner/modeling/multitask/relations_layers.py",
+            "gliner/multitask/relation_extraction.py"
+          ]
+        },
+        {
+          "claim": "Chinese tokenization backends include jieba and hanlp; Stanza has a Chinese language branch.",
+          "paths": [
+            "gliner/data_processing/tokenizer.py",
+            "tests/test_tokenizer_stanza.py"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Chinese tokenizer backends are implemented; this does not establish a selected model vocabulary or Chinese-role quality.",
+        "specific_weights": "Repository advertises multilingual and RelEx checkpoints. The attempted multilingual model-card request failed; language-by-task scores and weight terms were not verified.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "The original 2024 GLiNER NER paper is not evidence for every newer repository feature.",
+        "Chinese tokenizer support, multilingual weight availability and Chinese complaint effectiveness are separate claims.",
+        "Entity spans alone do not resolve complaint-to-location roles; relation support still requires labels and supervision or evaluation.",
+        "Streaming NER support is not end-to-end real-time complaint processing validation."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "567-labs/instructor",
+      "html_url": "https://github.com/567-labs/instructor",
+      "description": "structured outputs for llms ",
+      "default_branch": "main",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-10-05T21:59:43Z",
+      "updated_at": "2026-10-07T13:58:40Z",
+      "stargazers_count": 13984,
+      "forks_count": 1288,
+      "open_issues_count": 148,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "requested_repo": "instructor-ai/instructor",
+      "owner": "567-labs",
+      "pin_commit": "e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8",
+      "pin_commit_date": "2026-09-11T03:41:29Z",
+      "latest_release": {
+        "tag_name": "v1.17.0",
+        "html_url": "https://github.com/567-labs/instructor/releases/tag/v1.17.0",
+        "published_at": "2026-09-09T02:25:36Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/README.md",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/README.md",
+          "sha256": "ec2c918e7767673e37b278134b337949aae359bf8344ab552bfc4365389e2577",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:42.513816+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/concepts/validation.md",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/docs/concepts/validation.md",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/docs/concepts/validation.md",
+          "sha256": "392c8ac41a3b5dc10d0556cdcc05c2032130e2191eddc634726a439fb3e7af96",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:53.000657+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/examples/exact_citations.md",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/docs/examples/exact_citations.md",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/docs/examples/exact_citations.md",
+          "sha256": "2b680b002a4d6a7de11f2009d021ee7d3b45c96461593ce0dd72e023e00435a2",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:53.319157+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "instructor/core/retry.py",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/instructor/core/retry.py",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/instructor/core/retry.py",
+          "sha256": "e4abbd21bb75c9997e9465d8708bf565ba1681b1cb2273bfc9a78c802a452710",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:53.334766+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/LICENSE",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/LICENSE",
+          "sha256": "1fdd867197ab4d56e3c00ee835e4ea53aac5d54f6e6ac6d247bf866bcf3a9352",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:55.990274+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "instructor/v2/core/retry.py",
+          "url": "https://github.com/567-labs/instructor/blob/e12f8b49203b0c1f253d27c1e709d0a09b9fc5a8/instructor/v2/core/retry.py",
+          "cache_path": ".cache/repositories/instructor-ai__instructor/instructor/v2/core/retry.py",
+          "sha256": "1e9a80546b540f7280a5926eae94b5f44084663aa80f681971c5536c22d8b538",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:56.940662+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "id": "O04",
+      "role": "Pydantic output validation, custom constraints and bounded retry orchestration",
+      "selection_reason": "Separates output correctness checks from the underlying semantic extraction model.",
+      "capabilities": [
+        {
+          "claim": "Pydantic models support field constraints and custom validators; parse/validation failures feed a retry process.",
+          "paths": [
+            "docs/concepts/validation.md",
+            "instructor/v2/core/retry.py"
+          ]
+        },
+        {
+          "claim": "Citation example matches provided quotes to source text and removes ungrounded statements.",
+          "paths": [
+            "docs/examples/exact_citations.md"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "String-based validation and custom source checks can represent Chinese content; no complaint-specific language evaluation was found in reviewed paths.",
+        "specific_weights": "Framework supplies no extraction weights; ability and terms depend on the selected provider/model.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "Passing Pydantic validation does not prove factual correctness, role correctness or issue completeness.",
+        "Source-quote presence does not prove semantic entailment.",
+        "Retry can repeat or reinforce a wrong answer; exhausted failures require explicit handling.",
+        "Async validators are not automatically supported according to the reviewed validation documentation."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "dottxt-ai/outlines",
+      "html_url": "https://github.com/dottxt-ai/outlines",
+      "description": "Structured Outputs",
+      "default_branch": "main",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-09-21T17:58:05Z",
+      "updated_at": "2026-10-07T14:33:30Z",
+      "stargazers_count": 15908,
+      "forks_count": 900,
+      "open_issues_count": 190,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "requested_repo": "dottxt-ai/outlines",
+      "owner": "dottxt-ai",
+      "pin_commit": "c52af8472c6fe8a607a733ec11b709476af77a96",
+      "pin_commit_date": "2026-08-24T14:20:14Z",
+      "latest_release": {
+        "tag_name": "1.3.3",
+        "html_url": "https://github.com/dottxt-ai/outlines/releases/tag/1.3.3",
+        "published_at": "2026-08-06T12:26:25Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/dottxt-ai/outlines/blob/c52af8472c6fe8a607a733ec11b709476af77a96/README.md",
+          "cache_path": ".cache/repositories/dottxt-ai__outlines/README.md",
+          "sha256": "2200c02b392cf368f5c0232d5b2c19f6c3f85cc7643b25b487db6a6394156eab",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:43.789963+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/features/core/output_types.md",
+          "url": "https://github.com/dottxt-ai/outlines/blob/c52af8472c6fe8a607a733ec11b709476af77a96/docs/features/core/output_types.md",
+          "cache_path": ".cache/repositories/dottxt-ai__outlines/docs/features/core/output_types.md",
+          "sha256": "9e5fd41e3905db29aac9e1a43299652feb7d69ae43ade03e173b95b83d7c58fa",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:53.546464+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/features/advanced/logits_processors.md",
+          "url": "https://github.com/dottxt-ai/outlines/blob/c52af8472c6fe8a607a733ec11b709476af77a96/docs/features/advanced/logits_processors.md",
+          "cache_path": ".cache/repositories/dottxt-ai__outlines/docs/features/advanced/logits_processors.md",
+          "sha256": "6cda090925f0efd8901374a2b1b5ac6e6f1f443321ac75f09ee0ad6a3de1204f",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:54.467935+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "src/outlines/types/json_schema_utils.py",
+          "url": "https://github.com/dottxt-ai/outlines/blob/c52af8472c6fe8a607a733ec11b709476af77a96/src/outlines/types/json_schema_utils.py",
+          "cache_path": ".cache/repositories/dottxt-ai__outlines/src/outlines/types/json_schema_utils.py",
+          "sha256": "9268e45988a546837ca7197f6963131242d1a2052ec594da455ca80c8923edb0",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:54.917921+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/dottxt-ai/outlines/blob/c52af8472c6fe8a607a733ec11b709476af77a96/LICENSE",
+          "cache_path": ".cache/repositories/dottxt-ai__outlines/LICENSE",
+          "sha256": "f71078ee8aaa3d5670488756f1993b9de3ae64c9546a0232ebbbdd595c5375d7",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:55.991342+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "id": "O05",
+      "role": "Constrained generation with output types, JSON Schema, regex and grammar",
+      "selection_reason": "Isolates generation-time format constraints from semantic extraction quality.",
+      "capabilities": [
+        {
+          "claim": "Output types include Python/Pydantic types, choices, JSON Schema, regex and CFG.",
+          "paths": [
+            "docs/features/core/output_types.md",
+            "src/outlines/types/json_schema_utils.py"
+          ]
+        },
+        {
+          "claim": "For supported steerable local backends, output constraints are transformed into logits processors.",
+          "paths": [
+            "docs/features/advanced/logits_processors.md"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Schema and token constraints are a representation mechanism; Chinese behavior depends on tokenizer, model and backend.",
+        "specific_weights": "No extraction weights are supplied or selected by this review.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "Syntactically permitted values can still be semantically wrong.",
+        "Supported output constraints vary across adapters and generation backends.",
+        "Nullable conversion is present in reviewed source, but schema design determines whether unknown values can be represented.",
+        "No project latency or V100/H100 compatibility measurement was performed."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "HumanSignal/label-studio",
+      "html_url": "https://github.com/HumanSignal/label-studio",
+      "description": "Label Studio is a multi-type data labeling and annotation tool with standardized output format",
+      "default_branch": "develop",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-10-07T14:57:48Z",
+      "updated_at": "2026-10-07T15:36:07Z",
+      "stargazers_count": 28414,
+      "forks_count": 3734,
+      "open_issues_count": 950,
+      "license": {
+        "key": "apache-2.0",
+        "name": "Apache License 2.0",
+        "spdx_id": "Apache-2.0",
+        "url": "https://api.github.com/licenses/apache-2.0",
+        "node_id": "MDc6TGljZW5zZTI="
+      },
+      "requested_repo": "HumanSignal/label-studio",
+      "owner": "HumanSignal",
+      "pin_commit": "8ef0b5ee3d84217e742823f27646c040506f4420",
+      "pin_commit_date": "2026-10-07T14:53:47Z",
+      "latest_release": {
+        "tag_name": "1.23.2",
+        "html_url": "https://github.com/HumanSignal/label-studio/releases/tag/1.23.2",
+        "published_at": "2026-09-29T14:47:15Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/HumanSignal/label-studio/blob/8ef0b5ee3d84217e742823f27646c040506f4420/README.md",
+          "cache_path": ".cache/repositories/HumanSignal__label-studio/README.md",
+          "sha256": "40700321776602f0ee8e84bb1bc54eaa3a526dba95aa44658e2a1ee48bbcbd16",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:44.096423+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/source/templates/relation_extraction.md",
+          "url": "https://github.com/HumanSignal/label-studio/blob/8ef0b5ee3d84217e742823f27646c040506f4420/docs/source/templates/relation_extraction.md",
+          "cache_path": ".cache/repositories/HumanSignal__label-studio/docs/source/templates/relation_extraction.md",
+          "sha256": "e7363e03d6d79535a83f72c952058314319da8ebbba2dfc612d7fee470c335d8",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:55.002542+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "docs/source/guide/agreement_metrics.md",
+          "url": "https://github.com/HumanSignal/label-studio/blob/8ef0b5ee3d84217e742823f27646c040506f4420/docs/source/guide/agreement_metrics.md",
+          "cache_path": ".cache/repositories/HumanSignal__label-studio/docs/source/guide/agreement_metrics.md",
+          "sha256": "fbe09aa0595796030dd65d795ab0605eb0cc33ca3b9b190edeb05771402f621f",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:55.956209+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/HumanSignal/label-studio/blob/8ef0b5ee3d84217e742823f27646c040506f4420/LICENSE",
+          "cache_path": ".cache/repositories/HumanSignal__label-studio/LICENSE",
+          "sha256": "ca656b15c1e22468c7798df4356660755fb1ccd12d7ee0bade82bd65e3038e1b",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:56.728656+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "id": "O06",
+      "role": "Human text-span and relation annotation",
+      "selection_reason": "Allows annotators to record source spans and relations before model selection.",
+      "capabilities": [
+        {
+          "claim": "Relation-extraction template combines text spans with labelled relation arrows.",
+          "paths": [
+            "docs/source/templates/relation_extraction.md"
+          ]
+        },
+        {
+          "claim": "Reviewed agreement-metrics documentation explicitly marks the feature as Enterprise.",
+          "paths": [
+            "docs/source/guide/agreement_metrics.md"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Text annotation is configurable, but no Chinese offset/rendering behavior was executed in this review.",
+        "specific_weights": "Not applicable; annotation tool, not extraction model.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "The tool records labels; humans must define and adjudicate boundary rules.",
+        "Enterprise agreement documentation must not be presented as an open-source community feature.",
+        "Export/import alignment, Unicode offsets and role-relation UI need a focused local pilot."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    },
+    {
+      "full_name": "doccano/doccano",
+      "html_url": "https://github.com/doccano/doccano",
+      "description": "Open source annotation tool for machine learning practitioners.",
+      "default_branch": "master",
+      "archived": false,
+      "disabled": false,
+      "pushed_at": "2026-04-14T21:16:25Z",
+      "updated_at": "2026-10-07T08:15:26Z",
+      "stargazers_count": 10792,
+      "forks_count": 1819,
+      "open_issues_count": 399,
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "spdx_id": "MIT",
+        "url": "https://api.github.com/licenses/mit",
+        "node_id": "MDc6TGljZW5zZTEz"
+      },
+      "requested_repo": "doccano/doccano",
+      "owner": "doccano",
+      "pin_commit": "ab6b765ea326d07b2b806a4280cd097565e62321",
+      "pin_commit_date": "2026-01-17T00:58:26Z",
+      "latest_release": {
+        "tag_name": "v1.8.5",
+        "html_url": "https://github.com/doccano/doccano/releases/tag/v1.8.5",
+        "published_at": "2026-01-11T15:19:29Z",
+        "prerelease": false
+      },
+      "reviewed_paths": [
+        {
+          "path": "README.md",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/README.md",
+          "cache_path": ".cache/repositories/doccano__doccano/README.md",
+          "sha256": "fadafd43ee201ba414477763b0aab1518beaf584b6c61dbca5c36cc64f87bcc9",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:05:45.794840+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "backend/labels/tests/test_relation.py",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/backend/labels/tests/test_relation.py",
+          "cache_path": ".cache/repositories/doccano__doccano/backend/labels/tests/test_relation.py",
+          "sha256": "94e4dc10fecb198c9c5bbdffd42ebcd1b09b580462e64986515332ef260369fc",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:55.987564+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "backend/data_import/tests/data/sequence_labeling/example_overlapping.jsonl",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/backend/data_import/tests/data/sequence_labeling/example_overlapping.jsonl",
+          "cache_path": ".cache/repositories/doccano__doccano/backend/data_import/tests/data/sequence_labeling/example_overlapping.jsonl",
+          "sha256": "d33dc63a43d16a3509eb81f8bffa20cc330fc9254c808f567c92883002151efd",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:56.509822+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "frontend/i18n/zh/projects/annotation.js",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/frontend/i18n/zh/projects/annotation.js",
+          "cache_path": ".cache/repositories/doccano__doccano/frontend/i18n/zh/projects/annotation.js",
+          "sha256": "5a79d13d6526c732747ab44dfa59d015252674f7853c0482147072569426aa1a",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:56.846765+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "backend/metrics/views.py",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/backend/metrics/views.py",
+          "cache_path": ".cache/repositories/doccano__doccano/backend/metrics/views.py",
+          "sha256": "1fc30e513180809ab629251797545322c7ef78aec4dacdeb3e5283a52fbdbfac",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-07T16:16:57.428559+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "LICENSE",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/LICENSE",
+          "cache_path": ".cache/repositories/doccano__doccano/LICENSE",
+          "sha256": "1dbc0e0e05af8cc591de6536a5ba2775d653438d55612a0578edc0322cc91864",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:56.827098+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        },
+        {
+          "path": "backend/labels/models.py",
+          "url": "https://github.com/doccano/doccano/blob/ab6b765ea326d07b2b806a4280cd097565e62321/backend/labels/models.py",
+          "cache_path": ".cache/repositories/doccano__doccano/backend/labels/models.py",
+          "sha256": "e076878412d697a574745bf373c3d69d5f83c6b12e6a9f6f7535eb27c623e5b6",
+          "retrieval_status": 200,
+          "accessed_at": "2026-10-08T01:41:58.136528+00:00",
+          "review_scope": "focused relevant sections; fetched source, not runtime execution"
+        }
+      ],
+      "id": "O07",
+      "role": "Text classification, source-span and relation annotation",
+      "selection_reason": "A focused text annotation tool supports explicit boundary labels and relation endpoints.",
+      "capabilities": [
+        {
+          "claim": "Span model stores start/end offsets and supports project-configured overlap.",
+          "paths": [
+            "backend/labels/models.py"
+          ]
+        },
+        {
+          "claim": "Relation tests reject endpoints from a different example.",
+          "paths": [
+            "backend/labels/tests/test_relation.py"
+          ]
+        },
+        {
+          "claim": "Chinese UI strings exist, while reviewed metrics endpoints cover progress and label distributions.",
+          "paths": [
+            "frontend/i18n/zh/projects/annotation.js",
+            "backend/metrics/views.py"
+          ]
+        }
+      ],
+      "chinese_evidence": {
+        "framework": "Chinese UI translations and multi-language support are documented; mixed Unicode import/export behavior remains untested.",
+        "specific_weights": "Not applicable; annotation tool, not extraction model.",
+        "project_measurement": "Not run."
+      },
+      "limitations": [
+        "Chinese UI does not validate Chinese extraction accuracy.",
+        "A duplicate-overlap fixture alone does not establish every overlapping annotation interaction.",
+        "Reviewed progress/distribution endpoints do not substantiate an IAA capability claim.",
+        "The older default-branch commit and release dates are maintenance observations, not proof the project is abandoned."
+      ],
+      "license_evidence": {
+        "path": "LICENSE",
+        "scope": "repository-level code license verified at pinned commit; does not automatically cover weights, services or all third-party dependencies"
+      },
+      "runtime_validation": "not installed, executed or benchmarked"
+    }
+  ],
+  "review_status": "source_review_completed; no runtime or domain-performance validation",
+  "verification_policy": "Every reviewed path exists locally and has a matching successful retrieval log SHA256; tree presence alone is not a reviewed path.",
+  "repository_identity_note": "instructor-ai/instructor redirected to 567-labs/instructor; cache directory retains the original requested name.",
+  "release_note": "pin_commit identifies the reviewed default-branch snapshot. latest_release is metadata from GitHub releases/latest, not a claim that the pinned code is that release or that beta-named tags are stable."
+}

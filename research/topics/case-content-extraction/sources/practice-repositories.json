@@ -1,0 +1,93 @@
+[
+  {
+    "repository_id": "O08",
+    "repository": "RasaHQ/rasa",
+    "url": "https://github.com/RasaHQ/rasa",
+    "commit": "d6829b6acc10fd9548798176bb0f9713107c1555",
+    "license_api": "Apache-2.0",
+    "archived": false,
+    "checked_at": "2026-10-08T02:15:11.619538+00:00",
+    "deployment_equivalence": "not_claimed",
+    "execution_status": "source_review_only",
+    "files": [
+      {
+        "checked_at": "2026-10-08T02:17:03.560688+00:00",
+        "cache_file": ".cache/practice-opensource/rasa-domain.response",
+        "sha256": "cdbf663cd4994c4f425a6c3944b7d9363096693f1683ab66478937fef0a6d98d",
+        "path": "docs/docs/domain.mdx",
+        "url": "https://github.com/RasaHQ/rasa/blob/d6829b6acc10fd9548798176bb0f9713107c1555/docs/docs/domain.mdx",
+        "request_url": "https://raw.githubusercontent.com/RasaHQ/rasa/d6829b6acc10fd9548798176bb0f9713107c1555/docs/docs/domain.mdx",
+        "read_scope": "Entities; Slot Mappings and unique mapping constraints"
+      },
+      {
+        "checked_at": "2026-10-08T02:18:12.276327+00:00",
+        "cache_file": ".cache/practice-opensource/rasa-training-api.response",
+        "sha256": "1595918efc5dc05856dbdc9539930d0558731f54cd84ec88f4a0abb9b8999d4a",
+        "path": "docs/docs/nlu-training-data.mdx",
+        "url": "https://github.com/RasaHQ/rasa/blob/d6829b6acc10fd9548798176bb0f9713107c1555/docs/docs/nlu-training-data.mdx",
+        "request_url": "https://api.github.com/repos/RasaHQ/rasa/contents/docs/docs/nlu-training-data.mdx?ref=d6829b6acc10fd9548798176bb0f9713107c1555",
+        "read_scope": "Entities Roles and Groups",
+        "decoded_file": ".cache/practice-opensource/rasa-training-api.decoded",
+        "decoded_sha256": "2c1bcbae0323feab42e97713ded4cbc90ad39d5a99a26f6415d417dfdd156447"
+      },
+      {
+        "checked_at": "2026-10-08T02:18:12.261388+00:00",
+        "cache_file": ".cache/practice-opensource/rasa-forms-api.response",
+        "sha256": "4a85e2dec3f50f93644603a26b98fc770806ed8845741c2d61145b4ea0152796",
+        "path": "docs/docs/forms.mdx",
+        "url": "https://github.com/RasaHQ/rasa/blob/d6829b6acc10fd9548798176bb0f9713107c1555/docs/docs/forms.mdx",
+        "request_url": "https://api.github.com/repos/RasaHQ/rasa/contents/docs/docs/forms.mdx?ref=d6829b6acc10fd9548798176bb0f9713107c1555",
+        "read_scope": "Validating Form Input",
+        "decoded_file": ".cache/practice-opensource/rasa-forms-api.decoded",
+        "decoded_sha256": "dd90389d28598687e174aa47f21661179f86f5f1f651a9462e9ee2c68b81aa99"
+      }
+    ],
+    "selected_ref": "3.6.21"
+  },
+  {
+    "repository_id": "O09",
+    "repository": "deepset-ai/haystack",
+    "url": "https://github.com/deepset-ai/haystack",
+    "commit": "6ca8349091c09af89ec0090aa13cb22de1d88bfb",
+    "license_api": "Apache-2.0",
+    "archived": false,
+    "checked_at": "2026-10-08T02:17:38.813209+00:00",
+    "deployment_equivalence": "not_claimed",
+    "execution_status": "source_review_only",
+    "files": [
+      {
+        "checked_at": "2026-10-08T02:19:35.811599+00:00",
+        "cache_file": ".cache/practice-opensource/haystack-document.response",
+        "sha256": "27886c8b5a5a530ede139fe9d7bada77d40742e591e0e606352a7af95ec2b7e7",
+        "path": "haystack/dataclasses/document.py",
+        "url": "https://github.com/deepset-ai/haystack/blob/6ca8349091c09af89ec0090aa13cb22de1d88bfb/haystack/dataclasses/document.py",
+        "request_url": "https://api.github.com/repos/deepset-ai/haystack/contents/haystack/dataclasses/document.py?ref=6ca8349091c09af89ec0090aa13cb22de1d88bfb",
+        "read_scope": "Document class fields and initialization",
+        "decoded_file": ".cache/practice-opensource/haystack-document.decoded",
+        "decoded_sha256": "32ad6b0c16172d8f3e4ebc592f80def425794031a7cda59c7609f96024b03958"
+      },
+      {
+        "checked_at": "2026-10-08T02:19:35.910369+00:00",
+        "cache_file": ".cache/practice-opensource/haystack-joiner.response",
+        "sha256": "1be7f83bbe973a5d15716f10d853b58f1e892ee0bf93aee99dfc9a50e8654104",
+        "path": "haystack/components/joiners/document_joiner.py",
+        "url": "https://github.com/deepset-ai/haystack/blob/6ca8349091c09af89ec0090aa13cb22de1d88bfb/haystack/components/joiners/document_joiner.py",
+        "request_url": "https://api.github.com/repos/deepset-ai/haystack/contents/haystack/components/joiners/document_joiner.py?ref=6ca8349091c09af89ec0090aa13cb22de1d88bfb",
+        "read_scope": "JoinMode; DocumentJoiner API and constructor",
+        "decoded_file": ".cache/practice-opensource/haystack-joiner.decoded",
+        "decoded_sha256": "e47bdc6ac28e096d597982d366559e80ebe9bd81f395100804572595ff2f4af8"
+      },
+      {
+        "checked_at": "2026-10-08T02:19:36.110174+00:00",
+        "cache_file": ".cache/practice-opensource/haystack-router.response",
+        "sha256": "72cff7e450e6abcf69fc2d26fa1bfbc7c1de7f7125f3123603b27a95b7b8a7d3",
+        "path": "haystack/components/routers/metadata_router.py",
+        "url": "https://github.com/deepset-ai/haystack/blob/6ca8349091c09af89ec0090aa13cb22de1d88bfb/haystack/components/routers/metadata_router.py",
+        "request_url": "https://api.github.com/repos/deepset-ai/haystack/contents/haystack/components/routers/metadata_router.py?ref=6ca8349091c09af89ec0090aa13cb22de1d88bfb",
+        "read_scope": "MetadataRouter rules and unmatched output",
+        "decoded_file": ".cache/practice-opensource/haystack-router.decoded",
+        "decoded_sha256": "14cd11c6e3ea16b7746fd390884867c5b3948adb6d46a175ba95574e63b08b5e"
+      }
+    ]
+  }
+]

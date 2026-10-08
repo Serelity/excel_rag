@@ -1,0 +1,696 @@
+{
+  "schema_version": "1.0",
+  "research_date": "2026-10-08",
+  "topic": "中文政务热线投诉理解与历史案例复用的真实应用",
+  "scope": "定向公开案例研究，非系统综述或独立生产审计",
+  "ai_assistance": "AI辅助公开资料检索、摘录核验和综合；未访问私有工单、未运行第三方模型",
+  "cases": [
+    {
+      "id": "C04",
+      "name": "湛江 12345：要素、摘要和历史案例协同",
+      "domain": "市民诉求/政务热线",
+      "system": "湛江市12345政务服务便民热线平台及智能坐席助手",
+      "operators": [
+        "湛江市政务服务和数据管理局/行政服务中心",
+        "中国电信广东湛江分公司"
+      ],
+      "input": "市民来电与投诉对话；本项目以已保存 case_content 对应其文本理解环节",
+      "documented_outputs": [
+        "诉求意图",
+        "20大类、156小类标签",
+        "时间、地点、涉事单位等事实要素",
+        "结构化工单摘要",
+        "自动填写的工单字段",
+        "历史相似案例和处置建议"
+      ],
+      "human_workflow": "自动填写后坐席审核确认；后续事项清单配置标签、牵头单位和办理层级",
+      "model_facts": {
+        "reported_model": "70b版本DeepSeek-R1",
+        "exact_checkpoint": null,
+        "inference_stack": null,
+        "note": "不据报道名称推断完整权重、量化、GPU或检索算法"
+      },
+      "implementation_evidence": [
+        "既有政务云与12345系统之间打通模型调用链路",
+        "基于12345知识库开发标准化数据接口",
+        "模型服务API对接既有业务系统"
+      ],
+      "reported_metrics": [
+        {
+          "metric": "意图识别准确率",
+          "value": 98.3,
+          "unit": "%",
+          "source_id": "C04-S01",
+          "evaluation_protocol": "未公开样本、分母、人工审核口径",
+          "evidence_class": "official_launch_report"
+        },
+        {
+          "metric": "要素记录/生成耗时",
+          "baseline": "5分钟人工记录",
+          "reported": "10秒自动生成",
+          "source_id": "C04-S01",
+          "evaluation_protocol": "未公开测时协议或修订时间",
+          "evidence_class": "official_launch_report"
+        },
+        {
+          "metric": "单件处理耗时",
+          "baseline": "8分钟",
+          "reported": "2分钟",
+          "source_id": "C04-S01",
+          "evaluation_protocol": "业务流程指标，非纯推理延迟",
+          "evidence_class": "official_launch_report"
+        }
+      ],
+      "excluded_attribution": "2024年99.97%按时办结率早于2025模型接入，不能作为模型效果",
+      "transferable_lessons": [
+        "复用既有知识库和工作台，先让模型协助整理",
+        "摘要供整体理解，要素供事实核对，历史案例供处置参考",
+        "业务标签需连接维护的职责与层级规则",
+        "保存人工修订理由作为后续本项目改进样例，这是项目建议而非已披露训练流程"
+      ],
+      "undisclosed": [
+        "字段边界与标注规则",
+        "完整schema和提示词",
+        "精确模型权重",
+        "相似检索索引、向量模型、重排方式",
+        "训练及评测协议"
+      ],
+      "sources": [
+        {
+          "id": "C04-S01",
+          "title": "市12345政务服务便民热线平台接入DeepSeek",
+          "url": "https://www.zhanjiang.gov.cn/zwgk/zwzt/szzf/mtbd/content/post_2012483.html",
+          "publication_date": "2025-02-20",
+          "publisher": "湛江市人民政府门户网站，来源：湛江日报",
+          "source_type": "government_republication",
+          "checked_at": "2026-10-08T02:16:55.613714+00:00",
+          "reading_scope": "已读报道正文；未取得底层评测报告",
+          "cache_path": ".cache/practice-civic/zhanjiang01.html",
+          "sha256": "b240083ee79219419ae661a3c6aeb08a2067371fd7649d19a95860957cd68f22",
+          "text_path": ".cache/practice-civic/zhanjiang01.txt",
+          "text_sha256": "592056c0e1cd754366305abfde301fbf61fa08b80ada15eb1731f28de3ec718b",
+          "evidence": [
+            {
+              "locator": "正文“平台接入DeepSeek后可实现这些功能”",
+              "excerpt": "实时抓取时间、地点、涉事单位等关键信息",
+              "supports": "公开事实要素名称",
+              "text_character_span": [
+                575,
+                594
+              ]
+            },
+            {
+              "locator": "同段，智能填单",
+              "excerpt": "座席人员只需审核确认，单件处理时间由8分钟缩短至2分钟",
+              "supports": "人工审核确认及报道的处理耗时",
+              "text_character_span": [
+                678,
+                705
+              ]
+            },
+            {
+              "locator": "同段，智能知识挖掘",
+              "excerpt": "自动关联历史相似案例，推送处置建议",
+              "supports": "历史案例关联功能",
+              "text_character_span": [
+                723,
+                740
+              ]
+            },
+            {
+              "locator": "同段，智能意图理解",
+              "excerpt": "识别准确率达98.3%",
+              "supports": "意图识别准确率，评测样本和协议未披露",
+              "text_character_span": [
+                497,
+                508
+              ]
+            },
+            {
+              "locator": "同段，智能标签推荐",
+              "excerpt": "20大类、156小类诉求标签",
+              "supports": "标签体系规模",
+              "text_character_span": [
+                522,
+                536
+              ]
+            },
+            {
+              "locator": "同段，智能要素提取",
+              "excerpt": "过去需5分钟人工记录的信息现在10秒自动生成",
+              "supports": "局部要素整理环节的报道耗时",
+              "text_character_span": [
+                595,
+                617
+              ]
+            }
+          ],
+          "source_family": "zhanjiang_launch_20250219",
+          "independence_note": "与 C04-S03 同一地方报道链，不作独立重复验证"
+        },
+        {
+          "id": "C04-S02",
+          "title": "中国电信广东湛江分公司24小时破局，DeepSeek大模型赋能政务热线新飞跃",
+          "url": "https://m.thepaper.cn/baijiahao_30229407",
+          "publication_date": "2025-02-24",
+          "publisher": "中国电信（澎湃号·政务发布）",
+          "source_type": "implementer_first_party_account",
+          "checked_at": "2026-10-08T02:19:02.310961+00:00",
+          "reading_scope": "已读工程说明正文；未安装或调用其系统",
+          "cache_path": ".cache/practice-civic/zhanjiang-tech01.html",
+          "sha256": "61b169225b455d3cb9c15a52611952acaa244a6de828099b523b2206d6ce2999",
+          "text_path": ".cache/practice-civic/zhanjiang-tech01.txt",
+          "text_sha256": "53112f054fc667654d278231f2921c7ee094f1faa09cf4e9f430dfa7964cef3f",
+          "evidence": [
+            {
+              "locator": "首段",
+              "excerpt": "实现70b版本DeepSeek-R1模型本地部署",
+              "supports": "建设方所称模型规模与本地部署；精确权重未披露",
+              "text_character_span": [
+                169,
+                193
+              ]
+            },
+            {
+              "locator": "“政务网络极速贯通”",
+              "excerpt": "基于12345知识库开发标准化数据接口",
+              "supports": "复用知识库的接口集成",
+              "text_character_span": [
+                660,
+                679
+              ]
+            },
+            {
+              "locator": "“安全体系无缝继承”",
+              "excerpt": "让模型服务 API 与 12345 业务系统相互信任",
+              "supports": "模型服务与既有业务系统的对接",
+              "text_character_span": [
+                840,
+                866
+              ]
+            }
+          ],
+          "source_family": "chinatelecom_zhanjiang_deployment_20250224",
+          "independence_note": "建设方自行报告；业务事实与政府稿互补，非独立性能评测"
+        },
+        {
+          "id": "C04-S03",
+          "title": "湛江市12345政务服务便民热线平台接入DeepSeek",
+          "url": "https://www.gdzjdaily.com.cn/p/2912673.html",
+          "publication_date": "2025-02-19",
+          "publisher": "湛江云媒，记者陈彦、通讯员许文婷",
+          "source_type": "local_original_reporting",
+          "checked_at": "2026-10-08T02:19:02.311426+00:00",
+          "reading_scope": "已读原始地方报道正文并与政府转载核对",
+          "cache_path": ".cache/practice-civic/zhanjiang-tech03.html",
+          "sha256": "146f0aafa026a8feacebe6a4be7f5db26bedca4ed987e3676e654de6b64c75e2",
+          "text_path": ".cache/practice-civic/zhanjiang-tech03.txt",
+          "text_sha256": "21cae441414f66b6627c0b687081abfbf63d935798428b201514fe73532b4734",
+          "evidence": [
+            {
+              "locator": "首段",
+              "excerpt": "2月19日，湛江市12345政务服务便民热线平台正式接入DeepSeek技术",
+              "supports": "上线日期",
+              "text_character_span": [
+                357,
+                395
+              ]
+            },
+            {
+              "locator": "正文末段",
+              "excerpt": "作为此次部署的技术支撑单位，湛江电信表示",
+              "supports": "技术支撑方身份",
+              "text_character_span": [
+                1320,
+                1340
+              ]
+            }
+          ],
+          "source_family": "zhanjiang_launch_20250219",
+          "independence_note": "C04-S01 的同一报道链；不增加独立效果证据数量"
+        },
+        {
+          "id": "C04-S04",
+          "title": "即接即办！湛江12345接上DeepSeek",
+          "url": "https://www.zhanjiang.gov.cn/xzfwzx/gkmlpt/content/2/2151/mpost_2151064.html",
+          "publication_date": "2026-02-24",
+          "publisher": "湛江市人民政府行政服务中心",
+          "source_type": "government_followup",
+          "checked_at": "2026-10-08T02:20:08.974981+00:00",
+          "reading_scope": "已读后续业务运行报道正文；未核验全流程绩效归因",
+          "cache_path": ".cache/practice-civic/zhanjiang2026.html",
+          "sha256": "2f8fdb965515fe63edb0a17c8ce660647ce0e534ff2e65e79b0cf786f9f520c9",
+          "text_path": ".cache/practice-civic/zhanjiang2026.txt",
+          "text_sha256": "66383040a7ec99c600784a09abe35c9610e85910ffd306e48890b65bb035765b",
+          "evidence": [
+            {
+              "locator": "“颗粒归仓 让精办可见可感”",
+              "excerpt": "每一类事项都被贴上标签、明确牵头单位、设定办理层级",
+              "supports": "分类与业务责任/层级的联动维护",
+              "text_character_span": [
+                1164,
+                1189
+              ]
+            },
+            {
+              "locator": "“制度先行”",
+              "excerpt": "首接负责制、职责清单化等举措",
+              "supports": "配套业务规则",
+              "text_character_span": [
+                772,
+                786
+              ]
+            },
+            {
+              "locator": "“颗粒归仓”",
+              "excerpt": "按领域细化为4191项事项清单",
+              "supports": "事项清单规模；与 2025 年标签数不是同一对象",
+              "text_character_span": [
+                1086,
+                1101
+              ]
+            }
+          ],
+          "source_family": "zhanjiang_followup_20260224",
+          "independence_note": "后续运行材料；并非 2025 上线指标的独立复测"
+        }
+      ]
+    },
+    {
+      "id": "C05",
+      "name": "张家口 12345：历史工单与权责库共同派单",
+      "domain": "市民诉求/政务热线",
+      "system": "张家口市12345政务服务便民热线",
+      "operators": [
+        "张家口市数据和政务服务局/12345热线"
+      ],
+      "input": "群众来电及工单；知识来源包括热线知识、政策规范、历史案例",
+      "documented_outputs": [
+        "关键词和问题类型",
+        "结构化工单",
+        "事发地点、具体诉求等字段",
+        "服务领域及承办职能部门",
+        "结合政策与历史案例的建议答复"
+      ],
+      "human_workflow": "实时录入校验；根据处置反馈优化分派；短信、智能电话和人工抽查结合",
+      "model_facts": {
+        "reported_model": "DeepSeek（版本未披露）",
+        "exact_checkpoint": null,
+        "inference_stack": null,
+        "note": "语音识别按整个系统组合能力解读，不归因于具体文本权重"
+      },
+      "implementation_evidence": [
+        "语义分析、历史数据比对、权责库匹配组合",
+        "知识库语义匹配政策条款并结合历史案例",
+        "反馈改进分派单位，未披露是否在线训练"
+      ],
+      "reported_metrics": [
+        {
+          "metric": "分拨准确率",
+          "value": ">95%",
+          "source_id": "C05-S01",
+          "snapshot_date": "2025-03-05",
+          "evaluation_protocol": "分母与测评方法未公开"
+        },
+        {
+          "metric": "派单准确率",
+          "value": "99.5%",
+          "source_id": "C05-S02",
+          "snapshot_date": "2026-01-30",
+          "evaluation_protocol": "分母与测评方法未公开；不与前一时间点作受控纵向比较"
+        },
+        {
+          "metric": "每日智能工单生成量",
+          "value": "2000余条",
+          "source_id": "C05-S01"
+        },
+        {
+          "metric": "工单准确率",
+          "value": "99.5%",
+          "source_id": "C05-S01",
+          "evaluation_protocol": "不是已定义的字段抽取F1"
+        },
+        {
+          "metric": "话务员直接答复率",
+          "value": "78%",
+          "source_id": "C05-S01",
+          "evaluation_protocol": "业务指标，非抽取准确率"
+        }
+      ],
+      "transferable_lessons": [
+        "语义相似只能给候选，历史经验需结合当前业务规则判断适用性",
+        "区分政策规范的依据作用和历史案例的经验作用",
+        "事发地点比泛化的地点名称更贴近工单任务",
+        "可在本项目记录案例不适用原因，再按错误类型改进查询"
+      ],
+      "undisclosed": [
+        "完整字段schema",
+        "角色与否定处理规则",
+        "权责库具体数据结构",
+        "检索和规则融合评分",
+        "实时校验实现",
+        "模型权重与训练方式"
+      ],
+      "sources": [
+        {
+          "id": "C05-S01",
+          "title": "12345热线全场景接入DeepSeek大模型 热线工单准确率提升至99.5% ，分拨准确率提升至95%以上",
+          "url": "https://www.hebei.gov.cn/columns/b522d086-e11d-44ec-ab13-d0f18b711de3/202503/05/88c8ba55-1c87-4fb8-b13a-b75c3430b53a.html",
+          "publication_date": "2025-03-05",
+          "publisher": "河北省人民政府门户网站，张家口栏目",
+          "source_type": "government_reporting",
+          "checked_at": "2026-10-08T02:14:52.593612+00:00",
+          "reading_scope": "已读报道正文；精确模型版本和评测协议未公开",
+          "cache_path": ".cache/practice-civic/hebei01.html",
+          "sha256": "cc9d7eadd81eeec02b479b1ce1fcf33def38cbc9363a2b21f58b609b8b0f7d2e",
+          "text_path": ".cache/practice-civic/hebei01.txt",
+          "text_sha256": "681cc4db34e77b98b3d2f79ebf792ff58b9d0801d37984fce73b67befc520f4c",
+          "evidence": [
+            {
+              "locator": "智能派单处置段",
+              "excerpt": "通过语义分析、历史数据比对和权责库匹配",
+              "supports": "语义、历史和权责规则的组合",
+              "text_character_span": [
+                767,
+                786
+              ]
+            },
+            {
+              "locator": "智能派单处置段",
+              "excerpt": "根据处置反馈动态优化分派单位",
+              "supports": "以办理反馈改进分派；未说明在线训练方式",
+              "text_character_span": [
+                853,
+                867
+              ]
+            },
+            {
+              "locator": "智能派单处置段",
+              "excerpt": "分拨准确率提升至95%以上",
+              "supports": "2025 年报道的分拨准确率口径",
+              "text_character_span": [
+                42,
+                55
+              ]
+            },
+            {
+              "locator": "智能语音录入段",
+              "excerpt": "每天可智能生成工单2000余条，热线工单准确率提升至99.5%",
+              "supports": "规模与工单准确率；指标定义未披露",
+              "text_character_span": [
+                488,
+                519
+              ]
+            },
+            {
+              "locator": "智能知识库直办段",
+              "excerpt": "话务员直接答复率提升至78%",
+              "supports": "直接答复率业务指标",
+              "text_character_span": [
+                696,
+                710
+              ]
+            },
+            {
+              "locator": "智能语音回访段",
+              "excerpt": "短信全量覆盖+智能电话补缺+人工抽查核验",
+              "supports": "系统之外保留人工核验",
+              "text_character_span": [
+                988,
+                1008
+              ]
+            }
+          ],
+          "source_family": "zhangjiakou_20250305"
+        },
+        {
+          "id": "C05-S02",
+          "title": "从“人工接诉”到“数智响应” 张家口12345热线开启新“智”变",
+          "url": "http://www.zjkwmw.gov.cn/contents/1001/18685.html",
+          "publication_date": "2026-01-30",
+          "publisher": "张家口文明网（市精神文明建设办公室），来源：张家口新闻网",
+          "source_type": "official_local_republication",
+          "checked_at": "2026-10-08T02:20:51.707570+00:00",
+          "reading_scope": "已读后续采访正文；ASR/模型职责按系统能力解读",
+          "cache_path": ".cache/practice-civic/zhangjiakou2026.html",
+          "sha256": "c5aaa3ed563cd29724b3a1cb066c97e551cca7b1c5618b11b8ebb8f38871d8a9",
+          "text_path": ".cache/practice-civic/zhangjiakou2026.txt",
+          "text_sha256": "d04c27006c273a275eea78cac432b412aeee96cce2ecd9fec90759faa3bbe951",
+          "evidence": [
+            {
+              "locator": "智能语音录入段",
+              "excerpt": "群众电话、事发地点、具体诉求等关键信息",
+              "supports": "公开字段角色；电话用于热线联络，未建议参与相似检索",
+              "text_character_span": [
+                552,
+                571
+              ]
+            },
+            {
+              "locator": "智能语音录入段",
+              "excerpt": "对录入信息进行错误检测与纠正",
+              "supports": "录入校验动作；具体规则未公开",
+              "text_character_span": [
+                602,
+                616
+              ]
+            },
+            {
+              "locator": "智能智库直办段",
+              "excerpt": "在知识库中进行语义匹配，精准定位相关政策条款",
+              "supports": "知识库语义匹配机制",
+              "text_character_span": [
+                923,
+                945
+              ]
+            },
+            {
+              "locator": "智能智库直办段",
+              "excerpt": "并结合历史案例生成通俗易懂的答复话术",
+              "supports": "政策条款和历史案例分工",
+              "text_character_span": [
+                946,
+                964
+              ]
+            },
+            {
+              "locator": "智能派单处置段",
+              "excerpt": "派单准确率达99.5%",
+              "supports": "2026 年报道口径，不能与 2025 年直接组成受控提升结果",
+              "text_character_span": [
+                1236,
+                1247
+              ]
+            },
+            {
+              "locator": "智能语音录入段",
+              "excerpt": "每日可智能生成工单2500条",
+              "supports": "2026 年规模口径",
+              "text_character_span": [
+                714,
+                728
+              ]
+            }
+          ],
+          "source_family": "zhangjiakou_20260130",
+          "independence_note": "与 C05-S01 时间不同且部分作者相同；没有相同评测协议，不作独立因果实验"
+        }
+      ]
+    },
+    {
+      "id": "C06",
+      "name": "海淀接诉即办：统一事件类目与成功处置经验",
+      "domain": "市民诉求/城市治理",
+      "system": "海淀区城市管理指挥中心接诉即办及城市大脑",
+      "operators": [
+        "海淀区城市管理指挥中心",
+        "百度智能云",
+        "中关村科学城城市大脑股份有限公司"
+      ],
+      "input": "实时事件工单及业务数据库",
+      "documented_outputs": [
+        "提取的工单要素",
+        "统一事件类目标签",
+        "辅助派单结果",
+        "类似事件成功处置经验",
+        "事件、时空、行业分析和报告"
+      ],
+      "human_workflow": "辅助人工分拣派发和承办单位办理；技术服务已有业务流程",
+      "model_facts": {
+        "reported_model": "文心大模型及定制模型；不同年份系统快照",
+        "exact_checkpoint": null,
+        "inference_stack": null
+      },
+      "implementation_evidence": [
+        "工单要素与事件类目标签结合",
+        "事件库/知识图谱与模型组合",
+        "依据类似事件成功处置经验提供助手",
+        "同一批事件信息支持派单、办理和分析"
+      ],
+      "reported_metrics": [
+        {
+          "metric": "派单类型覆盖",
+          "value": 836,
+          "unit": "种",
+          "source_id": "C06-S02",
+          "snapshot_date": "2023-08-15"
+        },
+        {
+          "metric": "智能派单准确率",
+          "value": ">=87%（原文87%以上）",
+          "source_id": "C06-S02",
+          "snapshot_date": "2023-08-15",
+          "evaluation_protocol": "样本和协议未公开，不能归属2024定制模型"
+        }
+      ],
+      "historical_problem": "人工标签统计标准不一，导致派单、处置、统计与预警难度大（C06-S03）",
+      "transferable_lessons": [
+        "先研究统一问题表示，再面向不同下游任务组合",
+        "检查历史案例的处置动作和结果是否有参考价值",
+        "类目规模是其业务对象数，不是本项目字段数",
+        "对人工标签口径不一的问题，优先维护定义和正反例"
+      ],
+      "undisclosed": [
+        "完整事件类目表",
+        "长尾类别方案",
+        "成功案例筛选算法",
+        "相似检索与排序实现",
+        "定制模型训练细节",
+        "独立评测数据"
+      ],
+      "sources": [
+        {
+          "id": "C06-S01",
+          "title": "百度智能云助力北京市海淀区 实现“接诉即办”智能化升级",
+          "url": "https://paper.people.com.cn/rmrb/html/2024-05/23/nw.D110000renmrb_20240523_4-11.htm",
+          "publication_date": "2024-05-23",
+          "publisher": "人民日报，第11版；文末标明数据来源：百度",
+          "source_type": "implementer_supplied_media_material",
+          "checked_at": "2026-10-08T02:16:55.613972+00:00",
+          "reading_scope": "已读报道正文；来源性质按建设方供稿处理",
+          "cache_path": ".cache/practice-civic/haidian-people01.html",
+          "sha256": "646903a597b00c0a1cfd32310a120935626b423f9cc904ea8a9d39ecf012bbaf",
+          "text_path": ".cache/practice-civic/haidian-people01.txt",
+          "text_sha256": "cff055d33aa0bcf3df38c4540a3c846d1e9f3f2e7de61c78cfea4d0a74da06f7",
+          "evidence": [
+            {
+              "locator": "“在智能派单方面”",
+              "excerpt": "通过对实时工单要素进行智能提取并结合事件类目标签",
+              "supports": "要素和事件类目结合",
+              "text_character_span": [
+                1265,
+                1289
+              ]
+            },
+            {
+              "locator": "“在智能处置方面”",
+              "excerpt": "根据以往类似事件的成功处置经验辅助基层工作人员解决与处置问题",
+              "supports": "历史相似成功经验用于辅助办理",
+              "text_character_span": [
+                1389,
+                1419
+              ]
+            },
+            {
+              "locator": "“在智能分析方面”",
+              "excerpt": "构建事件、时空、行业等多维度智能分析模型",
+              "supports": "不同业务用途的事件表示",
+              "text_character_span": [
+                1520,
+                1540
+              ]
+            },
+            {
+              "locator": "文末",
+              "excerpt": "数据来源：百度",
+              "supports": "证据由建设方提供，非独立性能评测",
+              "text_character_span": [
+                1967,
+                1974
+              ]
+            }
+          ],
+          "source_family": "baidu_haidian_people_20240523"
+        },
+        {
+          "id": "C06-S02",
+          "title": "牵手大模型，让更多城市应用场景服务市民 海淀“城市大脑”插上智慧翅膀",
+          "url": "https://www.ncsti.gov.cn/kjdt/yqdy/yqdt/202308/t20230815_131259.html",
+          "publication_date": "2023-08-15",
+          "publisher": "国际科技创新中心网络服务平台，来源：北京日报",
+          "source_type": "government_republication_of_interview",
+          "checked_at": "2026-10-08T02:17:49.604420+00:00",
+          "reading_scope": "已读“牵手大模型的生长演进”及前后语境；城市大脑其他场景不作本专题效果证据",
+          "cache_path": ".cache/practice-civic/haidian-gov05.html",
+          "sha256": "58a22b919039e1877fa8373f4b1654d18521183e2421f0b170ca0a15b54a20e2",
+          "text_path": ".cache/practice-civic/haidian-gov05.txt",
+          "text_sha256": "04c2fcbe14543440ebd16b8cea0078235f510b4d9ec6738e1ed46010dcd33f81",
+          "evidence": [
+            {
+              "locator": "“牵手大模型的生长演进”",
+              "excerpt": "累计可识别的派单类型已经达到836种，智能派单的准确率已经达到87%以上",
+              "supports": "2023 年历史快照；样本和评测协议未公开",
+              "text_character_span": [
+                1618,
+                1654
+              ]
+            },
+            {
+              "locator": "同段",
+              "excerpt": "并与城市事件库、知识图谱技术相结合",
+              "supports": "事件库/知识图谱与模型的系统组合",
+              "text_character_span": [
+                1565,
+                1582
+              ]
+            }
+          ],
+          "source_family": "beijing_daily_haidian_20230815",
+          "independence_note": "2023 版本效果不能归到 C06-S01 2024 定制模型"
+        },
+        {
+          "id": "C06-S03",
+          "title": "大模型为数字中国建设提供坚实力量",
+          "url": "https://tjdsj.tjcac.gov.cn/tjsg/202512/t20251224_7205949.html",
+          "publication_date": "2025-12-24",
+          "publisher": "天津市数据发展中心，来源：《瞭望》",
+          "source_type": "government_republication",
+          "checked_at": "2026-10-08T02:17:49.815235+00:00",
+          "reading_scope": "仅取“抢占人工智能产业应用制高点”中的海淀接诉即办段，已从原始 HTML 正文核对",
+          "cache_path": ".cache/practice-civic/haidian-gov09.html",
+          "sha256": "20bdb03ae9735495b9c81bed55978ee90c292a7ec502c646860b7c57e465c53d",
+          "text_path": ".cache/practice-civic/haidian-gov09-selected.txt",
+          "text_sha256": "292e828849a998737678ba642f34e7b14b6777fc20b6bd707735e3f32c33628f",
+          "evidence": [
+            {
+              "locator": "“抢占人工智能产业应用制高点”海淀段",
+              "excerpt": "过去依赖人工标签统计，标准不一",
+              "supports": "人工标签口径不一致的历史痛点",
+              "text_character_span": [
+                1869,
+                1884
+              ]
+            }
+          ],
+          "source_family": "liaowang_20251207",
+          "original_publication_date": "2025-12-07",
+          "publication_date_note": "网站 PubTime=2025-12-24；PubDate=2025-12-07 为原刊日期字段，均来自页面元数据"
+        }
+      ]
+    }
+  ],
+  "selected_case_count": 3,
+  "selected_source_count": 9,
+  "limitations": [
+    "仅公开材料，未取得源码/完整抽取schema/检索实现/评测协议",
+    "官方或建设方报道的业务指标不当作独立模型性能测量",
+    "同一报道的转载不算独立证据",
+    "本项目的字段和模型选择仍未冻结"
+  ],
+  "access_notes": [
+    "Google和DuckDuckGo直接连接不可达；百度/部分搜狗请求返回验证页，未绕过限制",
+    "搜索引擎AI摘要只用于发现候选，不支持结论",
+    "海淀区部分政府页面已404，改读可访问的政府平台转载与原刊",
+    "天津转载页自动清洗遗漏正文，已直接核对原始HTML中的目标段落"
+  ]
+}

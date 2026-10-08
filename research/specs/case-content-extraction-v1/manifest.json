@@ -1,0 +1,11 @@
+{
+  "spec_version": "case-content-extraction-v1",
+  "prompt_version": "case-content-extraction-v1-p1",
+  "status": "development_contract_not_model_evaluation",
+  "artifacts": {
+    "response.schema.json": "c2fac7b6a646949065b335ee59a58fa63b20351b1d1256547255d9bd57e78ca4",
+    "system-prompt.txt": "3370bf0d01774dd3b54b1b174d66d09ddc0c149411b2f18e9e14d466dc6d2b25",
+    "examples.synthetic.jsonl": "9ec31500f3a390adbac456d61114858c122c070c5f73929492f135aa303b4c37"
+  },
+  "synthetic_example_count": 9
+}
