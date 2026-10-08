@@ -1,0 +1,10 @@
+# The independent v1 extraction environment. Keep the CUDA wheel family aligned.
+openai==1.75.0
+pydantic==2.11.4
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+torchaudio==2.6.0+cu124
+transformers==4.51.3
+vllm==0.8.5
+numpy==1.26.4
+opencv-python-headless==4.11.0.86

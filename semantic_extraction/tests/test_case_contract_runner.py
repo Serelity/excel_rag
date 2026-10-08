@@ -184,53 +184,57 @@ def environment(name, *, serving=False):
             "packages": dict(module.SERVE_VERSIONS) if serving else {"pydantic": "2.11.4"}}
 
 
-def test_confirmed_environment_is_used_for_both_client_and_server():
+def test_new_environment_is_used_for_both_client_and_server():
     module = load_env_inspector()
-    retrieval = environment("civic-rag-retrieval")
-    server = environment("civic-rag-extract", serving=True)
-    assert module.choose([retrieval, server], "client") == retrieval
+    selected = environment("civic-rag-extract-v1")
+    old = environment("civic-rag-retrieval", serving=True)
+    assert module.choose([selected, old], "client") == selected
     with pytest.raises(ValueError, match="incompatible_for_serve"):
-        module.choose([retrieval, server], "serve")
-    misspelled = environment("civi-rag-retrieval", serving=True)
+        module.choose([selected, old], "serve")
     with pytest.raises(ValueError, match="missing_or_ambiguous"):
-        module.choose([misspelled, server], "client")
+        module.choose([old], "client")
 
 
-def test_reuses_retrieval_environment_when_it_has_serving_dependencies():
+def test_old_environment_can_be_selected_explicitly():
     module = load_env_inspector()
     retrieval = environment("civic-rag-retrieval", serving=True)
     server = environment("civic-rag-extract", serving=True)
-    assert module.choose([server, retrieval], "serve") == retrieval
+    assert module.choose([server, retrieval], "serve",
+                         environment="civic-rag-retrieval") == retrieval
 
 
 def test_missing_vllm_and_duplicate_env_names_do_not_trigger_installation():
     module = load_env_inspector()
-    retrieval = environment("civic-rag-retrieval")
+    retrieval = environment("civic-rag-extract-v1")
     with pytest.raises(ValueError, match="incompatible"):
         module.choose([retrieval], "serve")
-    second = dict(retrieval, prefix="/elsewhere/civic-rag-retrieval")
+    second = dict(retrieval, prefix="/elsewhere/civic-rag-extract-v1")
     with pytest.raises(ValueError, match="ambiguous"):
         module.choose([retrieval, second], "client")
 
 
-def test_inspector_probes_only_confirmed_environment_without_mutating_packages():
+@pytest.mark.parametrize("selected", ["civic-rag-extract-v1", "civic-rag-retrieval"])
+def test_inspector_probes_only_selected_environment_without_mutation(selected):
     module = load_env_inspector()
     calls = []
-    probe = environment("civic-rag-retrieval", serving=True)
+    probe = environment(selected, serving=True)
 
     def fake_run(command, **kwargs):
         calls.append(command)
         if command[1:3] == ["env", "list"]:
             return SimpleNamespace(stdout=json.dumps({"envs": [
                 "/envs/civic-rag-extract", "/envs/civic-rag-retrieval",
+                "/envs/civic-rag-extract-v1",
             ]}))
         return SimpleNamespace(stdout="CASE_CONTRACT_PROBE=" + json.dumps(probe))
 
-    report = module.inspect("conda", run=fake_run)
+    report = module.inspect("conda", environment=selected, run=fake_run)
     assert report["status"] == "ready_for_gpu_preflight"
     assert report["client"]["prefix"] == report["server"]["prefix"]
     assert report["environment_changed"] is False and report["gpu_inference"] == "not_run"
-    assert len(calls) == 2 and calls[1][4] == "/envs/civic-rag-retrieval"
+    assert report["required_environment"] == selected
+    assert report["probes"][0]["serve_mismatches"] == []
+    assert len(calls) == 2 and calls[1][4] == f"/envs/{selected}"
     assert all("install" not in c and "create" not in c for c in calls)
 
 
@@ -241,3 +245,33 @@ def test_inspector_reports_missing_environment_without_probing_alternatives():
     ))
     assert report["status"] == "failed" and report["probes"] == []
     assert report["reason"] == "required_environment_missing_or_ambiguous"
+
+
+def test_missing_vllm_is_reported_with_actual_and_expected_versions():
+    module = load_env_inspector()
+    probe = environment("civic-rag-retrieval", serving=True)
+    probe["python"] = [3, 11, 16]
+    probe["packages"].update({"torch": "2.6.0+cu124", "vllm": None, "pytest": None})
+    assert module.compatibility_errors(probe, "client") == []
+    assert module.compatibility_errors(probe, "serve") == [
+        {"component": "vllm", "actual": None, "expected": "0.8.5"},
+    ]
+
+
+def test_inspector_default_is_independent_extraction_environment():
+    module = load_env_inspector()
+    assert module.ENVIRONMENT == "civic-rag-extract-v1"
+    selected = environment(module.ENVIRONMENT, serving=True)
+    assert module.choose([environment("civic-rag-retrieval", serving=True), selected],
+                         "serve") == selected
+
+
+@pytest.mark.parametrize("name", ["../env", "/envs/name", "bad name", "--help"])
+def test_invalid_environment_name_fails_before_conda(name):
+    module = load_env_inspector()
+
+    def no_calls(*args, **kwargs):
+        pytest.fail("invalid environment name must not invoke Conda")
+
+    with pytest.raises(ValueError, match="invalid_environment_name"):
+        module.inspect("conda", environment=name, run=no_calls)

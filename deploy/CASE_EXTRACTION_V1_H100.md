@@ -1,6 +1,6 @@
 # 抽取规范 v1：H100 试抽执行手册
 
-2026-10-08 用户确认：涉及GPU的模型运行沿用服务器H100，环境固定使用 **`civic-rag-retrieval`**。本手册承接[校园网执行手册](PHASE1_RUNBOOK.md)及[既有Qwen抽取部署](../semantic_extraction/README.md)。本机尚未获得服务器实际环境检查或模型试抽结果。
+2026-10-08 用户提供服务器诊断：`civic-rag-retrieval`中Python3.11.16、Torch2.6.0+cu124及其余受检包版本匹配，但没有vLLM。用户随后要求重新安装一个环境，现采用独立的 **`civic-rag-extract-v1`** 运行本轮抽取，检索继续使用原环境；GPU仍用服务器H100。服务器新环境安装、GPU预检及模型结果尚待实际执行。
 
 ## 执行分工
 
@@ -11,15 +11,16 @@
 | BGE reranker重排 | 服务器H100 |
 | 规范与代码开发、输入准备、逐字证据校验、人工审阅、离线统计 | 本地CPU；需要时也可在服务器CPU环境执行 |
 
-沿用服务器终端Git拉取代码、提交H100任务的流程。服务器现有Conda环境和权重以实际配置为准，不因本轮规范开发另建环境或下载同一模型。本地无需具备GPU或模型权重，模型试抽不以本地GPU检查通过为前提。
+沿用服务器终端Git拉取代码、提交H100任务的流程。本次按用户新指令创建独立抽取环境，复用已有数据和模型权重。本地无需具备GPU或模型权重，模型试抽不以本地GPU检查通过为前提。
 
 ## 已有入口与本轮接入
 
-- 服务器私有`deploy/.env.semantic`继续提供已有Qwen3-30B-A3B权重路径、指纹及服务参数。旧示例中的`CONDA_EXTRACT_ENV=civic-rag-extract`属于v4约定；本轮入口以实际查到的`civic-rag-retrieval`绝对环境路径为准，服务和客户端均使用它。
+- 服务器私有`deploy/.env.semantic`继续提供已有Qwen3-30B-A3B权重路径、指纹及服务参数。本轮入口默认查找`civic-rag-extract-v1`，以其绝对环境路径运行服务和客户端；旧配置中的`CONDA_EXTRACT_ENV`不改变本轮选择。需要明确选择其他已有环境时传`--conda-env NAME`，不会自动回退到其他环境。
 - [run-qwen3-vllm.sh](run-qwen3-vllm.sh)已有H100模型服务启动逻辑：复用本地权重、单张可见GPU、服务器回环地址服务及环境检查。
 - [run-qwen3-pilot.sh](run-qwen3-pilot.sh)仍调用旧`semantic_extraction.run`及v4提示词/schema。它不能直接作为新规范的80条试抽命令。
 - 新增 [run-case-contract.sh](run-case-contract.sh) 提供`inspect / smoke / all`三个阶段；[批量适配器](../semantic_extraction/case_contract/runner.py)使用v1提示词和输出结构，保存请求/回复与逐字校验结果。
 - [环境检查](inspect-case-contract-env.py)只检查指定名称，缺失或依赖不兼容时保存诊断后退出；不自动改名、切换环境、安装依赖或升级现有检索环境。
+- [独立环境安装](create-case-contract-env.sh)是唯一新增的安装入口：只新建`civic-rag-extract-v1`，同名环境已存在则停止；不读取旧私有配置来决定安装目标。
 
 ## 1. Git同步代码，在服务器重建固定80条输入
 
@@ -35,10 +36,26 @@ git rev-parse --short HEAD
 
 若服务器有未提交修改或分支分叉，先保留并处理，不用强制重置覆盖。核对服务器HEAD与本次交付提交一致，并确认新入口及整个`semantic_extraction/case_contract/`目录已到位，再执行环境检查。未推送的本地文件不能通过服务器`git pull`获得。
 
+### 新建独立抽取环境
+
+在允许联网安装软件的服务器终端、仓库根目录中执行。安装不需要申请GPU，不要求当前shell已激活新环境：
+
+```bash
+bash deploy/create-case-contract-env.sh
+```
+
+安装脚本新建Python3.11环境，使用[固定核心依赖](requirements-case-contract.txt)安装vLLM0.8.5、Torch2.6.0+cu124和对应的torchvision/torchaudio，以及本轮抽取依赖。安装完成后执行`pip check`、包导入、CUDA运行库版本和既有环境检查；成功时输出`environment_created=civic-rag-extract-v1`。这不代表模型加载或GPU推理已通过。
+
+安装清单、pip解析报告、依赖快照和诊断保存在自动生成的`data/case-relevance-phase1-v1/contract-install-*/`内。同名环境已存在时不更新、不删除；若安装中途失败，保留环境和记录，依据具体错误继续处理。
+
+### 准备输入
+
+如果此前`extraction-contract-v1-002`已经准备成功，可直接复用，跳过重新准备。它与新环境独立；运行时传`--input-dir data/case-relevance-phase1-v1/extraction-contract-v1-002`。
+
 服务器已有之前实验的原始数据和检索数据。拉取代码后，在仓库根目录用固定环境执行CPU准备脚本，无需重新上传原始数据：
 
 ```bash
-conda run --no-capture-output -n civic-rag-retrieval \
+conda run --no-capture-output -n civic-rag-extract-v1 \
   python deploy/prepare-case-contract-inputs.py
 ```
 
@@ -47,7 +64,7 @@ conda run --no-capture-output -n civic-rag-retrieval \
 如果数据放在其他位置，明确指定已有原始TSV或检索SQLite文件：
 
 ```bash
-conda run --no-capture-output -n civic-rag-retrieval \
+conda run --no-capture-output -n civic-rag-extract-v1 \
   python deploy/prepare-case-contract-inputs.py \
   --source /已有数据的绝对路径/t_order_master.sanitized.v1_9.tsv
 ```
@@ -65,12 +82,12 @@ conda run --no-capture-output -n civic-rag-retrieval \
 ```bash
 conda env list
 bash deploy/run-case-contract.sh inspect \
-  --output data/case-relevance-phase1-v1/contract-env-001
+  --output data/case-relevance-phase1-v1/contract-env-extract-v1-001
 ```
 
-脚本从Conda实际清单查找`civic-rag-retrieval`，用对应绝对路径运行检查；不会凭拼写猜中后直接开始抽取。同名环境存在于多个位置时也会停止，避免选错。`environment.json`记录实际解释器、版本和选中路径。
+脚本从Conda实际清单查找`civic-rag-extract-v1`，用对应绝对路径运行检查。同名环境存在于多个位置时会停止，避免选错。`environment.json`记录实际解释器、版本和选中路径；不兼容时报告具体组件的实际值和所需值。
 
-现有Qwen服务部署要求Python3.11、openai1.75.0、pydantic2.11.4、torch2.6.0、transformers4.51.3、vllm0.8.5。检查沿用这些已定义的版本约定。`ready_for_gpu_preflight`只表示包记录及Pydantic导入适合继续；不表示CUDA、权重加载或新schema推理已通过。若检索环境缺vLLM或版本不同，先查看诊断，再制定明确的环境处理方案。
+现有Qwen服务部署要求Python3.11、openai1.75.0、pydantic2.11.4、torch2.6.0、transformers4.51.3、vllm0.8.5。检查沿用这些已定义的版本约定。`ready_for_gpu_preflight`只表示包记录及Pydantic导入适合继续；不表示CUDA、权重加载或新schema推理已通过。`pytest`是可选测试包，未安装不影响此次抽取。
 
 ## 3. 申请H100后先跑10条
 
@@ -78,10 +95,11 @@ bash deploy/run-case-contract.sh inspect \
 
 ```bash
 bash deploy/run-case-contract.sh smoke \
-  --output data/case-relevance-phase1-v1/contract-smoke-001
+  --input-dir data/case-relevance-phase1-v1/extraction-contract-v1-002 \
+  --output data/case-relevance-phase1-v1/contract-smoke-extract-v1-001
 ```
 
-默认输入目录即上述重建的80条开发包。需要使用其他已准备目录时用`--input-dir`，私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
+上述命令复用本轮此前准备的`002`输入。若在默认`001`目录准备，则将`--input-dir`改为该目录；省略时仍默认`extraction-contract-v1-001`。私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
 
 首批固定选取B001、B015、B032、B040、B013、B016、B019、B026、B053、B069，按原输入顺序执行。这是有意覆盖规则边界的开发集合，不能当随机准确率样本。请求串行，temperature=0、seed=42、关闭thinking；默认最大输出8192 tokens，可通过私有配置中的`CASE_CONTRACT_MAX_TOKENS`明确改变。
 
@@ -89,7 +107,7 @@ bash deploy/run-case-contract.sh smoke \
 
 ## 4. 检查结果，再运行80条
 
-在`contract-smoke-001/`内：
+在`contract-smoke-extract-v1-001/`内：
 
 | 路径 | 内容 |
 | --- | --- |
@@ -111,7 +129,8 @@ bash deploy/run-case-contract.sh smoke \
 
 ```bash
 bash deploy/run-case-contract.sh all \
-  --output data/case-relevance-phase1-v1/contract-full-001
+  --input-dir data/case-relevance-phase1-v1/extraction-contract-v1-002 \
+  --output data/case-relevance-phase1-v1/contract-full-extract-v1-001
 ```
 
 这一步仍需对新模型输出做语义验收；原80条人工审阅通过不能直接转写为模型输出通过。不同模型/参数/提示词需另存运行，不与前轮合并当同一实验。

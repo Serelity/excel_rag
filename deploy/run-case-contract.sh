@@ -7,10 +7,11 @@ PROJECT_ROOT=$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 cd "$PROJECT_ROOT"
 stage=${1:-}
 case "$stage" in inspect|smoke|all) shift ;; *)
-  printf 'Usage: bash deploy/run-case-contract.sh {inspect|smoke|all} --output NEW_DIR [--env-file FILE] [--input-dir DIR]\n' >&2
+  printf 'Usage: bash deploy/run-case-contract.sh {inspect|smoke|all} --output NEW_DIR [--conda-env NAME] [--env-file FILE] [--input-dir DIR]\n' >&2
   exit 2 ;;
 esac
 output= env_file=${RAG_ENV_FILE:-$PROJECT_ROOT/deploy/.env.semantic}
+contract_env=civic-rag-extract-v1
 input_dir=$PROJECT_ROOT/data/case-relevance-phase1-v1/extraction-contract-v1-001
 while (($#)); do
   (($# >= 2)) || { printf 'ERROR: option requires a value\n' >&2; exit 2; }
@@ -18,11 +19,13 @@ while (($#)); do
     --output) output=$2 ;;
     --env-file) env_file=$2 ;;
     --input-dir) input_dir=$2 ;;
+    --conda-env) contract_env=$2 ;;
     *) printf 'ERROR: unknown option\n' >&2; exit 2 ;;
   esac
   shift 2
 done
 [[ -n $output && ! -e $output ]] || { printf 'ERROR: --output must be a new directory\n' >&2; exit 2; }
+[[ $contract_env =~ ^[A-Za-z0-9][A-Za-z0-9_.-]*$ ]] || { printf 'ERROR: invalid environment name\n' >&2; exit 2; }
 if [[ -r $env_file ]]; then
   set -a
   # shellcheck disable=SC1090
@@ -40,7 +43,7 @@ base_python=$CONTRACT_CONDA_BASE/bin/python
 mkdir -p -- "$(dirname -- "$output")"
 mkdir -- "$output"
 output=$(cd -P -- "$output" && pwd -P)
-probe_args=(--conda "$CONDA_BIN" --output "$output/environment.json")
+probe_args=(--conda "$CONDA_BIN" --conda-env "$contract_env" --output "$output/environment.json")
 "$base_python" deploy/inspect-case-contract-env.py "${probe_args[@]}"
 [[ $stage != inspect ]] || exit 0
 client_prefix=$("$base_python" -c 'import json,sys; print(json.load(open(sys.argv[1]))["client"]["prefix"])' "$output/environment.json")
