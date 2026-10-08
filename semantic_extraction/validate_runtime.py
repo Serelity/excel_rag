@@ -5,6 +5,8 @@ import sys
 
 
 def main() -> None:
+    print(f"runtime_python={sys.executable}", flush=True)
+    print(f"runtime_python_version={sys.version.split()[0]}", flush=True)
     if sys.version_info[:2] != (3, 11):
         raise SystemExit(f"Python {sys.version.split()[0]} is unsupported; expected 3.11.x")
 

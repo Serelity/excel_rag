@@ -1,6 +1,6 @@
 # 抽取规范 v1：H100 试抽执行手册
 
-2026-10-08 用户提供服务器诊断：`civic-rag-retrieval`中Python3.11.16、Torch2.6.0+cu124及其余受检包版本匹配，但没有vLLM。用户随后要求重新安装一个环境，现采用独立的 **`civic-rag-extract-v1`** 运行本轮抽取，检索继续使用原环境；GPU仍用服务器H100。服务器新环境安装、GPU预检及模型结果尚待实际执行。
+2026-10-08 用户提供服务器诊断：`civic-rag-retrieval`中Python3.11.16、Torch2.6.0+cu124及其余受检包版本匹配，但没有vLLM。用户随后要求重新安装一个环境，现采用独立的 **`civic-rag-extract-v1`** 运行本轮抽取，检索继续使用原环境；GPU仍用服务器H100。用户已回传新环境的`pip check`及元数据检查通过结果；首次试抽因启动链路误用base的Python3.12失败，现已修复解释器选择。GPU和模型加载仍待服务器重试验证。
 
 ## 执行分工
 
@@ -21,6 +21,7 @@
 - 新增 [run-case-contract.sh](run-case-contract.sh) 提供`inspect / smoke / all`三个阶段；[批量适配器](../semantic_extraction/case_contract/runner.py)使用v1提示词和输出结构，保存请求/回复与逐字校验结果。
 - [环境检查](inspect-case-contract-env.py)只检查指定名称，缺失或依赖不兼容时保存诊断后退出；不自动改名、切换环境、安装依赖或升级现有检索环境。
 - [独立环境安装](create-case-contract-env.sh)是唯一新增的安装入口：只新建`civic-rag-extract-v1`，同名环境已存在则停止；不读取旧私有配置来决定安装目标。
+- 检查、客户端及本轮指定prefix的服务调用均显式使用`<环境路径>/bin/python`。Conda可执行文件单独传递，不将base/bin插入PATH；vLLM日志会首先记录实际Python路径和版本。解释器选择修复见[运行记录](../research/topics/case-content-extraction/17-launch-interpreter-fix.md)。
 
 ## 1. Git同步代码，在服务器重建固定80条输入
 
@@ -96,7 +97,7 @@ bash deploy/run-case-contract.sh inspect \
 ```bash
 bash deploy/run-case-contract.sh smoke \
   --input-dir data/case-relevance-phase1-v1/extraction-contract-v1-002 \
-  --output data/case-relevance-phase1-v1/contract-smoke-extract-v1-001
+  --output data/case-relevance-phase1-v1/contract-smoke-extract-v1-002
 ```
 
 上述命令复用本轮此前准备的`002`输入。若在默认`001`目录准备，则将`--input-dir`改为该目录；省略时仍默认`extraction-contract-v1-001`。私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
@@ -107,7 +108,7 @@ bash deploy/run-case-contract.sh smoke \
 
 ## 4. 检查结果，再运行80条
 
-在`contract-smoke-extract-v1-001/`内：
+在`contract-smoke-extract-v1-002/`内（此前`001`失败目录保留）：
 
 | 路径 | 内容 |
 | --- | --- |

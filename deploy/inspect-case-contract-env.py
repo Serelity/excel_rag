@@ -73,7 +73,9 @@ def inspect(conda, *, environment=ENVIRONMENT, run=subprocess.run):
             continue
         item = {"name": name, "prefix": prefix}
         try:
-            result = run([conda, "run", "--no-capture-output", "-p", prefix, "python", "-c", PROBE],
+            interpreter = str(Path(prefix) / "bin/python")
+            result = run([conda, "run", "--no-capture-output", "-p", prefix,
+                          interpreter, "-c", PROBE],
                          capture_output=True, text=True, check=True, timeout=60)
             lines = [line for line in result.stdout.splitlines()
                      if line.startswith("CASE_CONTRACT_PROBE=")]

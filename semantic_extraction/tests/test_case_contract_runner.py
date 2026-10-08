@@ -1,5 +1,6 @@
 import importlib.util
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -235,6 +236,7 @@ def test_inspector_probes_only_selected_environment_without_mutation(selected):
     assert report["required_environment"] == selected
     assert report["probes"][0]["serve_mismatches"] == []
     assert len(calls) == 2 and calls[1][4] == f"/envs/{selected}"
+    assert calls[1][5] == str(Path(f"/envs/{selected}") / "bin/python")
     assert all("install" not in c and "create" not in c for c in calls)
 
 

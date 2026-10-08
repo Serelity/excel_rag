@@ -48,8 +48,11 @@ probe_args=(--conda "$CONDA_BIN" --conda-env "$contract_env" --output "$output/e
 [[ $stage != inspect ]] || exit 0
 client_prefix=$("$base_python" -c 'import json,sys; print(json.load(open(sys.argv[1]))["client"]["prefix"])' "$output/environment.json")
 serve_prefix=$("$base_python" -c 'import json,sys; print(json.load(open(sys.argv[1]))["server"]["prefix"])' "$output/environment.json")
-client=("$CONDA_BIN" run --no-capture-output -p "$client_prefix" python)
-export PATH="$(dirname -- "$CONDA_BIN"):$PATH"
+client_python=$client_prefix/bin/python
+[[ -x $client_python ]] || { printf 'ERROR: selected Python is unavailable\n' >&2; exit 2; }
+client=("$CONDA_BIN" run --no-capture-output -p "$client_prefix" "$client_python")
+# Pass Conda by absolute path without putting base/bin ahead of the active env.
+export CONDA_EXE="$CONDA_BIN"
 
 : "${VLLM_HOST:=127.0.0.1}"
 : "${VLLM_PORT:=8000}"
@@ -76,7 +79,7 @@ selection=()
 # Snapshot effective non-secret settings without overwriting the existing private .env.
 effective_env=$output/runtime.env
 CONDA_EXTRACT_PREFIX=$serve_prefix
-for variable in CONDA_EXTRACT_PREFIX QWEN_MODEL_PATH QWEN_MODEL_FINGERPRINT_SHA256 \
+for variable in CONDA_EXE CONDA_EXTRACT_PREFIX QWEN_MODEL_PATH QWEN_MODEL_FINGERPRINT_SHA256 \
     QWEN_SERVED_MODEL_NAME GPU_ID VLLM_HOST VLLM_PORT VLLM_MAX_MODEL_LEN \
     VLLM_GPU_MEMORY_UTILIZATION VLLM_MAX_NUM_SEQS VLLM_MAX_NUM_BATCHED_TOKENS VLLM_CACHE_PATH; do
   [[ ! -v $variable ]] || printf '%s=%q\n' "$variable" "${!variable}" >> "$effective_env"
