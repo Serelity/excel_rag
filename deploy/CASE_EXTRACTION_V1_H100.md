@@ -21,7 +21,7 @@
 - 新增 [run-case-contract.sh](run-case-contract.sh) 提供`inspect / smoke / all`三个阶段；[批量适配器](../semantic_extraction/case_contract/runner.py)使用v1提示词和输出结构，保存请求/回复与逐字校验结果。
 - [环境检查](inspect-case-contract-env.py)只检查指定名称，缺失或依赖不兼容时保存诊断后退出；不自动改名、切换环境、安装依赖或升级现有检索环境。
 
-## 1. 同步代码和私有输入
+## 1. Git同步代码，在服务器重建固定80条输入
 
 代码沿用既有Git流程：本地完成提交并推送到`origin/codex/case-relevance-phase1`，服务器再拉取。服务器在已有仓库根目录执行：
 
@@ -35,7 +35,28 @@ git rev-parse --short HEAD
 
 若服务器有未提交修改或分支分叉，先保留并处理，不用强制重置覆盖。核对服务器HEAD与本次交付提交一致，并确认新入口及整个`semantic_extraction/case_contract/`目录已到位，再执行环境检查。未推送的本地文件不能通过服务器`git pull`获得。
 
-本次准备的80条输入与验收材料位于`data/case-relevance-phase1-v1/extraction-contract-v1-001/`。通过既有可信传输方式复制完整目录，保留`inputs.jsonl`、`acceptance-matrix.jsonl`、`summary.json`和`manifest.json`，不能只传输入文件。规范包`research/specs/case-content-extraction-v1/`也需随代码同步。
+服务器已有之前实验的原始数据和检索数据。拉取代码后，在仓库根目录用固定环境执行CPU准备脚本，无需重新上传原始数据：
+
+```bash
+conda run --no-capture-output -n civic-rag-retrieval \
+  python deploy/prepare-case-contract-inputs.py
+```
+
+脚本在仓库根目录依次寻找已有的`data/case-relevance-phase1-v1/sampling-001/candidates.jsonl`、`data/retrieval-baseline-v1/dataset/dataset.sqlite3`、`data/raw/t_order_master.sanitized.v1_9.tsv`，使用第一个存在的来源。它按[固定80条指纹表](../research/specs/case-contract-run-v1/development-selection.json)匹配原文，不重新抽样，也不执行空白或字符规范化。该表随Git同步，只含样例编号和哈希，不含真实正文或业务ID。
+
+如果数据放在其他位置，明确指定已有原始TSV或检索SQLite文件：
+
+```bash
+conda run --no-capture-output -n civic-rag-retrieval \
+  python deploy/prepare-case-contract-inputs.py \
+  --source /已有数据的绝对路径/t_order_master.sanitized.v1_9.tsv
+```
+
+也支持进程环境中已设置的`RAG_INPUT_PATH`；优先级为`--source`、`RAG_INPUT_PATH`、上述默认路径。准备脚本只用Python标准库，不加载GPU包，不读取或修改私有`.env`文件。它全程扫描所选来源；若有缺失，只报告未匹配的B编号并停止，不换一批样例，也不自动改用其他来源。
+
+默认生成`data/case-relevance-phase1-v1/extraction-contract-v1-001/`，可直接接下面的试抽命令。该目录必须不存在；已有目录需要保留时，用`--output NEW_DIR`并在后续试抽中传相同的`--input-dir NEW_DIR`。成功输出必须包含`sample_count=80`、`matches_reviewed_inputs=true`，且`inputs_sha256`为`3148be30f85834343fa656c1869ddf0c159a425f68e59a82b666d4236fc4ac79`。
+
+生成包包含逐字节一致的`inputs.jsonl`及新的`manifest.json`、`summary.json`、`source-provenance.json`、`selection.json`。新清单记录本次数据来源、完整正文流指纹和脚本指纹；不是对旧准备清单的复制。人工复核意见和`acceptance-matrix.jsonl`保留在本地，模型运行不需要上传它们，服务器也不从原始表伪造这些人工材料。模型结果回传后再对照本地标准验收。
 
 ## 2. 在服务器做只读环境检查
 
@@ -60,7 +81,7 @@ bash deploy/run-case-contract.sh smoke \
   --output data/case-relevance-phase1-v1/contract-smoke-001
 ```
 
-默认输入目录即上述80条开发包。需要使用其他已准备目录时用`--input-dir`，私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
+默认输入目录即上述重建的80条开发包。需要使用其他已准备目录时用`--input-dir`，私有配置不在默认位置时用`--env-file`。输出目录必须不存在；重试使用新编号。
 
 首批固定选取B001、B015、B032、B040、B013、B016、B019、B026、B053、B069，按原输入顺序执行。这是有意覆盖规则边界的开发集合，不能当随机准确率样本。请求串行，temperature=0、seed=42、关闭thinking；默认最大输出8192 tokens，可通过私有配置中的`CASE_CONTRACT_MAX_TOKENS`明确改变。
 
@@ -99,8 +120,8 @@ bash deploy/run-case-contract.sh all \
 
 本轮私有开发输入位于`data/case-relevance-phase1-v1/extraction-contract-v1-001/inputs.jsonl`。sample_id只作传输匹配，模型用户消息仅取每行`input.case_content`。准备清单及原文指纹与输入一起保留。
 
-代码通过既有Git流程交接；真实投诉、复核资料及模型输出通过既有可信文件传输方式交接，继续保存在Git忽略的数据目录。服务器结果回本地后，可以运行v1证据校验和人工审阅，不需要复制GPU权重。
+代码和无正文的固定指纹表通过既有Git流程交接；服务器从已有数据重建输入，人工复核资料保留本地。服务器结果通过既有可信文件传输方式回到本地后，可以运行v1证据校验和人工审阅。真实投诉、复核资料及模型输出继续保存在Git忽略的数据目录，无需复制GPU权重。
 
 先前5项旧版异步测试的阻塞发生在本地Windows事件循环初始化，尚未进入模拟客户端；这些是CPU测试，不是GPU推理失败。可在服务器正常的Python测试环境补跑，结果另行记录，不将“安排在H100服务器运行”写成“已经运行通过”。
 
-当前适配器交付见[H100试抽入口开发记录](../research/topics/case-content-extraction/14-h100-adapter-delivery.md)，规范本身的历史记录见[规范交付记录](../research/topics/case-content-extraction/13-extraction-spec-v1-delivery.md)。
+当前输入准备方式见[服务器输入重建记录](../research/topics/case-content-extraction/15-server-input-reconstruction.md)，适配器交付见[H100试抽入口开发记录](../research/topics/case-content-extraction/14-h100-adapter-delivery.md)，规范本身的历史记录见[规范交付记录](../research/topics/case-content-extraction/13-extraction-spec-v1-delivery.md)。

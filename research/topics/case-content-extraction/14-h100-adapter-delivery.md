@@ -20,7 +20,7 @@
 
 旧规范包与已复核80条快照保持不变。新增适配器自有运行版本`case-contract-run-v1`，不会把旧v4缓存或输出混入新规范。结构通过不等于语义通过；所有新输出都保留`semantic_review_status=not_run`。
 
-真实运行步骤、输出说明和服务器入口命令见[H100执行手册](../../../deploy/CASE_EXTRACTION_V1_H100.md)。代码先通过`codex/case-relevance-phase1`分支同步到服务器，私有开发包需完整传输。上面的测试记录产生于提交前；实际交付提交与远端同步状态以Git为准，本机模拟测试不登记为H100结果。
+真实运行步骤、输出说明和服务器入口命令见[H100执行手册](../../../deploy/CASE_EXTRACTION_V1_H100.md)。代码先通过`codex/case-relevance-phase1`分支同步到服务器。本记录最初采用完整传输私有开发包；用户随后确认服务器已有原始数据，现改为[按固定指纹重建输入](15-server-input-reconstruction.md)，复核标准留在本地。上面的测试记录产生于提交前；实际交付提交与远端同步状态以Git为准，本机模拟测试不登记为H100结果。
 
 已用真实开发包在本地完成10条输入的`prepare`检查，目录为`data/case-relevance-phase1-v1/contract-adapter-preparation-001/`，状态仍为prepared、model_run=false。它只验证输入和计划生成；服务器入口会在服务器另行准备并绑定当地代码、路径与实际环境。
 

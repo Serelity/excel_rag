@@ -1,0 +1,53 @@
+{
+  "version": "case-contract-input-reconstruction-v1",
+  "date": "2026-10-08",
+  "required_conda_environment": "civic-rag-retrieval",
+  "tests": {
+    "new_tests_passed": 16,
+    "all_synchronous_extraction_tests_passed": 109,
+    "legacy_async_not_run": 5
+  },
+  "ruff": "passed",
+  "source_sha256": {
+    "deploy/prepare-case-contract-inputs.py": "45ca9ac4cd3bea36f280b8b44f27b0938e3f2ec190092b97d9f226574d9b92f2",
+    "semantic_extraction/tests/test_prepare_contract_inputs.py": "c8700ac9c8ff0a07a739bd3f35026c9f04930df426975a411b8f33023fc967ef",
+    "research/specs/case-contract-run-v1/development-selection.json": "5a323ec6aa0308851bb45dde62a8e7d4c79904a542a1caf1e690706285034f53"
+  },
+  "real_input_reconstruction": [
+    {
+      "source_format": "sqlite",
+      "source_records": 978978,
+      "sample_count": 80,
+      "inputs_sha256": "3148be30f85834343fa656c1869ddf0c159a425f68e59a82b666d4236fc4ac79",
+      "matches_reviewed_inputs": true,
+      "manifest_sha256": "05411c4f3c5cbee161dfd84fb0e27fe28505b8dd9b31b5d30f73b67c6a2feb20",
+      "private_output_directory": "data/case-relevance-phase1-v1/input-reconstruction-validation-001"
+    },
+    {
+      "source_format": "tsv",
+      "source_records": 982435,
+      "sample_count": 80,
+      "inputs_sha256": "3148be30f85834343fa656c1869ddf0c159a425f68e59a82b666d4236fc4ac79",
+      "matches_reviewed_inputs": true,
+      "manifest_sha256": "469cfc234f8be0bacb7e0457d8980eaaf3b2d8ca65de2cfd5a3800dd755cb118",
+      "private_output_directory": "data/case-relevance-phase1-v1/input-reconstruction-tsv-validation-001"
+    },
+    {
+      "source_format": "jsonl",
+      "source_records": 80,
+      "sample_count": 80,
+      "inputs_sha256": "3148be30f85834343fa656c1869ddf0c159a425f68e59a82b666d4236fc4ac79",
+      "matches_reviewed_inputs": true,
+      "manifest_sha256": "4f439e9e68104614654e708b927e13e10119cdd8f487926e4067a07b7878e844",
+      "private_output_directory": "data/case-relevance-phase1-v1/input-reconstruction-candidates-validation-001"
+    }
+  ],
+  "downstream_smoke_preparation": {
+    "status": "prepared",
+    "selected": 10,
+    "model_run": false
+  },
+  "server_environment_verified": false,
+  "h100_inference": "not_run",
+  "semantic_accuracy": "not_evaluated"
+}
