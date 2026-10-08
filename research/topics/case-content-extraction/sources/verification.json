@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "research_date": "2026-10-08",
+  "checked_at": "2026-10-08T01:57:36.602149+00:00",
+  "status": "passed",
+  "scope": "Local records, identifiers, links, cached source fingerprints, bibliography and focused independent claim review; no extraction or retrieval benchmark.",
+  "paper_inventory": {
+    "total": 15,
+    "publication_types": {
+      "journal-article": 6,
+      "conference": 9
+    },
+    "read_scopes": {
+      "abstract": 3,
+      "full_text_partial": 11,
+      "metadata_only": 1
+    },
+    "content_evidence_records": 14,
+    "metadata_only_background": [
+      "P04"
+    ]
+  },
+  "source_inventory": {
+    "repositories": 7,
+    "reviewed_repository_paths": 45,
+    "guideline_documents": 5,
+    "guideline_families": 3
+  },
+  "paper_metadata_validation": {
+    "total_records": 15,
+    "valid_records": 15,
+    "invalid_records": 0,
+    "errors": 0,
+    "warnings": 0
+  },
+  "paper_conservative_deduplication": {
+    "input_records": 15,
+    "output_records": 15,
+    "duplicate_groups": 0,
+    "merged_records": 0,
+    "possible_duplicates": 0,
+    "conflicts": 0
+  },
+  "artifact_checks": {
+    "json_files_parsed": 6,
+    "log_event_counts": {
+      "boundary-search-log.jsonl": 28,
+      "literature-search-log.jsonl": 72,
+      "repository-search-log.jsonl": 111
+    },
+    "local_markdown_links_checked": 38,
+    "source_id_mentions_checked": 160,
+    "cache_files_hashed": 55,
+    "bibtex_entries": 15,
+    "source_caches_ignored_by_git": true
+  },
+  "independent_claim_review": {
+    "scope": "Normative-source claims and transfer boundaries in 04-synthesis-and-next-questions.md",
+    "findings": 1,
+    "resolved": 1,
+    "resolution": "Restricted ACE Shared Arguments claim to cross-event argument sharing; cross-field evidence reuse in civic complaints remains to be decided using examples.",
+    "recheck": "passed"
+  },
+  "code_reference_commit": "8b6af0cab49f675790486946f9eeaba4543fae72",
+  "errors": [],
+  "limitations": [
+    "Source existence and artifact consistency do not establish project effectiveness.",
+    "Paper reading scopes are explicit; P04 contributes metadata only.",
+    "Normative sources and open-source implementations were not evaluated on the 80 complaints.",
+    "Archived timestamps and fixed commits are snapshots; newest-model coverage is not claimed."
+  ]
+}

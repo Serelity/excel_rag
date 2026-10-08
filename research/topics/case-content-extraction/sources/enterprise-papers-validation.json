@@ -1,0 +1,30 @@
+{
+  "valid": true,
+  "records": [
+    {
+      "index": 0,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 1,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 2,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_records": 3,
+    "valid_records": 3,
+    "invalid_records": 0,
+    "errors": 0,
+    "warnings": 0
+  }
+}

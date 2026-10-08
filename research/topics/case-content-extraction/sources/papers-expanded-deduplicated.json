@@ -1,0 +1,824 @@
+{
+  "results": [
+    {
+      "paper_id": "P16",
+      "title": "Generative AI at Work",
+      "authors": [
+        "Erik Brynjolfsson",
+        "Danielle Li",
+        "Lindsey Raymond"
+      ],
+      "year": 2025,
+      "publication_date": "2025-02-04",
+      "publication_date_type": "online-first",
+      "publication_type": "journal-article",
+      "venue": "The Quarterly Journal of Economics",
+      "volume": "140",
+      "issue": "2",
+      "pages": "889-942",
+      "doi": "10.1093/qje/qjae044",
+      "abstract": null,
+      "citation_count": null,
+      "citation_counts": [],
+      "missing_fields": {
+        "abstract": "本轮按正文选读，不另复制摘要。",
+        "citation_count": "本轮不采集引用量；未知不记为0。"
+      },
+      "source_url": "https://doi.org/10.1093/qje/qjae044",
+      "source_platforms": [
+        "Crossref",
+        "Danielle Li author website"
+      ],
+      "field_sources": {
+        "title": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "authors": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "venue": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "doi": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "publication_type": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "year": [
+          {
+            "platform": "Danielle Li author website",
+            "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+            "checked_at": "2026-10-08T02:19:23.400083+00:00",
+            "evidence_type": "pdf_text",
+            "note": "采用PDF首页卷期年；Crossref online-first日期另存。"
+          }
+        ],
+        "publication_date": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "full_text_status": [
+          {
+            "platform": "Danielle Li author website",
+            "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+            "checked_at": "2026-10-08T02:19:23.400083+00:00",
+            "evidence_type": "download_response",
+            "note": "实际取得PDF并解析全文；阅读范围仅为指定正文片段。"
+          }
+        ],
+        "pdf_url": [
+          {
+            "platform": "Danielle Li author website",
+            "source_url": "http://danielle.li/research/",
+            "checked_at": "2026-10-08T02:16:50.962758+00:00",
+            "evidence_type": "page_text",
+            "note": "作者研究页将该公开PDF列为QJE 2025正式论文。"
+          }
+        ],
+        "open_access_status": [
+          {
+            "platform": "OpenAlex",
+            "source_url": "https://api.openalex.org/works/https://doi.org/10.1093/qje/qjae044",
+            "checked_at": "2026-10-08T02:15:23.234049+00:00",
+            "evidence_type": "source_metadata",
+            "note": "open_access.oa_status=hybrid；开放许可另由Crossref和PDF首页核对。"
+          }
+        ],
+        "paper_identity_status": [
+          {
+            "platform": "Danielle Li author website",
+            "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+            "checked_at": "2026-10-08T02:19:23.400083+00:00",
+            "evidence_type": "pdf_text",
+            "note": "核对PDF首页标题、作者、期刊和DOI。"
+          }
+        ],
+        "read_scope": [
+          {
+            "platform": "Danielle Li author website",
+            "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+            "checked_at": "2026-10-08T02:19:23.400083+00:00",
+            "evidence_type": "pdf_text",
+            "note": "III.A–C pp.898–901; IV.A–C pp.901–906; V.A pp.907–910; V.B pp.911–914; VI.A pp.917–919; VI.C pp.924–927; VIII pp.934–936; Tables I–III, Figures III, VI and VIII captions"
+          }
+        ],
+        "license": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Generative%20AI%20at%20Work&rows=3",
+            "checked_at": "2026-10-08T02:12:10.570646+00:00",
+            "evidence_type": "source_metadata",
+            "note": "Crossref许可记录；PDF首页亦有开放许可。"
+          }
+        ]
+      },
+      "full_text_status": "open_pdf",
+      "open_access_status": "hybrid",
+      "license": "CC-BY-NC-4.0",
+      "pdf_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+      "download_status": "downloaded",
+      "download_source": "danielle.li",
+      "final_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+      "checked_at": "2026-10-08T02:19:23.400083+00:00",
+      "local_pdf_path": ".cache/practice-applied/qje-author-pdf-https.pdf",
+      "byte_length": 2053024,
+      "sha256": "b59b45b650ad75640735e4a44bc58dae8aa1133f7886c820fb4e815f08a4df9f",
+      "content_type": "application/pdf",
+      "http_status": 200,
+      "pdf_verification_status": "parser_validated",
+      "paper_identity_status": "matched",
+      "pdf_page_count": 54,
+      "read_scope": "selected_full_text_sections",
+      "evidence_location": "III.A–C pp.898–901; IV.A–C pp.901–906; V.A pp.907–910; V.B pp.911–914; VI.A pp.917–919; VI.C pp.924–927; VIII pp.934–936; Tables I–III, Figures III, VI and VIII captions",
+      "relevance": "生产客服助手的历史优质会话学习、人工接管和异质收益。",
+      "fetched_at": "2026-10-08",
+      "bibtex": "@article{brynjolfsson2025generative,\n  title = {Generative AI at Work},\n  author = {Erik Brynjolfsson and Danielle Li and Lindsey Raymond},\n  year = {2025},\n  journal = {The Quarterly Journal of Economics},\n  volume = {140},\n  number = {2},\n  pages = {889--942},\n  doi = {10.1093/qje/qjae044},\n  url = {https://doi.org/10.1093/qje/qjae044}\n}",
+      "citation_key": "brynjolfsson2025generative",
+      "bibtex_origin": "由Crossref及PDF首页核验字段生成；卷期年份以正式PDF为准。",
+      "version_note": "正式发表PDF：2025年，5,172名客服、摘要约15%。NBER网页早版为5,179名、14%，不混用。OpenAlex日期为2024-12-29，与正式PDF和Crossref在线发表日2025-02-04不同；采用后两者。",
+      "related_versions": [
+        {
+          "doi": "10.3386/w31161",
+          "role": "earlier_working_paper_not_used_for_final_effect_estimates"
+        }
+      ],
+      "limitations": "单家公司、非随机分批推广的主要样本；本文测整套客服助手，未独立评估字段抽取或检索排序，也未公开模型权重和全套私有数据。",
+      "source_indices": [
+        0
+      ]
+    },
+    {
+      "paper_id": "P17",
+      "title": "Snorkel: rapid training data creation with weak supervision",
+      "authors": [
+        "Alexander Ratner",
+        "Stephen H. Bach",
+        "Henry Ehrenberg",
+        "Jason Fries",
+        "Sen Wu",
+        "Christopher Ré"
+      ],
+      "year": 2020,
+      "publication_date": "2019-07-15",
+      "publication_date_type": "online-first",
+      "publication_type": "journal-article",
+      "venue": "The VLDB Journal",
+      "volume": "29",
+      "issue": "2-3",
+      "pages": "709-730",
+      "doi": "10.1007/s00778-019-00552-1",
+      "abstract": null,
+      "citation_count": null,
+      "citation_counts": [],
+      "missing_fields": {
+        "abstract": "本轮按正文选读，不另复制摘要。",
+        "citation_count": "本轮不采集引用量；未知不记为0。"
+      },
+      "source_url": "https://doi.org/10.1007/s00778-019-00552-1",
+      "source_platforms": [
+        "Crossref",
+        "Springer Nature"
+      ],
+      "field_sources": {
+        "title": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "authors": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "venue": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "doi": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "publication_type": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "year": [
+          {
+            "platform": "Springer Nature",
+            "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+            "checked_at": "2026-10-08T02:13:56.521544+00:00",
+            "evidence_type": "pdf_text",
+            "note": "采用PDF首页卷期年；Crossref online-first日期另存。"
+          }
+        ],
+        "publication_date": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "full_text_status": [
+          {
+            "platform": "Springer Nature",
+            "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+            "checked_at": "2026-10-08T02:13:56.521544+00:00",
+            "evidence_type": "download_response",
+            "note": "实际取得PDF并解析全文；阅读范围仅为指定正文片段。"
+          }
+        ],
+        "pdf_url": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata",
+            "note": "Crossref公开许可与出版商PDF入口。"
+          }
+        ],
+        "open_access_status": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata",
+            "note": "已确认本文开放许可和可读全文，未独立分类期刊整体的OA模式。"
+          }
+        ],
+        "paper_identity_status": [
+          {
+            "platform": "Springer Nature",
+            "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+            "checked_at": "2026-10-08T02:13:56.521544+00:00",
+            "evidence_type": "pdf_text",
+            "note": "核对PDF首页标题、作者、期刊和DOI。"
+          }
+        ],
+        "read_scope": [
+          {
+            "platform": "Springer Nature",
+            "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+            "checked_at": "2026-10-08T02:13:56.521544+00:00",
+            "evidence_type": "pdf_text",
+            "note": "§2 and §2.1 pp.712–713; §4.1 pp.720–724 (Tables 2–7); §4.2 pp.724–725 (Figures 12–14)"
+          }
+        ],
+        "license": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works?query.title=Snorkel%20Rapid%20Training%20Data%20Creation%20with%20Weak%20Supervision&rows=3",
+            "checked_at": "2026-10-08T02:12:10.571048+00:00",
+            "evidence_type": "source_metadata",
+            "note": "Crossref许可记录；PDF首页亦有开放许可。"
+          }
+        ]
+      },
+      "full_text_status": "open_pdf",
+      "open_access_status": "unknown",
+      "license": "CC-BY-4.0",
+      "pdf_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+      "download_status": "downloaded",
+      "download_source": "link.springer.com",
+      "final_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+      "checked_at": "2026-10-08T02:13:56.521544+00:00",
+      "local_pdf_path": ".cache/practice-applied/snorkel-journal-pdf.pdf",
+      "byte_length": 2320080,
+      "sha256": "9c611b904d4e2ad2af11d1fe497120706fb4763d1657dba70fb08426baa456c6",
+      "content_type": "application/pdf",
+      "http_status": 200,
+      "pdf_verification_status": "parser_validated",
+      "paper_identity_status": "matched",
+      "pdf_page_count": 22,
+      "read_scope": "selected_full_text_sections",
+      "evidence_location": "§2 and §2.1 pp.712–713; §4.1 pp.720–724 (Tables 2–7); §4.2 pp.724–725 (Figures 12–14)",
+      "relevance": "弱监督关联抽取的候选定义、规则冲突、独立验证、负例覆盖与专家时间。",
+      "fetched_at": "2026-10-08",
+      "bibtex": "@article{ratner2020snorkel,\n  title = {Snorkel: rapid training data creation with weak supervision},\n  author = {Alexander Ratner and Stephen H. Bach and Henry Ehrenberg and Jason Fries and Sen Wu and Christopher Ré},\n  year = {2020},\n  journal = {The VLDB Journal},\n  volume = {29},\n  number = {2-3},\n  pages = {709--730},\n  doi = {10.1007/s00778-019-00552-1},\n  url = {https://doi.org/10.1007/s00778-019-00552-1}\n}",
+      "citation_key": "ratner2020snorkel",
+      "bibtex_origin": "由Crossref及PDF首页核验字段生成；卷期年份以正式PDF为准。",
+      "version_note": "使用The VLDB Journal卷期2020年扩展版（online-first 2019-07-15），没有把2017 PVLDB或arXiv版当作本文字节或数值来源。",
+      "related_versions": [
+        {
+          "doi": "10.14778/3157794.3157797",
+          "arxiv_id": "1711.10160",
+          "role": "earlier_PVLDB_2017_version_metadata_checked_only"
+        }
+      ],
+      "limitations": "合作应用的离线抽取指标及受控用户研究；不是投诉领域、不是无人工验证，也不等于在线业务收益。",
+      "source_indices": [
+        1
+      ]
+    },
+    {
+      "paper_id": "P18",
+      "title": "COTA: Improving the Speed and Accuracy of Customer Support through Ranking and Deep Networks",
+      "authors": [
+        "Piero Molino",
+        "Huaixiu Zheng",
+        "Yi-Chia Wang"
+      ],
+      "year": 2018,
+      "publication_type": "conference",
+      "venue": "Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining",
+      "doi": "10.1145/3219819.3219851",
+      "arxiv_id": "1807.01337",
+      "abstract": "For a company looking to provide delightful user experiences, it is of paramount importance to take care of any customer issues. This paper proposes COTA, a system to improve speed and reliability of customer support for end users through automated ticket classification and answers selection for support representatives. Two machine learning and natural language processing techniques are demonstrated: one relying on feature engineering (COTA v1) and the other exploiting raw signals through deep learning architectures (COTA v2). COTA v1 employs a new approach that converts the multi-classification task into a ranking problem, demonstrating significantly better performance in the case of thousands of classes. For COTA v2, we propose an Encoder-Combiner-Decoder, a novel deep learning architecture that allows for heterogeneous input and output feature types and injection of prior knowledge through network architecture choices. This paper compares these models and their variants on the task of ticket classification and answer selection, showing model COTA v2 outperforms COTA v1, and analyzes their inner workings and shortcomings. Finally, an A/B test is conducted in a production setting validating the real-world impact of COTA in reducing issue resolution time by 10 percent without reducing customer satisfaction.",
+      "citation_count": null,
+      "citation_counts": [],
+      "read_scope": "full_text_partial",
+      "evidence_location": "PDF pp.2–8, §§2–5.8, Tables1–5",
+      "evidence_use": "included_for_scoped_synthesis",
+      "relevance": "类别和模板推荐；异构输入、TopK辅助、人机工作流、线上/离线指标和长尾迭代。",
+      "limitations": "作者报告生产A/B；英语工单；约300万历史样本；不是本项目中文字段抽取结果。",
+      "source_url": "https://doi.org/10.1145/3219819.3219851",
+      "field_sources": {
+        "title": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "authors": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "year": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "publication_type": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "venue": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "doi": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+            "checked_at": "2026-10-08T02:18:33.128605+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "abstract": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/abs/1807.01337",
+            "checked_at": "2026-10-08T02:13:33.996807+00:00",
+            "evidence_type": "page_text"
+          }
+        ],
+        "full_text_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1807.01337",
+            "checked_at": "2026-10-08T02:13:33.997119+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "pdf_url": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1807.01337",
+            "checked_at": "2026-10-08T02:13:33.997119+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "paper_identity_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1807.01337",
+            "checked_at": "2026-10-08T02:13:33.997119+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "data_availability": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1807.01337",
+            "checked_at": "2026-10-08T02:13:33.997119+00:00",
+            "evidence_type": "inference",
+            "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+          }
+        ]
+      },
+      "source_platforms": [
+        "Crossref",
+        "arXiv"
+      ],
+      "full_text_status": "open_pdf",
+      "pdf_url": "https://arxiv.org/pdf/1807.01337",
+      "local_pdf_path": ".cache/practice-enterprise/cota_pdf.pdf",
+      "download_status": "downloaded",
+      "download_source": "arxiv.org",
+      "final_url": "https://arxiv.org/pdf/1807.01337",
+      "content_type": "application/pdf",
+      "checked_at": "2026-10-08T02:13:33.997119+00:00",
+      "byte_length": 4327643,
+      "sha256": "1f4b7bdf2b411390004f2266f02ca00944d23ed553c5b82263dff5d18426cf4f",
+      "http_status": 200,
+      "pdf_verification_status": "parser_validated",
+      "paper_identity_status": "matched",
+      "code_url": null,
+      "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+      "missing_fields": {
+        "citation_count": "本輪未收集引用统计。",
+        "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+      },
+      "fetched_at": "2026-10-08",
+      "bibtex": "@inproceedings{molino2018cota,\n  title = {COTA: Improving the Speed and Accuracy of Customer Support through Ranking and Deep Networks},\n  author = {Piero Molino and Huaixiu Zheng and Yi-Chia Wang},\n  year = {2018},\n  booktitle = {Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining},\n  pages = {586--595},\n  doi = {10.1145/3219819.3219851},\n  url = {https://doi.org/10.1145/3219819.3219851},\n  eprint = {1807.01337},\n  archivePrefix = {arXiv}\n}",
+      "citation_key": "molino2018cota",
+      "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page.",
+      "source_indices": [
+        2
+      ]
+    },
+    {
+      "paper_id": "P19",
+      "title": "AliMe Assist: An Intelligent Assistant for Creating an Innovative E-commerce Experience",
+      "authors": [
+        "Feng-Lin Li",
+        "Minghui Qiu",
+        "Haiqing Chen",
+        "Xiongwei Wang",
+        "Xing Gao",
+        "Jun Huang",
+        "Juwei Ren",
+        "Zhongzhou Zhao",
+        "Weipeng Zhao",
+        "Lei Wang",
+        "Guwei Jin",
+        "Wei Chu"
+      ],
+      "year": 2017,
+      "publication_type": "conference",
+      "venue": "Proceedings of the 2017 ACM on Conference on Information and Knowledge Management",
+      "doi": "10.1145/3132847.3133169",
+      "arxiv_id": "1801.05032",
+      "abstract": "We present AliMe Assist, an intelligent assistant designed for creating an innovative online shopping experience in E-commerce. Based on question answering (QA), AliMe Assist offers assistance service, customer service, and chatting service. It is able to take voice and text input, incorporate context to QA, and support multi-round interaction. Currently, it serves millions of customer questions per day and is able to address 85% of them. In this paper, we demonstrate the system, present the underlying techniques, and share our experience in dealing with real-world QA in the E-commerce field.",
+      "citation_count": null,
+      "citation_counts": [],
+      "read_scope": "full_text_partial",
+      "evidence_location": "PDF pp.1–3, §§1–4; p.4 conclusion",
+      "evidence_use": "included_for_scoped_synthesis",
+      "relevance": "中文客服意图/槽位/语义归一分工，以及知识图谱和检索后备。",
+      "limitations": "不同子系统指标不可互换；图谱较IR的10%提升缺精确口径；不是投诉抽取基准。",
+      "source_url": "https://doi.org/10.1145/3132847.3133169",
+      "field_sources": {
+        "title": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "authors": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "year": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "publication_type": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "venue": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "doi": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+            "checked_at": "2026-10-08T02:18:33.128987+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "abstract": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/abs/1801.05032",
+            "checked_at": "2026-10-08T02:15:56.178107+00:00",
+            "evidence_type": "page_text"
+          }
+        ],
+        "full_text_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1801.05032",
+            "checked_at": "2026-10-08T02:15:56.178382+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "pdf_url": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1801.05032",
+            "checked_at": "2026-10-08T02:15:56.178382+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "paper_identity_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1801.05032",
+            "checked_at": "2026-10-08T02:15:56.178382+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "data_availability": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1801.05032",
+            "checked_at": "2026-10-08T02:15:56.178382+00:00",
+            "evidence_type": "inference",
+            "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+          }
+        ]
+      },
+      "source_platforms": [
+        "Crossref",
+        "arXiv"
+      ],
+      "full_text_status": "open_pdf",
+      "pdf_url": "https://arxiv.org/pdf/1801.05032",
+      "local_pdf_path": ".cache/practice-enterprise/alime_assist_pdf.pdf",
+      "download_status": "downloaded",
+      "download_source": "arxiv.org",
+      "final_url": "https://arxiv.org/pdf/1801.05032",
+      "content_type": "application/pdf",
+      "checked_at": "2026-10-08T02:15:56.178382+00:00",
+      "byte_length": 1143745,
+      "sha256": "23db5643b05a89727e2cd2313104af2d61d43d180d9a494528b221c251a0e3a6",
+      "http_status": 200,
+      "pdf_verification_status": "parser_validated",
+      "paper_identity_status": "matched",
+      "code_url": null,
+      "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+      "missing_fields": {
+        "citation_count": "本輪未收集引用统计。",
+        "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+      },
+      "fetched_at": "2026-10-08",
+      "bibtex": "@inproceedings{li2017alimeassist,\n  title = {AliMe Assist: An Intelligent Assistant for Creating an Innovative E-commerce Experience},\n  author = {Feng-Lin Li and Minghui Qiu and Haiqing Chen and Xiongwei Wang and Xing Gao and Jun Huang and Juwei Ren and Zhongzhou Zhao and Weipeng Zhao and Lei Wang and Guwei Jin and Wei Chu},\n  year = {2017},\n  booktitle = {Proceedings of the 2017 ACM on Conference on Information and Knowledge Management},\n  pages = {2495--2498},\n  doi = {10.1145/3132847.3133169},\n  url = {https://doi.org/10.1145/3132847.3133169},\n  eprint = {1801.05032},\n  archivePrefix = {arXiv}\n}",
+      "citation_key": "li2017alimeassist",
+      "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page.",
+      "source_indices": [
+        3
+      ]
+    },
+    {
+      "paper_id": "P20",
+      "title": "AliMe KBQA: Question Answering over Structured Knowledge for E-Commerce Customer Service",
+      "authors": [
+        "Feng-Lin Li",
+        "Weijia Chen",
+        "Qi Huang",
+        "Yikun Guo"
+      ],
+      "year": 2019,
+      "publication_type": "book-chapter",
+      "venue": "Knowledge Graph and Semantic Computing: Knowledge Computing and Language Understanding",
+      "doi": "10.1007/978-981-15-1956-7_12",
+      "arxiv_id": "1912.05728",
+      "abstract": "With the rise of knowledge graph (KG), question answering over knowledge base (KBQA) has attracted increasing attention in recent years. Despite much research has been conducted on this topic, it is still challenging to apply KBQA technology in industry because business knowledge and real-world questions can be rather complicated. In this paper, we present AliMe-KBQA, a bold attempt to apply KBQA in the E-commerce customer service field. To handle real knowledge and questions, we extend the classic \"subject-predicate-object (SPO)\" structure with property hierarchy, key-value structure and compound value type (CVT), and enhance traditional KBQA with constraints recognition and reasoning ability. We launch AliMe-KBQA in the Marketing Promotion scenario for merchants during the \"Double 11\" period in 2018 and other such promotional events afterwards. Online results suggest that AliMe-KBQA is not only able to gain better resolution and improve customer satisfaction, but also becomes the preferred knowledge management method by business knowledge staffs since it offers a more convenient and efficient management experience.",
+      "citation_count": null,
+      "citation_counts": [],
+      "read_scope": "full_text_partial",
+      "evidence_location": "PDF pp.1–9, §§1–5 and p.11 §6; Tables1–2",
+      "evidence_use": "included_for_scoped_synthesis",
+      "relevance": "复杂实体关系、属性层级、查询约束及人工schema维护经验。",
+      "limitations": "生产解决率基于会话行为；非随机比较；案例名匿名；规则实例有前后表述不一致。",
+      "source_url": "https://doi.org/10.1007/978-981-15-1956-7_12",
+      "field_sources": {
+        "title": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "authors": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "year": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "publication_type": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "venue": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "doi": [
+          {
+            "platform": "Crossref",
+            "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+            "checked_at": "2026-10-08T02:18:33.129185+00:00",
+            "evidence_type": "source_metadata"
+          }
+        ],
+        "abstract": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/abs/1912.05728",
+            "checked_at": "2026-10-08T02:18:33.129404+00:00",
+            "evidence_type": "page_text"
+          }
+        ],
+        "full_text_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1912.05728",
+            "checked_at": "2026-10-08T02:15:56.178602+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "pdf_url": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1912.05728",
+            "checked_at": "2026-10-08T02:15:56.178602+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "paper_identity_status": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1912.05728",
+            "checked_at": "2026-10-08T02:15:56.178602+00:00",
+            "evidence_type": "pdf_text",
+            "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+          }
+        ],
+        "data_availability": [
+          {
+            "platform": "arXiv",
+            "source_url": "https://arxiv.org/pdf/1912.05728",
+            "checked_at": "2026-10-08T02:15:56.178602+00:00",
+            "evidence_type": "inference",
+            "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+          }
+        ]
+      },
+      "source_platforms": [
+        "Crossref",
+        "arXiv"
+      ],
+      "full_text_status": "open_pdf",
+      "pdf_url": "https://arxiv.org/pdf/1912.05728",
+      "local_pdf_path": ".cache/practice-enterprise/alime_kbqa_pdf.pdf",
+      "download_status": "downloaded",
+      "download_source": "arxiv.org",
+      "final_url": "https://arxiv.org/pdf/1912.05728",
+      "content_type": "application/pdf",
+      "checked_at": "2026-10-08T02:15:56.178602+00:00",
+      "byte_length": 788358,
+      "sha256": "ced6a7e1657498bf9708d8b03939a574fca7bbf8254644a6ba6ef2f13ea17a54",
+      "http_status": 200,
+      "pdf_verification_status": "parser_validated",
+      "paper_identity_status": "matched",
+      "code_url": null,
+      "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+      "missing_fields": {
+        "citation_count": "本輪未收集引用统计。",
+        "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+      },
+      "fetched_at": "2026-10-08",
+      "bibtex": "@incollection{li2019alimekbqa,\n  title = {AliMe KBQA: Question Answering over Structured Knowledge for E-Commerce Customer Service},\n  author = {Feng-Lin Li and Weijia Chen and Qi Huang and Yikun Guo},\n  year = {2019},\n  booktitle = {Knowledge Graph and Semantic Computing: Knowledge Computing and Language Understanding},\n  pages = {136--148},\n  doi = {10.1007/978-981-15-1956-7_12},\n  url = {https://doi.org/10.1007/978-981-15-1956-7_12},\n  eprint = {1912.05728},\n  archivePrefix = {arXiv}\n}",
+      "citation_key": "li2019alimekbqa",
+      "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page.",
+      "source_indices": [
+        4
+      ]
+    }
+  ],
+  "groups": [],
+  "possible_duplicates": [],
+  "conflicts": [],
+  "summary": {
+    "input_records": 5,
+    "output_records": 5,
+    "duplicate_groups": 0,
+    "merged_records": 0,
+    "possible_duplicates": 0,
+    "conflicts": 0
+  }
+}

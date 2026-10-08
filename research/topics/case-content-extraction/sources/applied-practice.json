@@ -1,0 +1,243 @@
+{
+  "research_date": "2026-10-08",
+  "checked_at": "2026-10-08T02:24:41.433800+00:00",
+  "scope": "第二轮定向成功实践补充：整套客服助手生产效果与关系抽取数据生产机制",
+  "cases": [
+    {
+      "case_id": "C07",
+      "paper_ids": [
+        "P16"
+      ],
+      "name": "匿名Fortune 500软件公司的客服助手生产研究",
+      "evidence_class": "同行评审期刊；真实工作现场分批推广研究，以差分中的差分为主",
+      "task": "为客服提供实时回复建议与内部技术文档链接",
+      "sources": [
+        {
+          "source_url": "https://danielle.li/assets/docs/GenerativeAIatWork.pdf",
+          "checked_at": "2026-10-08T02:19:23.400083+00:00",
+          "http_status": 200,
+          "content_type": "application/pdf",
+          "byte_length": 2053024,
+          "sha256": "b59b45b650ad75640735e4a44bc58dae8aa1133f7886c820fb4e815f08a4df9f",
+          "local_pdf_path": ".cache/practice-applied/qje-author-pdf-https.pdf",
+          "text_path": ".cache/practice-applied/qje-author-pdf-https.txt",
+          "text_sha256": "0003e5f1f4c292a3b2864411fb668c89c87c95d0e877d948758e1b731ecf8c8a",
+          "pdf_verification_status": "parser_validated",
+          "pdf_parser": "pypdf; all pages successfully extracted",
+          "paper_identity_status": "matched",
+          "source_id": "C07-S1",
+          "title": "Generative AI at Work",
+          "source_identity": "作者Danielle Li官网公开的QJE正式排版PDF；首页DOI/标题/作者匹配",
+          "publication_year": 2025,
+          "publication_date": "2025-02-04",
+          "read_scope": "selected_full_text_sections",
+          "evidence_locations": "III.A–C pp.898–901; IV.A–C pp.901–906; V.A pp.907–910; V.B pp.911–914; VI.A pp.917–919; VI.C pp.924–927; VIII pp.934–936; Tables I–III, Figures III, VI and VIII captions",
+          "pdf_page_count": 54
+        }
+      ],
+      "workflow": [
+        "在既有客户—客服会话上附解决结果、处理时长等结果标签",
+        "以GPT-3为基础微调，对高表现客服的历史会话加权，并进一步偏好有同理心、适当文档、专业表达",
+        "在线给客服展示建议及内部文档链接；客服选择、改写或忽略",
+        "主题训练数据不足时不建议；按工作人员和问题频率分别评估收益"
+      ],
+      "metrics": [
+        {
+          "metric": "研究总体规模",
+          "value": 5172,
+          "unit": "agents",
+          "additional_value": 3006395,
+          "additional_unit": "chats",
+          "location": "Table I p.903 (PDF p.15)",
+          "scope": "观测总样本；不表示5,172人都接受AI处理"
+        },
+        {
+          "metric": "每小时解决数量RPH的调整后效应",
+          "value": 0.301,
+          "unit": "resolved_chats/hour",
+          "baseline": 1.97,
+          "baseline_unit": "pre-treatment resolved_chats/hour",
+          "reported_relative_change_percent": 15.2,
+          "standard_error": 0.0329,
+          "n_observations": 12295,
+          "observation_unit": "agent-month",
+          "location": "Table II column (3), p.907; §V.A p.907",
+          "scope": "报告正文以处理前均值换算，非表格DV mean；全样本口径摘要约15%",
+          "short_evidence": "increases RPH by 0.30 chats or 15.2%"
+        },
+        {
+          "metric": "最低技能五分位的RPH效应",
+          "value": 36,
+          "unit": "percent",
+          "location": "§V.B.1 p.911; Figure III",
+          "scope": "按部署前表现构造的最低技能五分位；不是所有新手的统一效应"
+        },
+        {
+          "metric": "建议采用率",
+          "value": 38,
+          "unit": "percent",
+          "location": "§VI.A p.917; Figure VI",
+          "scope": "对提供过建议的情形定义，直接复制或输入高度相似内容；不是模型准确率"
+        },
+        {
+          "metric": "总体解决率变化",
+          "value": 1.32,
+          "unit": "percentage_points",
+          "location": "Table III column (3), p.909",
+          "scope": "不显著；不能宣称解决率本身显著提高15%"
+        }
+      ],
+      "mechanism_evidence": [
+        {
+          "location": "§III.C pp.900–901",
+          "short_evidence": "up-weights the value of training chats if the chat was conducted by a top performer",
+          "claim": "历史会话质量用于训练权重；同时输出技术文档链接"
+        },
+        {
+          "location": "§III.C p.901",
+          "short_evidence": "full discretion over which, if any, AI suggestions to accept",
+          "claim": "最终选择由客服保留"
+        }
+      ],
+      "lessons": [
+        "把历史案例质量和处理成效纳入案例库建设；不要只存一段问题文本。",
+        "以人的工作结果评价整个助手，并细分经验水平、问题频率。",
+        "保留人工选择和资料不足出口；高技能组可能受到低质量建议干扰。"
+      ],
+      "transfer_to_project": [
+        "候选设计：原始case_content保持输入来源；历史案例的处理方案/结果作为单独候选资料，不把未知结果填回当前输入。",
+        "先呈现历史案例及匹配理由供工作人员使用，后续测查找时间、采纳和帮助程度。",
+        "从历史记录中判断是否有可用处理结果；存在才讨论优质案例筛选或权重，不据本论文假设本项目已具备。"
+      ],
+      "not_established": [
+        "没有单独的字段抽取或Top-K检索因果增益",
+        "没有公开中文投诉字段schema或可直接复现模型",
+        "单公司主要观测样本不是5,172人随机对照试验"
+      ]
+    },
+    {
+      "case_id": "C08",
+      "paper_ids": [
+        "P17"
+      ],
+      "name": "Snorkel合作应用的关联抽取与专家弱监督研究",
+      "evidence_class": "同行评审期刊；真实合作语料上的离线评估，加独立用户研究",
+      "task": "从非结构化临床文本识别疼痛程度及其部位关联；以配偶关系任务评估标注方式的人工投入",
+      "sources": [
+        {
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s00778-019-00552-1.pdf",
+          "checked_at": "2026-10-08T02:13:56.521544+00:00",
+          "http_status": 200,
+          "content_type": "application/pdf",
+          "byte_length": 2320080,
+          "sha256": "9c611b904d4e2ad2af11d1fe497120706fb4763d1657dba70fb08426baa456c6",
+          "local_pdf_path": ".cache/practice-applied/snorkel-journal-pdf.pdf",
+          "text_path": ".cache/practice-applied/snorkel-journal-pdf.txt",
+          "text_sha256": "c3d433c7e09fceef21c951e107bff26e157c4d12e53d6ba543b85e1d8cbf3f3e",
+          "pdf_verification_status": "parser_validated",
+          "pdf_parser": "pypdf; all pages successfully extracted",
+          "paper_identity_status": "matched",
+          "source_id": "C08-S1",
+          "title": "Snorkel: rapid training data creation with weak supervision",
+          "source_identity": "Springer Nature官方开放期刊PDF；首页DOI/标题/作者匹配",
+          "publication_year": 2020,
+          "publication_date": "2019-07-15",
+          "publication_date_type": "online-first",
+          "read_scope": "selected_full_text_sections",
+          "evidence_locations": "§2 and §2.1 pp.712–713; §4.1 pp.720–724 (Tables 2–7); §4.2 pp.724–725 (Figures 12–14)",
+          "pdf_page_count": 22
+        }
+      ],
+      "workflow": [
+        "将输入表示为文档—句子—span等上下文层级，先定义候选和离散标签",
+        "专家写返回正/负标签或弃权的函数，利用词表、模式和上下文；不把每条规则当确定真相",
+        "根据规则相互同意/冲突以及相关性形成概率训练标签，再训练文本判别模型",
+        "用少量人工开发集选择配置，独立人员标注的盲测集评价；查看负例覆盖与召回再迭代"
+      ],
+      "metrics": [
+        {
+          "metric": "EHR任务数据与规则",
+          "n_label_functions": 24,
+          "n_training_documents": 47827,
+          "n_training_candidates": 225607,
+          "n_dev_candidates": 913,
+          "n_test_candidates": 604,
+          "location": "Tables 2 and 4, pp.720–721",
+          "scope": "候选级训练/开发/测试；不是225,607份人工标注"
+        },
+        {
+          "metric": "EHR关系抽取F1",
+          "baseline_value": 72.2,
+          "baseline_type": "既有正则表达式标签基线",
+          "generative_value": 74.9,
+          "discriminative_value": 81.4,
+          "absolute_gain": 9.2,
+          "unit": "F1 percentage_points",
+          "precision": 80.2,
+          "recall": 82.6,
+          "location": "Table 3 p.721; EHR description p.722",
+          "scope": "Table 3通栏为Distant Supervision，但EHR正文明确其基线为原有正则标签；没有该任务全人工训练对照"
+        },
+        {
+          "metric": "EHR概率标签相对无权重LF组合",
+          "baseline_value": 80.9,
+          "value": 81.4,
+          "absolute_gain": 0.5,
+          "unit": "F1 percentage_points",
+          "location": "Table 6 p.723",
+          "scope": "不能把相对旧正则的9.2点全归因于标签冲突建模"
+        },
+        {
+          "metric": "首次用户研究平均F1",
+          "n_analyzed_participants": 14,
+          "value": 30.4,
+          "baseline_value": 20.9,
+          "unit": "F1 points",
+          "label_function_development_hours": 2.5,
+          "instruction_plus_development_hours": 7,
+          "baseline_hours_equivalent": 7,
+          "baseline_labels": 2500,
+          "median_label_functions": 10,
+          "location": "§4.2 pp.724–725; Figures 12–14",
+          "scope": "人工标签对照通过众包标签随机抽样模拟7小时，非同一批人平行随机分配的计时试验"
+        }
+      ],
+      "mechanism_evidence": [
+        {
+          "location": "§4.1.1 p.722",
+          "short_evidence": "extract mentions of pain levels at precise anatomical locations",
+          "claim": "任务是特定信息与位置的关联；与单列实体不同"
+        },
+        {
+          "location": "§4.2 p.725",
+          "short_evidence": "low coverage of negative labels",
+          "claim": "低表现参与者常缺负例覆盖；较好者增加少量高覆盖负例规则"
+        },
+        {
+          "location": "§2 p.712",
+          "short_evidence": "a blind, held-out labeled test set",
+          "claim": "弱监督仍保留人工开发和测试集"
+        }
+      ],
+      "lessons": [
+        "真正需要表达的是关系判定任务、上下文和负例，而不只是罗列名词字段。",
+        "领域专家的规则可以变成可迭代监督；冲突与弃权是正常输出。",
+        "先比较简单规则基线，再估算新增概率标签/模型的独立贡献。",
+        "人工小开发/盲测集是成功流程的一部分，不因“弱监督”省略。"
+      ],
+      "transfer_to_project": [
+        "候选试验：问题—地点关联、居住地排除、请求/已完成状态等若规则可清楚表达，可先用少量可检查规则形成基线。",
+        "给错误样本归因并补负例，用已有大量未标注case_content作为未来弱监督资源；当前80条是否足够需按目标与字段分布判断。",
+        "只将此列为规则加模型的候选方案，不承诺直接安装Snorkel或采用论文2017/2020模型。"
+      ],
+      "not_established": [
+        "不是中文投诉实测",
+        "未报告该EHR抽取系统的在线业务节省金额或客服效率",
+        "未证明无需人工定义候选、规则与评价标签"
+      ]
+    }
+  ],
+  "selection_note": "以正文可得、过程可定位、基线和数值可核验为纳入条件；不是穷尽性系统综述。",
+  "version_note": "正式期刊版本作为正文依据；早期版本只用于发现与身份/版本对照。",
+  "ai_assistance": "使用AI辅助检索、正文定位和中文综合；未运行来源系统或本项目抽取实验。"
+}

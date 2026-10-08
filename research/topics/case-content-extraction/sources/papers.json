@@ -1,0 +1,1981 @@
+[
+  {
+    "title": "A survey of named entity recognition and classification",
+    "authors": [
+      "David Nadeau",
+      "Satoshi Sekine"
+    ],
+    "year": 2007,
+    "publication_type": "journal-article",
+    "venue": "Lingvisticae Investigationes",
+    "doi": "10.1075/li.30.1.03nad",
+    "abstract": "This survey covers fifteen years of research in the Named Entity Recognition and Classification (NERC) field, from 1991 to 2006. We report observations about languages, named entity types, domains and textual genres studied in the literature. From the start, NERC systems have been developed using hand-made rules, but now machine learning techniques are widely used. These techniques are surveyed along with other critical aspects of NERC such as features and evaluation methods. Features are word-level, dictionary-level and corpus-level representations of words in a document. Evaluation techniques, ranging from intuitive exact match to very complex matching techniques with adjustable cost of errors, are an indisputable key to progress.",
+    "paper_id": "P01",
+    "cache_key": "ner-survey",
+    "read_scope": "abstract",
+    "evidence_location": "Crossref abstract",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "NER任务范围及精确/宽松匹配的评价问题。",
+    "limitations": "摘要级背景；1991—2006研究范围，不能支持当前模型性能或投诉字段集合。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://doi.org/10.1075/li.30.1.03nad",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1075/li.30.1.03nad",
+          "checked_at": "2026-10-07T16:09:51.119130+00:00",
+          "evidence_type": "inference",
+          "note": "本轮仅得元数据；不能据此判定是否存在公开全文。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref"
+    ],
+    "full_text_status": "unknown",
+    "pdf_url": null,
+    "download_status": "not_requested",
+    "pdf_verification_status": "unverified",
+    "paper_identity_status": "unverified",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@article{nadeau2007survey,\n  title = {A survey of named entity recognition and classification},\n  author = {David Nadeau and Satoshi Sekine},\n  year = {2007},\n  journal = {Lingvisticae Investigationes},\n  doi = {10.1075/li.30.1.03nad},\n  url = {https://doi.org/10.1075/li.30.1.03nad}\n}",
+    "citation_key": "nadeau2007survey",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "A Survey on Deep Learning for Named Entity Recognition",
+    "authors": [
+      "Jing Li",
+      "Aixin Sun",
+      "Jianglei Han",
+      "Chenliang Li"
+    ],
+    "year": 2022,
+    "publication_type": "journal-article",
+    "venue": "IEEE Transactions on Knowledge and Data Engineering",
+    "doi": "10.1109/tkde.2020.2981314",
+    "abstract": "Named entity recognition (NER) is the task to identify mentions of rigid designators from text belonging to predefined semantic types such as person, location, organization etc. NER always serves as the foundation for many natural language applications such as question answering, text summarization, and machine translation. Early NER systems got a huge success in achieving good performance with the cost of human engineering in designing domain-specific features and rules. In recent years, deep learning, empowered by continuous real-valued vector representations and semantic composition through nonlinear processing, has been employed in NER systems, yielding stat-of-the-art performance. In this paper, we provide a comprehensive review on existing deep learning techniques for NER. We first introduce NER resources, including tagged NER corpora and off-the-shelf NER tools. Then, we systematically categorize existing works based on a taxonomy along three axes: distributed representations for input, context encoder, and tag decoder. Next, we survey the most representative methods for recent applied techniques of deep learning in new NER problem settings and applications. Finally, we present readers with the challenges faced by NER systems and outline future directions in this area.",
+    "paper_id": "P02",
+    "cache_key": "dl-ner-survey",
+    "read_scope": "abstract",
+    "evidence_location": "arXiv abstract; related DOI",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "区分实体边界识别、类别和不同输入表示/解码方法。",
+    "limitations": "仅摘要；正式卷期为2022、DOI含2020、预印本始于2018，不能据此称为2026最新综述。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://doi.org/10.1109/tkde.2020.2981314",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1109/TKDE.2020.2981314",
+          "checked_at": "2026-10-07T16:09:51.119728+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1812.09449",
+          "checked_at": "2026-10-07T16:11:39.710009+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1812.09449",
+          "checked_at": "2026-10-07T16:11:39.710009+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv明确提供PDF入口；本轮仅读摘要，未下载该PDF。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1812.09449",
+          "checked_at": "2026-10-07T16:11:39.710009+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv明确提供PDF入口；本轮仅读摘要，未下载该PDF。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "arXiv"
+    ],
+    "arxiv_id": "1812.09449",
+    "version_note": "按Crossref正式卷期为2022；arXiv预印本2018、修订2020，DOI含2020不用于推断卷期年份。",
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/1812.09449",
+    "download_status": "not_requested",
+    "pdf_verification_status": "unverified",
+    "paper_identity_status": "unverified",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@article{li2022survey,\n  title = {A Survey on Deep Learning for Named Entity Recognition},\n  author = {Jing Li and Aixin Sun and Jianglei Han and Chenliang Li},\n  year = {2022},\n  journal = {IEEE Transactions on Knowledge and Data Engineering},\n  doi = {10.1109/tkde.2020.2981314},\n  url = {https://doi.org/10.1109/tkde.2020.2981314},\n  eprint = {1812.09449},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "li2022survey",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "Survey Article: Inter-Coder Agreement for Computational Linguistics",
+    "authors": [
+      "Ron Artstein",
+      "Massimo Poesio"
+    ],
+    "year": 2008,
+    "publication_type": "journal-article",
+    "venue": "Computational Linguistics",
+    "doi": "10.1162/coli.07-034-R2",
+    "abstract": null,
+    "bibtex": "@article{artstein-poesio-2008-survey,\n    title = \"Survey Article: Inter-Coder Agreement for Computational Linguistics\",\n    author = \"Artstein, Ron  and\n      Poesio, Massimo\",\n    journal = \"Computational Linguistics\",\n    volume = \"34\",\n    number = \"4\",\n    year = \"2008\",\n    url = \"https://aclanthology.org/J08-4004/\",\n    doi = \"10.1162/coli.07-034-R2\",\n    pages = \"555--596\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "artstein-poesio-2008-survey",
+    "paper_id": "P03",
+    "cache_key": "agreement",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.3,26,32; §2.1, §4.3",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "标签判定与标注单元/跨度边界均需检查一致性；一致性不等于正确性。",
+    "limitations": "是标注一致性的综述，不能直接给本项目通用阈值或统一字段划分。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。",
+      "abstract": "ACL页面无摘要栏；已读取PDF相关正文，未将OCR拼接摘要写入元数据。"
+    },
+    "source_url": "https://aclanthology.org/J08-4004/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.bib",
+          "checked_at": "2026-10-07T16:12:16.415636+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.pdf",
+          "checked_at": "2026-10-07T16:12:55.954176+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.pdf",
+          "checked_at": "2026-10-07T16:12:55.954176+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/J08-4004.pdf",
+          "checked_at": "2026-10-07T16:12:55.954176+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/J08-4004.pdf",
+    "local_pdf_path": ".cache/literature/agreement.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/J08-4004.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:12:55.954176+00:00",
+    "byte_length": 291595,
+    "sha256": "1729af43712921de3857555972c6a3376d66bcba2474f81a32cddf4f98aef058",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "A Survey of event extraction methods from text for decision support systems",
+    "authors": [
+      "Frederik Hogenboom",
+      "Flavius Frasincar",
+      "Uzay Kaymak",
+      "Franciska de Jong",
+      "Emiel Caron"
+    ],
+    "year": 2016,
+    "publication_type": "journal-article",
+    "venue": "Decision Support Systems",
+    "doi": "10.1016/j.dss.2016.02.006",
+    "abstract": null,
+    "paper_id": "P04",
+    "cache_key": "event-survey",
+    "read_scope": "metadata_only",
+    "evidence_location": "Crossref title/authors/venue/DOI only",
+    "evidence_use": "background_metadata_only",
+    "relevance": "事件抽取综述的背景候选。",
+    "limitations": "本轮未获取可核验摘要/正文；不支持任何方法结论。出版商403，机构链接补查失败或身份不符。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。",
+      "abstract": "Crossref未提供；补查未得到经身份确认的摘要。"
+    },
+    "source_url": "https://doi.org/10.1016/j.dss.2016.02.006",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1016/j.dss.2016.02.006",
+          "checked_at": "2026-10-07T16:10:06.555689+00:00",
+          "evidence_type": "inference",
+          "note": "本轮仅得元数据；不能据此判定是否存在公开全文。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref"
+    ],
+    "full_text_status": "unknown",
+    "pdf_url": null,
+    "download_status": "not_requested",
+    "pdf_verification_status": "unverified",
+    "paper_identity_status": "unverified",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@article{hogenboom2016survey,\n  title = {A Survey of event extraction methods from text for decision support systems},\n  author = {Frederik Hogenboom and Flavius Frasincar and Uzay Kaymak and Franciska de Jong and Emiel Caron},\n  year = {2016},\n  journal = {Decision Support Systems},\n  doi = {10.1016/j.dss.2016.02.006},\n  url = {https://doi.org/10.1016/j.dss.2016.02.006}\n}",
+    "citation_key": "hogenboom2016survey",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "Large language models for generative information extraction: a survey",
+    "authors": [
+      "Derong Xu",
+      "Wei Chen",
+      "Wenjun Peng",
+      "Chao Zhang",
+      "Tong Xu",
+      "Xiangyu Zhao",
+      "Xian Wu",
+      "Yefeng Zheng",
+      "Yang Wang",
+      "Enhong Chen"
+    ],
+    "year": 2024,
+    "publication_type": "journal-article",
+    "venue": "Frontiers of Computer Science",
+    "doi": "10.1007/s11704-024-40555-y",
+    "abstract": "Abstract Information Extraction (IE) aims to extract structural knowledge from plain natural language texts. Recently, generative Large Language Models (LLMs) have demonstrated remarkable capabilities in text understanding and generation. As a result, numerous works have been proposed to integrate LLMs for IE tasks based on a generative paradigm. To conduct a comprehensive systematic review and exploration of LLM efforts for IE tasks, in this study, we survey the most recent advancements in this field. We first present an extensive overview by categorizing these works in terms of various IE subtasks and techniques, and then we empirically analyze the most advanced methods and discover the emerging trend of IE tasks with LLMs. Based on a thorough review conducted, we identify several insights in technique and promising research directions that deserve further exploration in future studies. We maintain a public repository and consistently update related works and resources on GitHub (LLM4IE repository).",
+    "paper_id": "P05",
+    "cache_key": "llm-ie-survey",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.2,4,9–11; §2, §3.1, §4.2–4.7, §6–7",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "将实体识别、关系、事件及提示、约束解码、微调分开；方法应对应字段要求。",
+    "limitations": "2024综述，多基准与设置异质；不是中文政务投诉性能验证，未做2025—2026穷尽更新。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://doi.org/10.1007/s11704-024-40555-y",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s11704-024-40555-y",
+          "checked_at": "2026-10-07T16:10:02.261106+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s11704-024-40555-y.pdf",
+          "checked_at": "2026-10-08T01:39:30.613721+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s11704-024-40555-y.pdf",
+          "checked_at": "2026-10-08T01:39:30.613721+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/content/pdf/10.1007/s11704-024-40555-y.pdf",
+          "checked_at": "2026-10-08T01:39:30.613721+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "Springer Nature Link"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://link.springer.com/content/pdf/10.1007/s11704-024-40555-y.pdf",
+    "local_pdf_path": ".cache/literature/llm-ie-survey.pdf",
+    "download_status": "downloaded",
+    "download_source": "link.springer.com",
+    "final_url": "https://link.springer.com/content/pdf/10.1007/s11704-024-40555-y.pdf?error=cookies_not_supported&code=703a08ca-b960-4fcf-9f75-dd2e198114e7",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-08T01:39:30.613721+00:00",
+    "byte_length": 3433138,
+    "sha256": "5459f7924082b3ac3a1922ba6d17fd3ca60e9c3b1ae2202d29264202755e080c",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@article{xu2024large,\n  title = {Large language models for generative information extraction: a survey},\n  author = {Derong Xu and Wei Chen and Wenjun Peng and Chao Zhang and Tong Xu and Xiangyu Zhao and Xian Wu and Yefeng Zheng and Yang Wang and Enhong Chen},\n  year = {2024},\n  journal = {Frontiers of Computer Science},\n  doi = {10.1007/s11704-024-40555-y},\n  url = {https://doi.org/10.1007/s11704-024-40555-y}\n}",
+    "citation_key": "xu2024large",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "A joint attention enhancement network for text classification applied to citizen complaint reporting",
+    "authors": [
+      "Yuanhang Wang",
+      "Yonghua Zhou",
+      "Yiduo Mei"
+    ],
+    "year": 2023,
+    "publication_type": "journal-article",
+    "venue": "Applied Intelligence",
+    "doi": "10.1007/s10489-023-04490-y",
+    "abstract": "Citizen complaint classification plays an important role in the construction of the smart city. For text data, the most expressive semantic information is reflected in the keyword of the text. With the proposed Transformer structure and further expansion of the model structure, natural language processing has embarked on a path of fine-tuning the pre-trained model based on the multi-headed attention mechanism. Although the above method works well, it further deepens the black box model of the network. To verify whether the multi-headed attention mechanism adds enough attention to the keyword information, this paper proposes a joint attention enhancement network that places the attention mechanism outside the main network model. This paper uses the idea of lexical frequency statistics to obtain keyword information through the macroscopic use of corpus contents and improves the attention through knowledge incorporation based on soft attention. In this paper, a comparison experiment is performed by the current hot open-source network models on Hugging Face. Experiments show that the proposed model improves about 10%-20% in accuracy compared with the different original models, while the network training time only increases about 5%. The joint enhancement network can identify the key region of input data more accurately and converge quickly.",
+    "paper_id": "P06",
+    "cache_key": "citizen-complaints",
+    "read_scope": "abstract",
+    "evidence_location": "Publisher Abstract, Data Availability and subscription notice",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "领域相近的市民投诉文本分类应用。",
+    "limitations": "仅摘要及数据声明；任务为分类而非地址角色/多事项抽取；全文需订阅、数据因隐私未公开，不能移用摘要中的效果数字。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://doi.org/10.1007/s10489-023-04490-y",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:10:07.641696+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "data_availability": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/article/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:11:39.710549+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/article/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:11:39.710549+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "Springer Nature Link",
+          "source_url": "https://link.springer.com/article/10.1007/s10489-023-04490-y",
+          "checked_at": "2026-10-07T16:11:39.710549+00:00",
+          "evidence_type": "page_text"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "Springer Nature Link"
+    ],
+    "data_availability": "Publisher states data are not publicly available due to citizen privacy, but available on reasonable request.",
+    "full_text_status": "needs_institution",
+    "pdf_url": null,
+    "download_status": "skipped",
+    "download_error": "Publisher presents subscription preview and institution login; no bypass attempted.",
+    "pdf_verification_status": "unverified",
+    "paper_identity_status": "unverified",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@article{wang2023joint,\n  title = {A joint attention enhancement network for text classification applied to citizen complaint reporting},\n  author = {Yuanhang Wang and Yonghua Zhou and Yiduo Mei},\n  year = {2023},\n  journal = {Applied Intelligence},\n  doi = {10.1007/s10489-023-04490-y},\n  url = {https://doi.org/10.1007/s10489-023-04490-y}\n}",
+    "citation_key": "wang2023joint",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "Automatically Identifying Complaints in Social Media",
+    "authors": [
+      "Daniel Preoțiuc-Pietro",
+      "Mihaela Gaman",
+      "Nikolaos Aletras"
+    ],
+    "year": 2019,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    "doi": "10.18653/v1/P19-1495",
+    "abstract": "Complaining is a basic speech act regularly used in human and computer mediated communication to express a negative mismatch between reality and expectations in a particular situation. Automatically identifying complaints in social media is of utmost importance for organizations or brands to improve the customer experience or in developing dialogue systems for handling and responding to complaints. In this paper, we introduce the first systematic analysis of complaints in computational linguistics. We collect a new annotated data set of written complaints expressed on Twitter. We present an extensive linguistic analysis of complaining as a speech act in social media and train strong feature-based and neural models of complaints across nine domains achieving a predictive performance of up to 79 F1 using distant supervision.",
+    "bibtex": "@inproceedings{preotiuc-pietro-etal-2019-automatically,\n    title = \"Automatically Identifying Complaints in Social Media\",\n    author = \"Preo{\\c{t}}iuc-Pietro, Daniel  and\n      Gaman, Mihaela  and\n      Aletras, Nikolaos\",\n    editor = \"Korhonen, Anna  and\n      Traum, David  and\n      M{\\`a}rquez, Llu{\\'i}s\",\n    booktitle = \"Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics\",\n    month = jul,\n    year = \"2019\",\n    address = \"Florence, Italy\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/P19-1495/\",\n    doi = \"10.18653/v1/P19-1495\",\n    pages = \"5008--5019\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "preotiuc-pietro-etal-2019-automatically",
+    "paper_id": "P07",
+    "cache_key": "social-complaints",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1,3,8–9; §1, §3.2, Tables 6/8/9",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "投诉与负面情感不同；展示定义、独立标注、校准和分歧处理的流程。",
+    "limitations": "英文Twitter上的投诉二分类；并未定义中文政务投诉的字段，也非结构化抽取或历史案例检索。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/P19-1495/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.bib",
+          "checked_at": "2026-10-07T16:12:17.033186+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495/",
+          "checked_at": "2026-10-07T16:10:09.119394+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.pdf",
+          "checked_at": "2026-10-07T16:12:55.954743+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.pdf",
+          "checked_at": "2026-10-07T16:12:55.954743+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.pdf",
+          "checked_at": "2026-10-07T16:12:55.954743+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1495.pdf",
+          "checked_at": "2026-10-07T16:12:55.954743+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/P19-1495.pdf",
+    "local_pdf_path": ".cache/literature/social-complaints.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/P19-1495.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:12:55.954743+00:00",
+    "byte_length": 293140,
+    "sha256": "bb018a906dbfec3a9c8b260954f4e2b46df9fc806f7f563f1e4868ddcfe5978c",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/danielpreotiuc/complaints-social-media",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "Unified Structure Generation for Universal Information Extraction",
+    "authors": [
+      "Yaojie Lu",
+      "Qing Liu",
+      "Dai Dai",
+      "Xinyan Xiao",
+      "Hongyu Lin",
+      "Xianpei Han",
+      "Le Sun",
+      "Hua Wu"
+    ],
+    "year": 2022,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    "doi": "10.18653/v1/2022.acl-long.395",
+    "abstract": "Information extraction suffers from its varying targets, heterogeneous structures, and demand-specific schemas. In this paper, we propose a unified text-to-structure generation framework, namely UIE, which can universally model different IE tasks, adaptively generate targeted structures, and collaboratively learn general IE abilities from different knowledge sources. Specifically, UIE uniformly encodes different extraction structures via a structured extraction language, adaptively generates target extractions via a schema-based prompt mechanism – structural schema instructor, and captures the common IE abilities via a large-scale pretrained text-to-structure model. Experiments show that UIE achieved the state-of-the-art performance on 4 IE tasks, 13 datasets, and on all supervised, low-resource, and few-shot settings for a wide range of entity, relation, event and sentiment extraction tasks and their unification. These results verified the effectiveness, universality, and transferability of UIE.",
+    "bibtex": "@inproceedings{lu-etal-2022-unified,\n    title = \"Unified Structure Generation for Universal Information Extraction\",\n    author = \"Lu, Yaojie  and\n      Liu, Qing  and\n      Dai, Dai  and\n      Xiao, Xinyan  and\n      Lin, Hongyu  and\n      Han, Xianpei  and\n      Sun, Le  and\n      Wu, Hua\",\n    editor = \"Muresan, Smaranda  and\n      Nakov, Preslav  and\n      Villavicencio, Aline\",\n    booktitle = \"Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)\",\n    month = may,\n    year = \"2022\",\n    address = \"Dublin, Ireland\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/2022.acl-long.395/\",\n    doi = \"10.18653/v1/2022.acl-long.395\",\n    pages = \"5755--5772\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "lu-etal-2022-unified",
+    "paper_id": "P08",
+    "cache_key": "uie",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.3–4,6–8; §2.1–2.2, §3.3, §4.1, Tables 2–5",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "把片段定位与关系/角色关联分开；schema条件生成和缺失标签拒绝机制。",
+    "limitations": "结构生成结果还需回映字符位置；既有基准不能证明本项目表现；论文UIE不应直接等同同名库中的任意checkpoint。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/2022.acl-long.395/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.bib",
+          "checked_at": "2026-10-07T16:12:18.018449+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395/",
+          "checked_at": "2026-10-07T16:10:11.631954+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.pdf",
+          "checked_at": "2026-10-07T16:13:15.521094+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.pdf",
+          "checked_at": "2026-10-07T16:13:15.521094+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2022.acl-long.395.pdf",
+          "checked_at": "2026-10-07T16:13:15.521094+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/2022.acl-long.395.pdf",
+    "local_pdf_path": ".cache/literature/uie.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/2022.acl-long.395.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:13:15.521094+00:00",
+    "byte_length": 576383,
+    "sha256": "f6f49ecb1bdaad8814a1e7dceaee394d09b7233ddcbd5023fafeb84521782047",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "Universal Information Extraction as Unified Semantic Matching",
+    "authors": [
+      "Jie Lou",
+      "Yaojie Lu",
+      "Dai Dai",
+      "Wei Jia",
+      "Hongyu Lin",
+      "Xianpei Han",
+      "Le Sun",
+      "Hua Wu"
+    ],
+    "year": 2023,
+    "publication_type": "conference",
+    "venue": "Proceedings of the AAAI Conference on Artificial Intelligence",
+    "doi": "10.1609/aaai.v37i11.26563",
+    "abstract": "The challenge of information extraction (IE) lies in the diversity of label schemas and the heterogeneity of structures. Traditional methods require task-specific model design and rely heavily on expensive supervision, making them difficult to generalize to new schemas. In this paper, we decouple IE into two basic abilities, structuring and conceptualizing, which are shared by different tasks and schemas. Based on this paradigm, we propose to universally model various IE tasks with Unified Semantic Matching (USM) framework, which introduces three unified token linking operations to model the abilities of structuring and conceptualizing. In this way, USM can jointly encode schema and input text, uniformly extract substructures in parallel, and controllably decode target structures on demand. Empirical evaluation on 4 IE tasks shows that the proposed method achieves state-of-the-art performance under the supervised experiments and shows strong generalization ability in zero/few-shot transfer settings.",
+    "version_note": "Crossref将AAAI proceedings项标为journal-article；按实际会议论文类型记conference。",
+    "paper_id": "P09",
+    "cache_key": "usm",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1–3,6; Figure 3 and Unified Semantic Matching via Directed Token Linking",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "通过token-token及标签-token关联处理片段与关系，说明可用结构预测替代自由文本生成。",
+    "limitations": "连续片段和结构解码任务不自动支持归一化地址、总结和复杂状态推断；非本项目中文投诉实验。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://doi.org/10.1609/aaai.v37i11.26563",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "inference",
+          "note": "AAAI会议录及PDF页眉确认其为会议论文；不沿用Crossref的journal-article宽泛分类。"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1609/aaai.v37i11.26563",
+          "checked_at": "2026-10-07T16:10:19.010521+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "AAAI",
+          "source_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26563/26335",
+          "checked_at": "2026-10-07T16:15:24.372709+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "AAAI",
+          "source_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26563/26335",
+          "checked_at": "2026-10-07T16:15:24.372709+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "AAAI",
+          "source_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26563/26335",
+          "checked_at": "2026-10-07T16:15:24.372709+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "AAAI"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26563/26335",
+    "local_pdf_path": ".cache/literature/usm.pdf",
+    "download_status": "downloaded",
+    "download_source": "ojs.aaai.org",
+    "final_url": "https://ojs.aaai.org/index.php/AAAI/article/download/26563/26335",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:15:24.372709+00:00",
+    "byte_length": 381545,
+    "sha256": "2050a6e57a5afd94c1a763631199cb13d337f0c600007ed78f467a9b32db930f",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@inproceedings{lou2023universal,\n  title = {Universal Information Extraction as Unified Semantic Matching},\n  author = {Jie Lou and Yaojie Lu and Dai Dai and Wei Jia and Hongyu Lin and Xianpei Han and Le Sun and Hua Wu},\n  year = {2023},\n  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence},\n  doi = {10.1609/aaai.v37i11.26563},\n  url = {https://doi.org/10.1609/aaai.v37i11.26563}\n}",
+    "citation_key": "lou2023universal",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "GoLLIE: Annotation Guidelines improve Zero-Shot Information-Extraction",
+    "authors": [
+      "Oscar Sainz",
+      "Iker García-Ferrero",
+      "Rodrigo Agerri",
+      "Oier Lopez de Lacalle",
+      "German Rigau",
+      "Eneko Agirre"
+    ],
+    "year": 2024,
+    "publication_type": "conference",
+    "venue": "The Twelfth International Conference on Learning Representations (ICLR 2024)",
+    "doi": null,
+    "arxiv_id": "2310.03668",
+    "abstract": "Large Language Models (LLMs) combined with instruction tuning have made significant progress when generalizing to unseen tasks. However, they have been less successful in Information Extraction (IE), lagging behind task-specific models. Typically, IE tasks are characterized by complex annotation guidelines that describe the task and give examples to humans. Previous attempts to leverage such information have failed, even with the largest models, as they are not able to follow the guidelines out of the box. In this paper, we propose GoLLIE (Guideline-following Large Language Model for IE), a model able to improve zero-shot results on unseen IE tasks by virtue of being fine-tuned to comply with annotation guidelines. Comprehensive evaluation empirically demonstrates that GoLLIE is able to generalize to and follow unseen guidelines, outperforming previous attempts at zero-shot information extraction. The ablation study shows that detailed guidelines are key for good results.",
+    "version_note": "正式会议年份由arXiv Comments和已获取PDF首页交叉核对为2024；初版预印本为2023；未从OpenReview API补得记录。",
+    "paper_id": "P10",
+    "cache_key": "gollie",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.2–3,7–9; §3.1, §5.3, §6",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "同名标签不同定义、指南与标注不一致、粗细类型冲突会影响抽取；定义和反例应进入方法比较。",
+    "limitations": "成功依赖专门的指南遵循微调；复杂/含糊标签仍失败；不能推成任意通用LLM给字段名就可靠。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。",
+      "doi": "本轮未取得正式会议DOI；保留arXiv标识，不用预印本DOI冒充会议DOI。"
+    },
+    "source_url": "https://arxiv.org/abs/2310.03668",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv Comments标注ICLR 2024，PDF首页确认正式会议年份。"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv Comments标注ICLR 2024，PDF首页确认正式会议年份。"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2310.03668",
+          "checked_at": "2026-10-07T16:10:16.828503+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2310.03668",
+          "checked_at": "2026-10-07T16:15:23.187971+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2310.03668",
+          "checked_at": "2026-10-07T16:15:23.187971+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2310.03668",
+          "checked_at": "2026-10-07T16:15:23.187971+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2310.03668",
+          "checked_at": "2026-10-07T16:15:23.187971+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "arXiv"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/2310.03668",
+    "local_pdf_path": ".cache/literature/gollie.pdf",
+    "download_status": "downloaded",
+    "download_source": "arxiv.org",
+    "final_url": "https://arxiv.org/pdf/2310.03668",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:15:23.187971+00:00",
+    "byte_length": 1240129,
+    "sha256": "2d6fc0f85a9a606ac0a2f5fd13c84a1cc99a56765017ca29e32217f9553543b4",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/hitz-zentroa/GoLLIE",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@inproceedings{sainz2024gollie,\n  title = {GoLLIE: Annotation Guidelines improve Zero-Shot Information-Extraction},\n  author = {Oscar Sainz and Iker García-Ferrero and Rodrigo Agerri and Oier Lopez de Lacalle and German Rigau and Eneko Agirre},\n  year = {2024},\n  booktitle = {The Twelfth International Conference on Learning Representations (ICLR 2024)},\n  url = {https://arxiv.org/abs/2310.03668},\n  eprint = {2310.03668},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "sainz2024gollie",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "UniversalNER: Targeted Distillation from Large Language Models for Open Named Entity Recognition",
+    "authors": [
+      "Wenxuan Zhou",
+      "Sheng Zhang",
+      "Yu Gu",
+      "Muhao Chen",
+      "Hoifung Poon"
+    ],
+    "year": 2024,
+    "publication_type": "conference",
+    "venue": "The Twelfth International Conference on Learning Representations (ICLR 2024)",
+    "doi": null,
+    "arxiv_id": "2308.03279",
+    "abstract": "Large language models (LLMs) have demonstrated remarkable generalizability, such as understanding arbitrary entities and relations. Instruction tuning has proven effective for distilling LLMs into more cost-efficient models such as Alpaca and Vicuna. Yet such student models still trail the original LLMs by large margins in downstream applications. In this paper, we explore targeted distillation with mission-focused instruction tuning to train student models that can excel in a broad application class such as open information extraction. Using named entity recognition (NER) for case study, we show how ChatGPT can be distilled into much smaller UniversalNER models for open NER. For evaluation, we assemble the largest NER benchmark to date, comprising 43 datasets across 9 diverse domains such as biomedicine, programming, social media, law, finance. Without using any direct supervision, UniversalNER attains remarkable NER accuracy across tens of thousands of entity types, outperforming general instruction-tuned models such as Alpaca and Vicuna by over 30 absolute F1 points in average. With a tiny fraction of parameters, UniversalNER not only acquires ChatGPT's capability in recognizing arbitrary entity types, but also outperforms its NER accuracy by 7-9 absolute F1 points in average. Remarkably, UniversalNER even outperforms by a large margin state-of-the-art multi-task instruction-tuned systems such as InstructUIE, which uses supervised NER examples. We also conduct thorough ablation studies to assess the impact of various components in our distillation approach. We release the distillation recipe, data, and UniversalNER models to facilitate future research on targeted distillation.",
+    "version_note": "正式会议年份由arXiv Comments和已获取PDF首页交叉核对为2024；初版预印本为2023；未从OpenReview API补得记录。",
+    "paper_id": "P11",
+    "cache_key": "universalner",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.2–4,8; §3.1–3.2, §5.4",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "任务蒸馏、负类型空列表训练、数据集标签语义差异的证据。",
+    "limitations": "核心训练来自英语Pile-NER；NER不等于事项角色关联；蒸馏伪标签不能替代人工金标准。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。",
+      "doi": "本轮未取得正式会议DOI；保留arXiv标识，不用预印本DOI冒充会议DOI。"
+    },
+    "source_url": "https://arxiv.org/abs/2308.03279",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv Comments标注ICLR 2024，PDF首页确认正式会议年份。"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "page_text",
+          "note": "arXiv Comments标注ICLR 2024，PDF首页确认正式会议年份。"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/2308.03279",
+          "checked_at": "2026-10-07T16:10:21.183171+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2308.03279",
+          "checked_at": "2026-10-07T16:15:24.058011+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2308.03279",
+          "checked_at": "2026-10-07T16:15:24.058011+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/2308.03279",
+          "checked_at": "2026-10-07T16:15:24.058011+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "arXiv"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/2308.03279",
+    "local_pdf_path": ".cache/literature/universalner.pdf",
+    "download_status": "downloaded",
+    "download_source": "arxiv.org",
+    "final_url": "https://arxiv.org/pdf/2308.03279",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:15:24.058011+00:00",
+    "byte_length": 612886,
+    "sha256": "2868ef9ba3f0132a2eaf2b47cdebe7580755dbcb03dda1f06a022baf3a959a04",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log",
+    "bibtex": "@inproceedings{zhou2024universalner,\n  title = {UniversalNER: Targeted Distillation from Large Language Models for Open Named Entity Recognition},\n  author = {Wenxuan Zhou and Sheng Zhang and Yu Gu and Muhao Chen and Hoifung Poon},\n  year = {2024},\n  booktitle = {The Twelfth International Conference on Learning Representations (ICLR 2024)},\n  url = {https://arxiv.org/abs/2308.03279},\n  eprint = {2308.03279},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "zhou2024universalner",
+    "bibtex_origin": "Generated from verified metadata; conference venue cross-checked with paper front page where needed"
+  },
+  {
+    "title": "GLiNER: Generalist Model for Named Entity Recognition using Bidirectional Transformer",
+    "authors": [
+      "Urchade Zaratiana",
+      "Nadi Tomeh",
+      "Pierre Holat",
+      "Thierry Charnois"
+    ],
+    "year": 2024,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)",
+    "doi": "10.18653/v1/2024.naacl-long.300",
+    "abstract": "Named Entity Recognition (NER) is essential in various Natural Language Processing (NLP) applications. Traditional NER models are effective but limited to a set of predefined entity types. In contrast, Large Language Models (LLMs) can extract arbitrary entities through natural language instructions, offering greater flexibility. However, their size and cost, particularly for those accessed via APIs like ChatGPT, make them impractical in resource-limited scenarios. In this paper, we introduce a compact NER model trained to identify any type of entity. Leveraging a bidirectional transformer encoder, our model, GLiNER, facilitates parallel entity extraction, an advantage over the slow sequential token generation of LLMs. Through comprehensive testing, GLiNER demonstrate strong performance, outperforming both ChatGPT and fine-tuned LLMs in zero-shot evaluations on various NER benchmarks.",
+    "bibtex": "@inproceedings{zaratiana-etal-2024-gliner,\n    title = \"{GL}i{NER}: Generalist Model for Named Entity Recognition using Bidirectional Transformer\",\n    author = \"Zaratiana, Urchade  and\n      Tomeh, Nadi  and\n      Holat, Pierre  and\n      Charnois, Thierry\",\n    editor = \"Duh, Kevin  and\n      Gomez, Helena  and\n      Bethard, Steven\",\n    booktitle = \"Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers)\",\n    month = jun,\n    year = \"2024\",\n    address = \"Mexico City, Mexico\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/2024.naacl-long.300/\",\n    doi = \"10.18653/v1/2024.naacl-long.300\",\n    pages = \"5364--5376\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "zaratiana-etal-2024-gliner",
+    "paper_id": "P12",
+    "cache_key": "gliner",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.2–3,6–8; §2.1–2.3, §4.2, §5.3, Table 3",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "轻量span-type匹配、重叠约束、阴性实体采样；多语模型与英语模型差异。",
+    "limitations": "2024论文中的NER模型；英文权重不能直接当中文方案，多语言基准不等于投诉地址；不直接抽取完整事件关联或生成摘要。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/2024.naacl-long.300/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.bib",
+          "checked_at": "2026-10-07T16:12:19.757706+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300/",
+          "checked_at": "2026-10-07T16:10:17.069568+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+          "checked_at": "2026-10-07T16:13:50.231260+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+          "checked_at": "2026-10-07T16:13:50.231260+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+          "checked_at": "2026-10-07T16:13:50.231260+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+          "checked_at": "2026-10-07T16:13:50.231260+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+    "local_pdf_path": ".cache/literature/gliner.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/2024.naacl-long.300.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:13:50.231260+00:00",
+    "byte_length": 1294606,
+    "sha256": "835184a0203f517ae860709adb196bdda98d7503908b5701c801b79666c0cead",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/urchade/GLiNER",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "DocRED: A Large-Scale Document-Level Relation Extraction Dataset",
+    "authors": [
+      "Yuan Yao",
+      "Deming Ye",
+      "Peng Li",
+      "Xu Han",
+      "Yankai Lin",
+      "Zhenghao Liu",
+      "Zhiyuan Liu",
+      "Lixin Huang",
+      "Jie Zhou",
+      "Maosong Sun"
+    ],
+    "year": 2019,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics",
+    "doi": "10.18653/v1/P19-1074",
+    "abstract": "Multiple entities in a document generally exhibit complex inter-sentence relations, and cannot be well handled by existing relation extraction (RE) methods that typically focus on extracting intra-sentence relations for single entity pairs. In order to accelerate the research on document-level RE, we introduce DocRED, a new dataset constructed from Wikipedia and Wikidata with three features: (1) DocRED annotates both named entities and relations, and is the largest human-annotated dataset for document-level RE from plain text; (2) DocRED requires reading multiple sentences in a document to extract entities and infer their relations by synthesizing all information of the document; (3) along with the human-annotated data, we also offer large-scale distantly supervised data, which enables DocRED to be adopted for both supervised and weakly supervised scenarios. In order to verify the challenges of document-level RE, we implement recent state-of-the-art methods for RE and conduct a thorough evaluation of these methods on DocRED. Empirical results show that DocRED is challenging for existing RE methods, which indicates that document-level RE remains an open problem and requires further efforts. Based on the detailed analysis on the experiments, we discuss multiple promising directions for future research. We make DocRED and the code for our baselines publicly available at https://github.com/thunlp/DocRED .",
+    "bibtex": "@inproceedings{yao-etal-2019-docred,\n    title = \"{D}oc{RED}: A Large-Scale Document-Level Relation Extraction Dataset\",\n    author = \"Yao, Yuan  and\n      Ye, Deming  and\n      Li, Peng  and\n      Han, Xu  and\n      Lin, Yankai  and\n      Liu, Zhenghao  and\n      Liu, Zhiyuan  and\n      Huang, Lixin  and\n      Zhou, Jie  and\n      Sun, Maosong\",\n    editor = \"Korhonen, Anna  and\n      Traum, David  and\n      M{\\`a}rquez, Llu{\\'i}s\",\n    booktitle = \"Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics\",\n    month = jul,\n    year = \"2019\",\n    address = \"Florence, Italy\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/P19-1074/\",\n    doi = \"10.18653/v1/P19-1074\",\n    pages = \"764--777\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "yao-etal-2019-docred",
+    "paper_id": "P13",
+    "cache_key": "docred",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1,3–4; §2.1 Stage 2–4, §3",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "实体指代、跨句关系和支持句需要与实体清单一起考虑。",
+    "limitations": "英语Wikipedia/Wikidata关系数据；其文档内推理设置不自动授权为本项目补写外部事实。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/P19-1074/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.bib",
+          "checked_at": "2026-10-07T16:12:18.595568+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074/",
+          "checked_at": "2026-10-07T16:10:12.258072+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.pdf",
+          "checked_at": "2026-10-07T16:13:15.882878+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.pdf",
+          "checked_at": "2026-10-07T16:13:15.882878+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.pdf",
+          "checked_at": "2026-10-07T16:13:15.882878+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P19-1074.pdf",
+          "checked_at": "2026-10-07T16:13:15.882878+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/P19-1074.pdf",
+    "local_pdf_path": ".cache/literature/docred.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/P19-1074.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:13:15.882878+00:00",
+    "byte_length": 427073,
+    "sha256": "6bdff92c9281fb8149608771d5ff9ae9672753d6c39192f46c72933d50be7b82",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/thunlp/DocRED",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "Doc2EDAG: An End-to-End Document-level Framework for Chinese Financial Event Extraction",
+    "authors": [
+      "Shun Zheng",
+      "Wei Cao",
+      "Wei Xu",
+      "Jiang Bian"
+    ],
+    "year": 2019,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)",
+    "doi": "10.18653/v1/D19-1032",
+    "abstract": "Most existing event extraction (EE) methods merely extract event arguments within the sentence scope. However, such sentence-level EE methods struggle to handle soaring amounts of documents from emerging applications, such as finance, legislation, health, etc., where event arguments always scatter across different sentences, and even multiple such event mentions frequently co-exist in the same document. To address these challenges, we propose a novel end-to-end model, Doc2EDAG, which can generate an entity-based directed acyclic graph to fulfill the document-level EE (DEE) effectively. Moreover, we reformalize a DEE task with the no-trigger-words design to ease the document-level event labeling. To demonstrate the effectiveness of Doc2EDAG, we build a large-scale real-world dataset consisting of Chinese financial announcements with the challenges mentioned above. Extensive experiments with comprehensive analyses illustrate the superiority of Doc2EDAG over state-of-the-art methods. Data and codes can be found at https://github.com/dolphin-zs/Doc2EDAG .",
+    "bibtex": "@inproceedings{zheng-etal-2019-doc2edag,\n    title = \"{D}oc2{EDAG}: An End-to-End Document-level Framework for {C}hinese Financial Event Extraction\",\n    author = \"Zheng, Shun  and\n      Cao, Wei  and\n      Xu, Wei  and\n      Bian, Jiang\",\n    editor = \"Inui, Kentaro  and\n      Jiang, Jing  and\n      Ng, Vincent  and\n      Wan, Xiaojun\",\n    booktitle = \"Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)\",\n    month = nov,\n    year = \"2019\",\n    address = \"Hong Kong, China\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/D19-1032/\",\n    doi = \"10.18653/v1/D19-1032\",\n    pages = \"337--346\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "zheng-etal-2019-doc2edag",
+    "paper_id": "P14",
+    "cache_key": "doc2edag",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1–3; Figure 2, §3 Preliminaries",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "区分实体提及、事件角色、事件论元和事件记录；多事件及跨句散落论元需关联。",
+    "limitations": "中文金融公告和预定义事件表；投诉事项拆分与字段尚需本地标注研究，不可直接套金融schema。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/D19-1032/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.bib",
+          "checked_at": "2026-10-07T16:12:19.021765+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032/",
+          "checked_at": "2026-10-07T16:10:14.927951+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.pdf",
+          "checked_at": "2026-10-07T16:13:45.148556+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.pdf",
+          "checked_at": "2026-10-07T16:13:45.148556+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.pdf",
+          "checked_at": "2026-10-07T16:13:45.148556+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/D19-1032.pdf",
+          "checked_at": "2026-10-07T16:13:45.148556+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/D19-1032.pdf",
+    "local_pdf_path": ".cache/literature/doc2edag.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/D19-1032.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:13:45.148556+00:00",
+    "byte_length": 891450,
+    "sha256": "b95467ff34f99f857950e1131a07a95441f841357e2f40c773bc719b5b3f05a8",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/dolphin-zs/Doc2EDAG",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  },
+  {
+    "title": "Chinese NER Using Lattice LSTM",
+    "authors": [
+      "Yue Zhang",
+      "Jie Yang"
+    ],
+    "year": 2018,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)",
+    "doi": "10.18653/v1/P18-1144",
+    "abstract": "We investigate a lattice-structured LSTM model for Chinese NER, which encodes a sequence of input characters as well as all potential words that match a lexicon. Compared with character-based methods, our model explicitly leverages word and word sequence information. Compared with word-based methods, lattice LSTM does not suffer from segmentation errors. Gated recurrent cells allow our model to choose the most relevant characters and words from a sentence for better NER results. Experiments on various datasets show that lattice LSTM outperforms both word-based and character-based LSTM baselines, achieving the best results.",
+    "bibtex": "@inproceedings{zhang-yang-2018-chinese,\n    title = \"{C}hinese {NER} Using Lattice {LSTM}\",\n    author = \"Zhang, Yue  and\n      Yang, Jie\",\n    editor = \"Gurevych, Iryna  and\n      Miyao, Yusuke\",\n    booktitle = \"Proceedings of the 56th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)\",\n    month = jul,\n    year = \"2018\",\n    address = \"Melbourne, Australia\",\n    publisher = \"Association for Computational Linguistics\",\n    url = \"https://aclanthology.org/P18-1144/\",\n    doi = \"10.18653/v1/P18-1144\",\n    pages = \"1554--1564\"\n}",
+    "bibtex_origin": "ACL Anthology official export",
+    "citation_key": "zhang-yang-2018-chinese",
+    "paper_id": "P15",
+    "cache_key": "chinese-ner",
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1–3,5; §1, §3, Table 1",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "中文分词与实体边界相互影响；字符/词信息并用是一种方法路径。",
+    "limitations": "2018 Lattice LSTM与特定NER数据；作为边界问题证据，不当作当前部署首选。",
+    "citation_count": null,
+    "citation_counts": [],
+    "missing_fields": {
+      "citation_count": "未采集跨篇可比的引用统计，空值不代表0。"
+    },
+    "source_url": "https://aclanthology.org/P18-1144/",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.bib",
+          "checked_at": "2026-10-07T16:12:20.184869+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144/",
+          "checked_at": "2026-10-07T16:10:20.402698+00:00",
+          "evidence_type": "page_text",
+          "note": "摘要来自ACL论文页，书目字段另外使用官方BibTeX导出。"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.pdf",
+          "checked_at": "2026-10-07T16:14:54.309079+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.pdf",
+          "checked_at": "2026-10-07T16:14:54.309079+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.pdf",
+          "checked_at": "2026-10-07T16:14:54.309079+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF已通过pypdf解析；作者标题在首页与元数据核对，正文只选读记录的部分。"
+        }
+      ],
+      "code_url": [
+        {
+          "platform": "ACL Anthology",
+          "source_url": "https://aclanthology.org/P18-1144.pdf",
+          "checked_at": "2026-10-07T16:14:54.309079+00:00",
+          "evidence_type": "pdf_text",
+          "note": "代码链接来自作者论文；本表不据此声称仓库安装或复现成功。"
+        }
+      ]
+    },
+    "source_platforms": [
+      "ACL Anthology"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://aclanthology.org/P18-1144.pdf",
+    "local_pdf_path": ".cache/literature/chinese-ner.pdf",
+    "download_status": "downloaded",
+    "download_source": "aclanthology.org",
+    "final_url": "https://aclanthology.org/P18-1144.pdf",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-07T16:14:54.309079+00:00",
+    "byte_length": 557500,
+    "sha256": "8bbfc9cade17984dcd155dc79bed221726123d5cc5e82b8abe836f8a03414ce8",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": "https://github.com/jiesutd/LatticeLSTM",
+    "fetched_at": "2026-10-08",
+    "fetched_at_timezone": "Asia/Shanghai; exact source timestamps retained in field_sources and search log"
+  }
+]

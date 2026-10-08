@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; img-src data:; base-uri 'none'; form-action 'none'">
+<title>投诉信息研究 · 80 条边界样例</title>
+<style>
+:root{--ink:#23343c;--muted:#66777b;--line:#dbe2dd;--paper:#fafbf7;--panel:#fff;--green:#235e4f;--pale:#e9f2eb;--ochre:#9b6516;--wash:#f6efdf}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.7 "Microsoft YaHei","Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}header{padding:26px 36px 20px;border-bottom:1px solid var(--line);background:#fff}header .eyebrow{font-size:12px;letter-spacing:.16em;color:var(--green)}h1{font-size:25px;font-weight:650;margin:5px 0}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.subtitle{color:var(--muted);margin:0;max-width:1050px}.header-bottom{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:16px}.counts{font-variant-numeric:tabular-nums;color:var(--green);margin-right:auto}.button{border:1px solid var(--line);border-radius:7px;background:white;padding:7px 15px;color:var(--ink)}.button.primary{background:var(--green);color:white;border-color:var(--green)}.shell{display:grid;grid-template-columns:260px minmax(0,1fr);max-width:1540px;margin:auto}aside{padding:22px 20px;border-right:1px solid var(--line)}aside label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px}input,select,textarea{width:100%;border:1px solid #cbd6ce;border-radius:6px;padding:8px 10px;background:white;color:var(--ink)}#reviewer{width:170px}.sample-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:18px}.sample{font-size:12px;border:1px solid var(--line);border-radius:5px;background:white;padding:6px 1px;color:var(--muted)}.sample.active{color:white;border-color:var(--green);background:var(--green)}.sample.done:not(.active){background:var(--pale);color:var(--green)}main{min-width:0;padding:24px 30px 55px}.nav{display:flex;align-items:center;gap:12px;margin-bottom:20px}.nav strong{font-size:23px}.nav .spacer{flex:1}.tag{display:inline-block;padding:3px 9px;border-radius:4px;background:var(--pale);color:var(--green);font-size:12px;margin:0 6px 6px 0}.tag.warning{background:var(--wash);color:var(--ochre)}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{border:1px solid var(--line);background:var(--panel);border-radius:9px;padding:20px;margin-bottom:18px}.source{white-space:pre-wrap;overflow-wrap:anywhere;font-size:16px;line-height:1.95;max-height:390px;overflow:auto;padding-right:7px}.note{padding:13px 15px;border-left:3px solid #c7a869;background:#fcf8ef;margin:14px 0 0}.query{font-size:17px;line-height:1.85;margin:0 0 12px;color:#193f36}.muted{font-size:12px;color:var(--muted)}.evidence-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:13px}th{text-align:left;background:#f1f5ef;color:#51645a;white-space:nowrap}th,td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}th:first-child,td:first-child{width:115px}th:nth-child(2){width:34%}.quote{border:0;background:none;padding:0;text-align:left;color:var(--green);text-decoration:underline;text-decoration-color:#b6cbbf;text-underline-offset:4px}.quote:hover{color:#122f24}mark{background:#f6dca4;color:inherit;padding:2px 0}.review-grid{display:grid;grid-template-columns:210px 1fr;gap:15px}.review-grid label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}textarea{resize:vertical;min-height:84px}.full{grid-column:1/-1}.help{background:#edf3ec;color:#46634c;padding:9px 12px;border-radius:5px;font-size:12px}.small-button{padding:3px 8px;font-size:12px}details{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}summary{cursor:pointer;font-size:13px;color:var(--green)}#empty{padding:50px 20px;text-align:center;color:var(--muted)}#save-message{font-size:12px;color:var(--muted);margin-top:9px}footer{font-size:12px;color:var(--muted);margin-top:8px}.legend{margin-top:18px;font-size:12px;color:var(--muted)}@media(max-width:1050px){.two-col{grid-template-columns:1fr}.shell{grid-template-columns:225px minmax(0,1fr)}main{padding:22px 18px}}@media(max-width:700px){header{padding:20px}h1{font-size:22px}.shell{display:block}aside{border-right:0;border-bottom:1px solid var(--line);padding:15px 20px}.sample-grid{grid-template-columns:repeat(8,1fr);max-height:130px;overflow:auto}.review-grid{grid-template-columns:1fr}.nav{flex-wrap:wrap}.header-bottom{gap:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">CASE CONTENT · DEVELOPMENT STUDY 001</div>
+  <h1>字段用途与边界样例</h1>
+  <p class="subtitle">逐条核对原文、问题表达与信息归属。这里的全部语义判断都是助手草案；点击证据可回看原文。你的复核记录单独导出，不会改写原始数据。</p>
+  <div class="header-bottom">
+    <div class="counts" id="counts"></div>
+    <label for="reviewer" class="muted">复核人</label><input id="reviewer" autocomplete="off" placeholder="填写后导出">
+    <button class="button primary" id="export">导出复核记录</button>
+  </div>
+</header>
+<div class="shell">
+<aside>
+  <label for="search">搜索原文或分析草案</label><input id="search" type="search" placeholder="输入词语或样例编号">
+  <label for="route">材料类型</label><select id="route"><option value="">全部类型</option></select>
+  <label for="tag">关注边界</label><select id="tag"><option value="">全部边界</option></select>
+  <label for="status-filter">复核进度</label><select id="status-filter"><option value="">全部进度</option><option value="pending">待复核</option><option value="accept">同意草案</option><option value="revise">已提出修改</option><option value="defer">保留争议</option></select>
+  <div id="filtered-count" class="muted" style="margin-top:15px"></div>
+  <div class="sample-grid" id="sample-list"></div>
+  <div class="legend">绿色浅底：已有复核记录。<br>筛选不会删除或改变样本。<br>研究标签可重叠，数量不是错误率。</div>
+</aside>
+<main>
+  <div id="empty" hidden>没有符合筛选条件的样例。</div>
+  <div id="content">
+    <div class="nav"><strong id="sample-id"></strong><span id="sample-position" class="muted"></span><span class="spacer"></span><button id="previous" class="button">上一条</button><button id="next" class="button">下一条</button></div>
+    <div id="tags"></div>
+    <div class="two-col">
+      <section class="card"><h2>原文</h2><div class="source" id="source"></div><div class="muted" style="margin-top:12px">输入只使用 case_content；保留原始措辞与转义字符。</div></section>
+      <section class="card"><h2>问题表达草案</h2><p class="query" id="query"></p><div class="muted" id="structure"></div><p class="note" id="boundary-note"></p><details><summary>A / B / C 表示说明</summary><p class="muted">A：完整原文。B：本页问题表达草案。C：完整原文后附“问题表达：”与B。三种表示已保存在JSONL中，尚未检索，也未经人工确认。流程类样本的B仅描述当前流程，不能恢复缺失的原投诉。</p></details></section>
+    </div>
+    <section class="card"><h2>原文依据与候选用途</h2><div class="muted" style="margin-bottom:10px">引用存在已由程序逐字验证；字段边界、角色与归属仍需核对。证据可以重叠。</div><div class="evidence-wrap"><table><thead><tr><th>研究维度</th><th>原文片段 · 点击定位</th><th>角色 / 归属草案</th><th>候选用途</th></tr></thead><tbody id="evidence"></tbody></table></div></section>
+    <section class="card"><h2>你的复核</h2><div class="review-grid">
+      <div><label for="review-status">当前结论</label><select id="review-status"><option value="pending">待复核</option><option value="accept">同意草案</option><option value="revise">已提出修改</option><option value="defer">保留争议</option></select></div>
+      <div><label for="edited-query">问题表达修改（需要时填写）</label><textarea id="edited-query" placeholder="保持原文含义，不补充未给出的事实"></textarea></div>
+      <div class="full"><label for="comment">边界、归属、遗漏或拆分意见</label><textarea id="comment" placeholder="例如：哪段属于背景；某地址是什么角色；多个问题是否应分开"></textarea></div>
+    </div><div id="save-message"></div><div class="help" style="margin-top:12px">浏览器会尝试保存本机进度；结束后请导出文件留存。此记录用于研究讨论，不自动成为正式金标、相关性评分或查询资格审核。</div></section>
+    <footer>本地研究材料 · 80 条已用于开发，后续正式抽样应排除对应来源及关联组。</footer>
+  </div>
+</main>
+</div>
+<script id="study-data" type="application/json">__STUDY_JSON__</script>
+<script>
+"use strict";
+const study=JSON.parse(document.getElementById("study-data").textContent);
+const $=id=>document.getElementById(id);
+const allowedStatus=new Set(["pending","accept","revise","defer"]);
+const storageKey="field-boundary-review:"+study.source_sha256+":"+study.spec_sha256;
+let saved={reviewer:"",reviews:{}}, current=study.records[0].sample_id, filtered=[...study.records];
+try { const parsed=JSON.parse(localStorage.getItem(storageKey)||"null"); if(parsed&&typeof parsed.reviewer==="string"&&parsed.reviews&&typeof parsed.reviews==="object")saved=parsed; } catch(_error){}
+$("reviewer").value=saved.reviewer;
+for(const [key,value] of Object.entries(study.routes)){const opt=document.createElement("option");opt.value=key;opt.textContent=value;$("route").append(opt);}
+for(const [key,value] of Object.entries(study.tags)){const opt=document.createElement("option");opt.value=key;opt.textContent=value+" · "+(study.summary.tag_counts_draft[key]||0);$("tag").append(opt);}
+function review(id){const r=saved.reviews[id];return r&&allowedStatus.has(r.status)?r:{status:"pending",edited_query:"",comment:"",reviewed_at:null};}
+function persist(){saved.reviewer=$("reviewer").value.trim();try{localStorage.setItem(storageKey,JSON.stringify(saved));$("save-message").textContent="当前进度已保存到此浏览器；请导出文件留存。";}catch(_error){$("save-message").textContent="此浏览器未允许本地保存；请立即导出复核记录留存。";}renderCounts();renderList();}
+function renderCounts(){const done=study.records.filter(r=>review(r.sample_id).status!=="pending").length;$("counts").textContent=study.records.length+" 条样例 · "+study.summary.exact_quote_count+" 段原文证据 · 已记录复核 "+done+" / "+study.records.length;}
+function renderList(){const box=$("sample-list");box.replaceChildren();for(const r of filtered){const b=document.createElement("button");b.className="sample"+(r.sample_id===current?" active":"")+(review(r.sample_id).status!=="pending"?" done":"");b.textContent=r.sample_id;b.title=r.query_draft;b.onclick=()=>{current=r.sample_id;renderRecord();renderList();};box.append(b);}$("filtered-count").textContent="当前显示 "+filtered.length+" / "+study.records.length+" 条";}
+function applyFilters(){const q=$("search").value.trim().toLowerCase(), route=$("route").value, tag=$("tag").value, status=$("status-filter").value;filtered=study.records.filter(r=>(!q||(r.sample_id+" "+r.case_content+" "+r.query_draft+" "+r.boundary_note_draft).toLowerCase().includes(q))&&(!route||r.route_draft===route)&&(!tag||r.boundary_tags_draft.includes(tag))&&(!status||review(r.sample_id).status===status));if(!filtered.some(r=>r.sample_id===current))current=filtered.length?filtered[0].sample_id:null;renderRecord();renderList();}
+function highlight(raw,start,end){const source=$("source"),chars=Array.from(raw);source.replaceChildren(document.createTextNode(chars.slice(0,start).join("")));const mark=document.createElement("mark");mark.textContent=chars.slice(start,end).join("");source.append(mark,document.createTextNode(chars.slice(end).join("")));mark.scrollIntoView({block:"nearest",behavior:"smooth"});}
+function renderRecord(){const r=study.records.find(r=>r.sample_id===current);$("empty").hidden=!!r;$("content").hidden=!r;if(!r)return;$("sample-id").textContent=r.sample_id;$("sample-position").textContent="原候选顺序 "+r.candidate_position+" / 80";$("source").textContent=r.case_content;$("query").textContent=r.query_draft;$("structure").textContent=study.routes[r.route_draft]+" · "+study.structures[r.issue_structure_draft];$("boundary-note").textContent=r.boundary_note_draft;$("tags").replaceChildren();for(const tag of r.boundary_tags_draft){const s=document.createElement("span");s.className="tag"+(new Set(["PO","CF","NC","MC"]).has(tag)?" warning":"");s.textContent=study.tags[tag];$("tags").append(s);}$("evidence").replaceChildren();for(const e of r.evidence){const tr=document.createElement("tr");const values=[study.fields[e.field].label,e.quote,e.role_draft,e.purpose_draft];values.forEach((v,index)=>{const td=document.createElement("td");if(index===1){const b=document.createElement("button");b.className="quote";b.textContent=v;b.onclick=()=>highlight(r.case_content,e.start,e.end);td.append(b);const info=document.createElement("div");info.className="muted";info.textContent="["+e.start+", "+e.end+")"+(e.all_occurrences.length>1?" · 多处出现，当前定位首处":"");td.append(info);}else td.textContent=v;tr.append(td);});$("evidence").append(tr);}const rv=review(r.sample_id);$("review-status").value=rv.status;$("edited-query").value=rv.edited_query||"";$("comment").value=rv.comment||"";$("save-message").textContent="";const i=filtered.findIndex(x=>x.sample_id===current);$("previous").disabled=i<=0;$("next").disabled=i>=filtered.length-1;}
+function saveReview(){if(!current)return;saved.reviews[current]={status:$("review-status").value,edited_query:$("edited-query").value,comment:$("comment").value,reviewed_at:new Date().toISOString()};persist();}
+$("previous").onclick=()=>{const i=filtered.findIndex(r=>r.sample_id===current);if(i>0){current=filtered[i-1].sample_id;renderRecord();renderList();}};
+$("next").onclick=()=>{const i=filtered.findIndex(r=>r.sample_id===current);if(i<filtered.length-1){current=filtered[i+1].sample_id;renderRecord();renderList();}};
+for(const name of ["search","route","tag","status-filter"])$(name).addEventListener(name==="search"?"input":"change",applyFilters);
+for(const name of ["review-status","edited-query","comment"])$(name).addEventListener(name==="review-status"?"change":"input",saveReview);
+$("reviewer").addEventListener("input",persist);
+$("export").onclick=()=>{const reviewer=$("reviewer").value.trim();if(study.records.some(r=>review(r.sample_id).status!=="pending")&&!reviewer){alert("请填写复核人，便于区分人工意见与助手草案。");$("reviewer").focus();return;}const payload={schema_version:"field-boundary-human-review-v1",study_id:study.study_id,source_sha256:study.source_sha256,draft_spec_sha256:study.spec_sha256,exported_at:new Date().toISOString(),reviewer,formal_gold:false,reviews:study.records.map(r=>({sample_id:r.sample_id,...review(r.sample_id)}))};const blob=new Blob([JSON.stringify(payload,null,2)+"\n"],{type:"application/json;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=study.study_id+"-human-review.json";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+renderCounts();applyFilters();
+</script>
+</body>
+</html>

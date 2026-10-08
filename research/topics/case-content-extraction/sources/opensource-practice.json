@@ -1,0 +1,213 @@
+{
+  "checked_on": "2026-10-08",
+  "cases": [
+    {
+      "case_id": "C10",
+      "name": "JetBrains support intake and knowledge assistant with Rasa",
+      "organization": "JetBrains",
+      "report_publisher": "Rasa",
+      "outcome_evidence": "production_reported_by_vendor",
+      "task": "支持入口统一、问题完整性检查、内部知识库问答和带上下文转人工",
+      "implementation": [
+        "自托管部署",
+        "Rasa Studio 会话流程",
+        "意图与产品范围识别",
+        "输入完整性及输出质量检查",
+        "KCS内部知识库",
+        "上下文随人工升级交接"
+      ],
+      "sources": [
+        {
+          "checked_at": "2026-10-08T02:13:02.539546+00:00",
+          "cache_file": ".cache/practice-opensource/rasa-jetbrains.response",
+          "sha256": "5ead4159895da6d664c5488ebcf7781c877a0e1500dd46a1e076edbf5f9dbf73",
+          "url": "https://rasa.com/customers/jetbrains",
+          "title": "JetBrains Centralizes Developer Support at Scale With Rasa",
+          "date": null,
+          "read_scope": "selected_body_sections",
+          "evidence_locations": [
+            {
+              "section": "The Challenge / A Fragmented Entry Point Experience",
+              "short_evidence": "more than 100 separate contact forms and support entry points"
+            },
+            {
+              "section": "The Solution / Building the Agent",
+              "short_evidence": "validate that an incoming question is complete before generating a response"
+            },
+            {
+              "section": "The Results",
+              "short_evidence": "processing roughly 3,000 conversations per month and sustaining a CSAT score of 75–80%"
+            },
+            {
+              "section": "The Future",
+              "short_evidence": "actively expanding the agent’s coverage to additional entry points"
+            }
+          ],
+          "missing_fields": {
+            "date": "网页未给出可核对的发布日期；检索日期不是出版日期。"
+          },
+          "reading_copy": ".cache/practice-opensource/rasa-jetbrains.txt",
+          "reading_copy_sha256": "41e4256f8d3ff55a3e3656e178992a8819a1fc94583665f554a7c7c1b8d60e85"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "monthly_conversations",
+          "value": "roughly 3000",
+          "baseline": null,
+          "denominator": "已上线的主要支持入口",
+          "measurement_period": null,
+          "interpretation": "生产使用规模，非抽取质量"
+        },
+        {
+          "name": "CSAT",
+          "value": "75–80%",
+          "baseline": "来源定性称接近人工，未提供可比较人工数值",
+          "denominator": null,
+          "measurement_period": null,
+          "interpretation": "客户满意度，未披露抽样、回收率和公式"
+        }
+      ],
+      "transferable_lessons": [
+        "按下游路由、检索、交接用途决定要收集的信息",
+        "知识库治理与抽取模型一起考虑",
+        "缺失信息和升级路径纳入流程"
+      ],
+      "limitations": [
+        "供应商客户故事，未公开独立实验数据",
+        "未给模型、提示词和字段全表",
+        "不是已开源客户工程；不能将OSS功能推作该部署配置"
+      ],
+      "excluded_claims": [
+        "顶部80% deflection rate未给正文口径，不用于主要成效结论",
+        "正文与信息卡用户量不一致，不使用其用户总量"
+      ]
+    },
+    {
+      "case_id": "C11",
+      "name": "Airbus FCOM text and table QA with Haystack",
+      "organization": "Airbus AI research unit",
+      "report_publisher": "deepset",
+      "outcome_evidence": "engineering_prototype_reported_no_systematic_user_study",
+      "task": "长手册文本与表格问答",
+      "implementation": [
+        "飞行员参与训练数据标注",
+        "文本模型微调和表格QA模型适配",
+        "预处理元数据保留上下文",
+        "文本和表格两路流程",
+        "依据结果置信值汇合"
+      ],
+      "sources": [
+        {
+          "checked_at": "2026-10-08T02:16:12.637177+00:00",
+          "cache_file": ".cache/practice-opensource/deepset-airbus.response",
+          "sha256": "f05faa55a0362c58c20bcdc170533bad6b60a8a581e0b02be7006d3fcc90066a",
+          "url": "https://www.deepset.ai/case-studies/airbus",
+          "title": "Airbus: combined table and text QA",
+          "date": null,
+          "read_scope": "selected_body_sections",
+          "evidence_locations": [
+            {
+              "section": "Data Annotation and Preparation",
+              "short_evidence": "organizing an internal company hackathon where they annotated training data"
+            },
+            {
+              "section": "The Solution",
+              "short_evidence": "runs pilots’ queries through both table QA and text QA pipelines"
+            },
+            {
+              "section": "Results and Outlook",
+              "short_evidence": "provide the right answer in less than one second"
+            },
+            {
+              "section": "Results and Outlook",
+              "short_evidence": "has not been evaluated in a systematic user study yet"
+            }
+          ],
+          "missing_fields": {
+            "date": "网页未给出可核对的发布日期；检索日期不是出版日期。"
+          },
+          "reading_copy": ".cache/practice-opensource/deepset-airbus.txt",
+          "reading_copy_sha256": "42a8ae8d6c7cf8ef9bc8523c60630d21b236dc5197a67caa0c2f03978d5733ba"
+        }
+      ],
+      "metrics": [
+        {
+          "name": "reported_answer_time",
+          "value": "<1 second",
+          "baseline": null,
+          "denominator": "原文未给测试集、硬件、并发或延迟分位数",
+          "measurement_period": null,
+          "interpretation": "研发方报告的工程表现，非航空生产成效或可移植SLA"
+        }
+      ],
+      "transferable_lessons": [
+        "保留原始内容及有用元数据",
+        "针对不同信息形态分别处理",
+        "用业务专家标注上下文",
+        "汇合不同路线结果时检验分数可比性"
+      ],
+      "limitations": [
+        "不是已证实正式航空生产部署",
+        "模型名称/版本、数据规模和系统评测未充分披露",
+        "当时nodes式实现不等同本轮核对的现代Haystack源码"
+      ]
+    }
+  ],
+  "screened_leads": [
+    {
+      "name": "N26 with Rasa",
+      "decision": "excluded_from_main_outcome_synthesis",
+      "reason": "标题30%与正文已达20%且争取30%的时点/口径不一致",
+      "source": {
+        "checked_at": "2026-10-08T02:13:02.406738+00:00",
+        "cache_file": ".cache/practice-opensource/rasa-n26.response",
+        "sha256": "a6b23ae6a300a42007806d16646bf7d7444237fc755cba8463dd7002a86b16ad",
+        "url": "https://rasa.com/customers/n26",
+        "title": "N26 Case Study",
+        "date": null,
+        "read_scope": "selected_body_sections",
+        "evidence_locations": [
+          {
+            "section": "The Results",
+            "short_evidence": "20% of customer service requests handled by the AI assistant"
+          },
+          {
+            "section": "The Results",
+            "short_evidence": "working on bringing this to 30% and beyond"
+          }
+        ],
+        "missing_fields": {
+          "date": "网页未给出可核对的发布日期；检索日期不是出版日期。"
+        },
+        "reading_copy": ".cache/practice-opensource/rasa-n26.txt",
+        "reading_copy_sha256": "ee3ab7d60ada2214f5a0824257b9d36d4f0ecb07c1c44d843d8f536fbbe6fdf5"
+      }
+    },
+    {
+      "name": "Bosch DRIVE Companion",
+      "decision": "background_lead_only",
+      "reason": "600+使用者介绍缺少本轮可读的机制和结果细节",
+      "source": {
+        "checked_at": "2026-10-08T02:16:12.703384+00:00",
+        "cache_file": ".cache/practice-opensource/deepset-bosch.response",
+        "sha256": "b2c519ae86ba385439b25248ee509c5802db3a56ac4bd4da1e183fae183b8b11",
+        "url": "https://www.deepset.ai/case-studies/bosch",
+        "title": "Context Engineering at Bosch Scale",
+        "date": null,
+        "read_scope": "short_intro_only",
+        "evidence_locations": [
+          {
+            "section": "introduction",
+            "short_evidence": "used by 600+ people across Bosch’s SAP migration teams"
+          }
+        ],
+        "missing_fields": {
+          "date": "网页未给出可核对的发布日期；检索日期不是出版日期。"
+        },
+        "reading_copy": ".cache/practice-opensource/deepset-bosch.txt",
+        "reading_copy_sha256": "fb800f151a8a71b47f7b7fe0b9416d0272206e1d9424dbd7e5149b271399c7bf"
+      }
+    }
+  ]
+}

@@ -43,14 +43,27 @@ fi
 gpu_visibility=${CUDA_VISIBLE_DEVICES:-$GPU_ID}
 [[ -n $gpu_visibility && $gpu_visibility != *,* ]] || \
   { printf 'ERROR: exactly one GPU must be visible\n' >&2; exit 2; }
-command -v conda >/dev/null 2>&1 || { printf 'ERROR: conda is not on PATH\n' >&2; exit 2; }
+CONDA_BIN=${CONDA_EXE:-}
+[[ -x $CONDA_BIN ]] || CONDA_BIN=$(type -P conda || true)
+[[ -x $CONDA_BIN ]] || { printf 'ERROR: conda executable is unavailable\n' >&2; exit 2; }
+conda_runner=("$CONDA_BIN" run --no-capture-output)
+runtime_python=python
+if [[ -n ${CONDA_EXTRACT_PREFIX:-} ]]; then
+  [[ $CONDA_EXTRACT_PREFIX == /* && -d $CONDA_EXTRACT_PREFIX ]] || \
+    { printf 'ERROR: CONDA_EXTRACT_PREFIX must be an existing absolute directory\n' >&2; exit 2; }
+  conda_runner+=(-p "$CONDA_EXTRACT_PREFIX")
+  runtime_python=$CONDA_EXTRACT_PREFIX/bin/python
+  [[ -x $runtime_python ]] || { printf 'ERROR: selected Python is unavailable\n' >&2; exit 2; }
+else
+  conda_runner+=(-n "$CONDA_EXTRACT_ENV")
+fi
 
 mkdir -p "$VLLM_CACHE_PATH"/{huggingface,vllm,torchinductor,triton}
 cd "$PROJECT_ROOT"
-env CUDA_VISIBLE_DEVICES="$gpu_visibility" conda run --no-capture-output \
-  -n "$CONDA_EXTRACT_ENV" python -m semantic_extraction.validate_runtime
-conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
-  python -m semantic_extraction.validate_model --model-dir "$QWEN_MODEL_PATH"
+env CUDA_VISIBLE_DEVICES="$gpu_visibility" "${conda_runner[@]}" \
+  "$runtime_python" -m semantic_extraction.validate_runtime
+"${conda_runner[@]}" \
+  "$runtime_python" -m semantic_extraction.validate_model --model-dir "$QWEN_MODEL_PATH"
 
 unset HTTP_PROXY HTTPS_PROXY ALL_PROXY http_proxy https_proxy all_proxy
 export NO_PROXY=127.0.0.1,localhost
@@ -87,5 +100,5 @@ exec env \
   TRITON_CACHE_DIR="$VLLM_CACHE_PATH/triton" \
   DO_NOT_TRACK=1 \
   TOKENIZERS_PARALLELISM=false \
-  conda run --no-capture-output -n "$CONDA_EXTRACT_ENV" \
-  python -m vllm.entrypoints.openai.api_server "${args[@]}"
+  "${conda_runner[@]}" \
+  "$runtime_python" -m vllm.entrypoints.openai.api_server "${args[@]}"

@@ -9,14 +9,20 @@ if [[ -f deploy/.env.retrieval ]]; then
   source deploy/.env.retrieval
 fi
 : "${CONDA_RETRIEVAL_ENV:=civic-rag-retrieval}"
-command -v conda >/dev/null || { printf 'ERROR: conda is not on PATH\n' >&2; exit 2; }
 stage=${1:-}
 case "$stage" in
-  init-queries|collect|export|evaluate|calibrate|freeze-labels|revise-labels) shift ;;
-  *) printf 'Usage: bash deploy/run-case-evaluation.sh {init-queries|collect|export|evaluate|calibrate|freeze-labels|revise-labels} [options]\n' >&2; exit 2 ;;
+  preflight|prepare-queries|finalize-queries|freeze|report) shift ;;
+  *) printf 'Usage: bash deploy/run-phase1.sh {preflight|prepare-queries|finalize-queries|freeze|report} [options]\n' >&2; exit 2 ;;
 esac
-runner=(conda run --no-capture-output -n "$CONDA_RETRIEVAL_ENV" python -m retrieval_baseline.case_eval "$stage")
-if [[ $stage == collect ]]; then
+command -v conda >/dev/null || { printf 'ERROR: conda is not on PATH\n' >&2; exit 2; }
+runner=(conda run --no-capture-output -n "$CONDA_RETRIEVAL_ENV" python)
+case "$stage" in
+  preflight) runner+=(-m retrieval_baseline.preflight) ;;
+  report) runner+=(-m retrieval_baseline.case_report) ;;
+  *) runner+=(-m retrieval_baseline.phase1 "$stage") ;;
+esac
+if [[ $stage == preflight || $stage == freeze ]]; then
+  # Keep these defaults identical to run-case-evaluation.sh collect.
   runner+=(--dataset "${RETRIEVAL_DATASET:-data/retrieval-baseline-v1/dataset}"
     --index "${RETRIEVAL_LEXICAL_INDEX:-data/retrieval-baseline-v1/index}"
     --dense-index "${RETRIEVAL_DENSE_INDEX:-data/retrieval-bge-m3-v1/index}"
@@ -28,5 +34,7 @@ if [[ $stage == collect ]]; then
     --reranker-model "${RERANKER_MODEL_PATH:-models/bge-reranker-v2-m3}"
     --reranker-max-length "${RERANKER_MAX_LENGTH:-1024}"
     --reranker-batch-size "${RERANKER_BATCH_SIZE:-4}")
+elif [[ $stage == prepare-queries || $stage == finalize-queries ]]; then
+  runner+=(--dataset "${RETRIEVAL_DATASET:-data/retrieval-baseline-v1/dataset}")
 fi
 exec "${runner[@]}" "$@"

@@ -1,0 +1,444 @@
+[
+  {
+    "paper_id": "P18",
+    "title": "COTA: Improving the Speed and Accuracy of Customer Support through Ranking and Deep Networks",
+    "authors": [
+      "Piero Molino",
+      "Huaixiu Zheng",
+      "Yi-Chia Wang"
+    ],
+    "year": 2018,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining",
+    "doi": "10.1145/3219819.3219851",
+    "arxiv_id": "1807.01337",
+    "abstract": "For a company looking to provide delightful user experiences, it is of paramount importance to take care of any customer issues. This paper proposes COTA, a system to improve speed and reliability of customer support for end users through automated ticket classification and answers selection for support representatives. Two machine learning and natural language processing techniques are demonstrated: one relying on feature engineering (COTA v1) and the other exploiting raw signals through deep learning architectures (COTA v2). COTA v1 employs a new approach that converts the multi-classification task into a ranking problem, demonstrating significantly better performance in the case of thousands of classes. For COTA v2, we propose an Encoder-Combiner-Decoder, a novel deep learning architecture that allows for heterogeneous input and output feature types and injection of prior knowledge through network architecture choices. This paper compares these models and their variants on the task of ticket classification and answer selection, showing model COTA v2 outperforms COTA v1, and analyzes their inner workings and shortcomings. Finally, an A/B test is conducted in a production setting validating the real-world impact of COTA in reducing issue resolution time by 10 percent without reducing customer satisfaction.",
+    "citation_count": null,
+    "citation_counts": [],
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.2–8, §§2–5.8, Tables1–5",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "类别和模板推荐；异构输入、TopK辅助、人机工作流、线上/离线指标和长尾迭代。",
+    "limitations": "作者报告生产A/B；英语工单；约300万历史样本；不是本项目中文字段抽取结果。",
+    "source_url": "https://doi.org/10.1145/3219819.3219851",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3219819.3219851",
+          "checked_at": "2026-10-08T02:18:33.128605+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1807.01337",
+          "checked_at": "2026-10-08T02:13:33.996807+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1807.01337",
+          "checked_at": "2026-10-08T02:13:33.997119+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1807.01337",
+          "checked_at": "2026-10-08T02:13:33.997119+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1807.01337",
+          "checked_at": "2026-10-08T02:13:33.997119+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "data_availability": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1807.01337",
+          "checked_at": "2026-10-08T02:13:33.997119+00:00",
+          "evidence_type": "inference",
+          "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "arXiv"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/1807.01337",
+    "local_pdf_path": ".cache/practice-enterprise/cota_pdf.pdf",
+    "download_status": "downloaded",
+    "download_source": "arxiv.org",
+    "final_url": "https://arxiv.org/pdf/1807.01337",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-08T02:13:33.997119+00:00",
+    "byte_length": 4327643,
+    "sha256": "1f4b7bdf2b411390004f2266f02ca00944d23ed553c5b82263dff5d18426cf4f",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": null,
+    "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+    "missing_fields": {
+      "citation_count": "本輪未收集引用统计。",
+      "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+    },
+    "fetched_at": "2026-10-08",
+    "bibtex": "@inproceedings{molino2018cota,\n  title = {COTA: Improving the Speed and Accuracy of Customer Support through Ranking and Deep Networks},\n  author = {Piero Molino and Huaixiu Zheng and Yi-Chia Wang},\n  year = {2018},\n  booktitle = {Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining},\n  pages = {586--595},\n  doi = {10.1145/3219819.3219851},\n  url = {https://doi.org/10.1145/3219819.3219851},\n  eprint = {1807.01337},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "molino2018cota",
+    "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page."
+  },
+  {
+    "paper_id": "P19",
+    "title": "AliMe Assist: An Intelligent Assistant for Creating an Innovative E-commerce Experience",
+    "authors": [
+      "Feng-Lin Li",
+      "Minghui Qiu",
+      "Haiqing Chen",
+      "Xiongwei Wang",
+      "Xing Gao",
+      "Jun Huang",
+      "Juwei Ren",
+      "Zhongzhou Zhao",
+      "Weipeng Zhao",
+      "Lei Wang",
+      "Guwei Jin",
+      "Wei Chu"
+    ],
+    "year": 2017,
+    "publication_type": "conference",
+    "venue": "Proceedings of the 2017 ACM on Conference on Information and Knowledge Management",
+    "doi": "10.1145/3132847.3133169",
+    "arxiv_id": "1801.05032",
+    "abstract": "We present AliMe Assist, an intelligent assistant designed for creating an innovative online shopping experience in E-commerce. Based on question answering (QA), AliMe Assist offers assistance service, customer service, and chatting service. It is able to take voice and text input, incorporate context to QA, and support multi-round interaction. Currently, it serves millions of customer questions per day and is able to address 85% of them. In this paper, we demonstrate the system, present the underlying techniques, and share our experience in dealing with real-world QA in the E-commerce field.",
+    "citation_count": null,
+    "citation_counts": [],
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1–3, §§1–4; p.4 conclusion",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "中文客服意图/槽位/语义归一分工，以及知识图谱和检索后备。",
+    "limitations": "不同子系统指标不可互换；图谱较IR的10%提升缺精确口径；不是投诉抽取基准。",
+    "source_url": "https://doi.org/10.1145/3132847.3133169",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1145/3132847.3133169",
+          "checked_at": "2026-10-08T02:18:33.128987+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1801.05032",
+          "checked_at": "2026-10-08T02:15:56.178107+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1801.05032",
+          "checked_at": "2026-10-08T02:15:56.178382+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1801.05032",
+          "checked_at": "2026-10-08T02:15:56.178382+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1801.05032",
+          "checked_at": "2026-10-08T02:15:56.178382+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "data_availability": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1801.05032",
+          "checked_at": "2026-10-08T02:15:56.178382+00:00",
+          "evidence_type": "inference",
+          "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "arXiv"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/1801.05032",
+    "local_pdf_path": ".cache/practice-enterprise/alime_assist_pdf.pdf",
+    "download_status": "downloaded",
+    "download_source": "arxiv.org",
+    "final_url": "https://arxiv.org/pdf/1801.05032",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-08T02:15:56.178382+00:00",
+    "byte_length": 1143745,
+    "sha256": "23db5643b05a89727e2cd2313104af2d61d43d180d9a494528b221c251a0e3a6",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": null,
+    "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+    "missing_fields": {
+      "citation_count": "本輪未收集引用统计。",
+      "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+    },
+    "fetched_at": "2026-10-08",
+    "bibtex": "@inproceedings{li2017alimeassist,\n  title = {AliMe Assist: An Intelligent Assistant for Creating an Innovative E-commerce Experience},\n  author = {Feng-Lin Li and Minghui Qiu and Haiqing Chen and Xiongwei Wang and Xing Gao and Jun Huang and Juwei Ren and Zhongzhou Zhao and Weipeng Zhao and Lei Wang and Guwei Jin and Wei Chu},\n  year = {2017},\n  booktitle = {Proceedings of the 2017 ACM on Conference on Information and Knowledge Management},\n  pages = {2495--2498},\n  doi = {10.1145/3132847.3133169},\n  url = {https://doi.org/10.1145/3132847.3133169},\n  eprint = {1801.05032},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "li2017alimeassist",
+    "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page."
+  },
+  {
+    "paper_id": "P20",
+    "title": "AliMe KBQA: Question Answering over Structured Knowledge for E-Commerce Customer Service",
+    "authors": [
+      "Feng-Lin Li",
+      "Weijia Chen",
+      "Qi Huang",
+      "Yikun Guo"
+    ],
+    "year": 2019,
+    "publication_type": "book-chapter",
+    "venue": "Knowledge Graph and Semantic Computing: Knowledge Computing and Language Understanding",
+    "doi": "10.1007/978-981-15-1956-7_12",
+    "arxiv_id": "1912.05728",
+    "abstract": "With the rise of knowledge graph (KG), question answering over knowledge base (KBQA) has attracted increasing attention in recent years. Despite much research has been conducted on this topic, it is still challenging to apply KBQA technology in industry because business knowledge and real-world questions can be rather complicated. In this paper, we present AliMe-KBQA, a bold attempt to apply KBQA in the E-commerce customer service field. To handle real knowledge and questions, we extend the classic \"subject-predicate-object (SPO)\" structure with property hierarchy, key-value structure and compound value type (CVT), and enhance traditional KBQA with constraints recognition and reasoning ability. We launch AliMe-KBQA in the Marketing Promotion scenario for merchants during the \"Double 11\" period in 2018 and other such promotional events afterwards. Online results suggest that AliMe-KBQA is not only able to gain better resolution and improve customer satisfaction, but also becomes the preferred knowledge management method by business knowledge staffs since it offers a more convenient and efficient management experience.",
+    "citation_count": null,
+    "citation_counts": [],
+    "read_scope": "full_text_partial",
+    "evidence_location": "PDF pp.1–9, §§1–5 and p.11 §6; Tables1–2",
+    "evidence_use": "included_for_scoped_synthesis",
+    "relevance": "复杂实体关系、属性层级、查询约束及人工schema维护经验。",
+    "limitations": "生产解决率基于会话行为；非随机比较；案例名匿名；规则实例有前后表述不一致。",
+    "source_url": "https://doi.org/10.1007/978-981-15-1956-7_12",
+    "field_sources": {
+      "title": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "authors": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "year": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "publication_type": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "venue": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "doi": [
+        {
+          "platform": "Crossref",
+          "source_url": "https://api.crossref.org/works/10.1007/978-981-15-1956-7_12",
+          "checked_at": "2026-10-08T02:18:33.129185+00:00",
+          "evidence_type": "source_metadata"
+        }
+      ],
+      "abstract": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/abs/1912.05728",
+          "checked_at": "2026-10-08T02:18:33.129404+00:00",
+          "evidence_type": "page_text"
+        }
+      ],
+      "full_text_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1912.05728",
+          "checked_at": "2026-10-08T02:15:56.178602+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "pdf_url": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1912.05728",
+          "checked_at": "2026-10-08T02:15:56.178602+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "paper_identity_status": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1912.05728",
+          "checked_at": "2026-10-08T02:15:56.178602+00:00",
+          "evidence_type": "pdf_text",
+          "note": "PDF parsed with pypdf; first-page title/authors checked against Crossref/arXiv. Formal publication and author manuscript are recorded separately."
+        }
+      ],
+      "data_availability": [
+        {
+          "platform": "arXiv",
+          "source_url": "https://arxiv.org/pdf/1912.05728",
+          "checked_at": "2026-10-08T02:15:56.178602+00:00",
+          "evidence_type": "inference",
+          "note": "Read methods/results describe company data. No public production dataset was supplied in the inspected sections; this is not an exhaustive data-availability audit."
+        }
+      ]
+    },
+    "source_platforms": [
+      "Crossref",
+      "arXiv"
+    ],
+    "full_text_status": "open_pdf",
+    "pdf_url": "https://arxiv.org/pdf/1912.05728",
+    "local_pdf_path": ".cache/practice-enterprise/alime_kbqa_pdf.pdf",
+    "download_status": "downloaded",
+    "download_source": "arxiv.org",
+    "final_url": "https://arxiv.org/pdf/1912.05728",
+    "content_type": "application/pdf",
+    "checked_at": "2026-10-08T02:15:56.178602+00:00",
+    "byte_length": 788358,
+    "sha256": "ced6a7e1657498bf9708d8b03939a574fca7bbf8254644a6ba6ef2f13ea17a54",
+    "http_status": 200,
+    "pdf_verification_status": "parser_validated",
+    "paper_identity_status": "matched",
+    "code_url": null,
+    "data_availability": "论文描述企业内部数据；本轮未发现公开可直接复验的生产数据。",
+    "missing_fields": {
+      "citation_count": "本輪未收集引用统计。",
+      "code_url": "未核验对应生产系统完整代码；论文提及工具并不等于生产实现已公开。"
+    },
+    "fetched_at": "2026-10-08",
+    "bibtex": "@incollection{li2019alimekbqa,\n  title = {AliMe KBQA: Question Answering over Structured Knowledge for E-Commerce Customer Service},\n  author = {Feng-Lin Li and Weijia Chen and Qi Huang and Yikun Guo},\n  year = {2019},\n  booktitle = {Knowledge Graph and Semantic Computing: Knowledge Computing and Language Understanding},\n  pages = {136--148},\n  doi = {10.1007/978-981-15-1956-7_12},\n  url = {https://doi.org/10.1007/978-981-15-1956-7_12},\n  eprint = {1912.05728},\n  archivePrefix = {arXiv}\n}",
+    "citation_key": "li2019alimekbqa",
+    "bibtex_origin": "Generated from exact Crossref DOI metadata; author-manuscript identity cross-checked with PDF first page."
+  }
+]

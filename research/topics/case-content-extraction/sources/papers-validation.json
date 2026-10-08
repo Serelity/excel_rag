@@ -1,0 +1,102 @@
+{
+  "valid": true,
+  "records": [
+    {
+      "index": 0,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 1,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 2,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 3,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 4,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 5,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 6,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 7,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 8,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 9,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 10,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 11,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 12,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 13,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "index": 14,
+      "valid": true,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_records": 15,
+    "valid_records": 15,
+    "invalid_records": 0,
+    "errors": 0,
+    "warnings": 0
+  }
+}
